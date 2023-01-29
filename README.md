@@ -3,6 +3,7 @@
 [![release](https://img.shields.io/github/release/cyb3rko/pincredible.svg)](https://github.com/cyb3rko/pincredible/releases/latest)
 [![license](https://img.shields.io/github/license/cyb3rko/pincredible)](https://www.apache.org/licenses/LICENSE-2.0)
 [![last commit](https://img.shields.io/github/last-commit/cyb3rko/pincredible?color=F34C9F)](https://github.com/cyb3rko/pincredible/commits/main)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcyb3rko%2Fpincredible.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcyb3rko%2Fpincredible?ref=badge_shield)
 
 ![pincredible banner](https://socialify.git.ci/cyb3rko/pincredible/image?description=1&forks=1&issues=1&logo=https%3A%2F%2Fi.imgur.com%2FJ4rQhXH.png&name=1&owner=1&pattern=Brick%20Wall&pulls=1&stargazers=1&theme=Dark)
 
@@ -114,3 +115,6 @@ Using a unified code format makes it much easier for me and for everyone else.
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcyb3rko%2Fpincredible.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcyb3rko%2Fpincredible?ref=badge_large)
