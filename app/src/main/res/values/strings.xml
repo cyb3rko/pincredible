@@ -1,0 +1,58 @@
+<resources>
+    <string name="github_link" translatable="false">https://github.com/cyb3rko/pincredible</string>
+
+    <!-- Fragment Labels -->
+    <string name="fragment_label_home" translatable="false">PINcredible</string>
+    <string name="fragment_label_pin_creator">PIN Creation</string>
+    <string name="fragment_label_pin_viewer">PIN Access</string>
+    <string name="fragment_label_analysis">App Analysis</string>
+    
+    <!-- Menu Labels -->
+    <string name="menu_home_analysis">App Analysis</string>
+    <string name="menu_home_github">Git</string>
+
+    <!-- Content -->
+    <string name="home_found_pins">Found PINs: %d</string>
+    <string name="no_pins_note">Pretty empty here.\nCurrently there\'s no PIN stored.</string>
+    <string name="add_pin">Add PIN</string>
+    <string name="delete_button">Delete</string>
+    <string name="generate_new_pattern">Generate new pattern</string>
+    <string name="save_pin">Save PIN</string>
+    <string name="analysis_run">Run test by clicking me</string>
+    <string name="analysis_hashing_title">Hashing Speed (XXHash3 128)</string>
+    <string name="analysis_hashing_result">Hashing of "This is a test" took:\n%s</string>
+    <string name="analysis_encryption_title">Encryption Speed (AES/CBC/PKCS7)</string>
+    <string name="analysis_encryption_result">Encryption of demo PIN pattern took:\n%s</string>
+    <string name="analysis_decryption_title">Decryption Speed (AES/CBC/PKCS7)</string>
+    <string name="analysis_decryption_result">Decryption of demo PIN pattern took:\n%s</string>
+    <string name="analysis_keystore_provider">Android KeyStore Provider</string>
+    <string name="analysis_random_provider">Secure Random Provider</string>
+    <string name="analysis_provider_info" translatable="false">%1$s %2$s (%3$s)</string>
+    <string name="table_empty_cell" translatable="false">0</string>
+    <string name="exception_report">Report to app creator</string>
+    <string name="exception_copy">Copy to clipboard</string>
+
+    <!-- Dialog Content -->
+    <string name="dialog_about_button">Show Icon Credits</string>
+    <string name="dialog_about_message">App Version: %1$s (%2$d)\nBuild Type: %3$s\nDevice: %4$s %5$s (%6$s)\nSoftware: Android %7$s (%8$d)</string>
+    <string name="dialog_about_title">About</string>
+    <string name="dialog_credits_button">Open Flaticon</string>
+    <string name="dialog_credits_message">Information icon created by Freepik - Flaticon\n\nVerified icon created by Freepik - Flaticon\n\nEmpty box icon created by juicy_fish\n\nRight Arrow icon created by Roundicons\n\nGit icon created by Creatype</string>
+    <string name="dialog_credits_title">Icon Credits</string>
+    <string name="dialog_delete_button1">Yes</string>
+    <string name="dialog_delete_button2">No</string>
+    <string name="dialog_delete_message">Are you sure you want to delete this PIN?</string>
+    <string name="dialog_delete_title">Delete PIN?</string>
+    <string name="dialog_delete_error">Deletion Error</string>
+    <string name="dialog_error_title">Encryption / Decryption Error</string>
+    <string name="dialog_input_button1">Save</string>
+    <string name="dialog_input_button2">Cancel</string>
+    <string name="dialog_name_error_exist">This name is already in use</string>
+    <string name="dialog_name_error_length">Use between 1-30 characters</string>
+    <string name="dialog_name_hint">Give it a name</string>
+    <string name="dialog_name_title">PIN Name</string>
+    
+    <!-- Toasts -->
+    <string name="toast_url_failed">"Opening URL failed, copied URL instead"</string>
+    <string name="toast_stacktrace">Stracktrace copied</string>
+</resources>

@@ -1,0 +1,13 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.PINcredible" parent="Theme.Material3.Dark.NoActionBar">
+
+    </style>
+
+    <style name="Theme.PINcredible" parent="Base.Theme.PINcredible" />
+
+    <style name="TextAppearance.Toolbar.Subtitle" parent="TextAppearance.Material3.ActionBar.Subtitle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#878787</item>
+    </style>
+</resources>

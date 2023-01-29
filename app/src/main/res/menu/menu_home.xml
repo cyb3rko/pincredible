@@ -1,0 +1,26 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_analysis"
+        android:icon="@drawable/colored_ic_security"
+        android:orderInCategory="1"
+        android:title="@string/menu_home_analysis"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_github"
+        android:icon="@drawable/colored_ic_git"
+        android:orderInCategory="2"
+        android:title="@string/menu_home_github"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_about"
+        android:icon="@drawable/colored_ic_information_scaled"
+        android:orderInCategory="3"
+        android:title="@string/dialog_about_title"
+        app:showAsAction="ifRoom" />
+
+</menu>

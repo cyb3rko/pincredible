@@ -1,0 +1,83 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'androidx.navigation.safeargs.kotlin'
+    id 'org.jmailen.kotlinter' version '3.13.0' // lintKotlin, formatKotlin
+    id 'com.getkeepsafe.dexcount' version '4.0.0' // :app:countReleaseDexMethods
+}
+
+android {
+    namespace 'com.cyb3rko.pincredible'
+    compileSdk 33
+    defaultConfig {
+        applicationId 'com.cyb3rko.pincredible'
+        minSdk 23
+        targetSdk 33
+        versionCode 1
+        versionName '0.1.0'
+        signingConfig signingConfigs.debug
+    }
+    applicationVariants.all { variant ->
+        variant.resValue 'string', 'version_name', "Beta v${variant.versionName}"
+    }
+    signingConfigs {
+        signingConf {
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+            storeFile file(properties.getProperty('signing.file'))
+            storePassword properties.getProperty('signing.password')
+            keyAlias properties.getProperty('signing.key.alias')
+            keyPassword properties.getProperty('signing.key.password')
+        }
+    }
+    buildTypes {
+        development {
+            minifyEnabled false
+            debuggable true
+            applicationIdSuffix ".dev"
+            resValue 'string', "app_name", "PINcredible DEV"
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            resValue 'string', "app_name", "PINcredible"
+            signingConfig signingConfigs.signingConf
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+    buildFeatures {
+        viewBinding true
+    }
+    bundle {
+        storeArchive {
+            enable = false
+        }
+    }
+}
+tasks.named('lintKotlinMain') {
+    exclude 'com/cyb3rko/pincredible/crypto/xxhash3/*.kt'
+}
+tasks.named('formatKotlinMain') {
+    exclude 'com/cyb3rko/pincredible/crypto/xxhash3/*.kt'
+}
+
+dependencies {
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
+    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'com.google.android.material:material:1.7.0'
+
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+//    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+//    testImplementation 'junit:junit:4.13.2'
+}

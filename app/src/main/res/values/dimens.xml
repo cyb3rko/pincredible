@@ -1,0 +1,7 @@
+<resources>
+    <dimen name="fab_margin">24dp</dimen>
+    <dimen name="table_cell_height">45dp</dimen>
+    <dimen name="table_text_size">20sp</dimen>
+    <dimen name="table_vertical_space">2dp</dimen>
+    <dimen name="table_horizontal_space">2dp</dimen>
+</resources>
