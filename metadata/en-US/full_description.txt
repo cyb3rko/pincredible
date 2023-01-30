@@ -1,0 +1,21 @@
+<b>About</b>
+Over time I've used several apps to store my PINs, unfortunately none of them really convinced me.
+So here we are now, this is my own implementation of a secure PIN manager.
+
+<b>Features</b>
+<ul><li>🔢 PIN obfuscation</li><li>🔐 Local Encryption</li><li>🎨 Modern Design</li><li>🌐 No Internet Connection required</li><li>🎞️ No Ads</li><li>🗿 No Suspicious Permissions</li></ul>
+
+The app obfuscates the PIN in a table layout surrounded by secure random numbers.  
+This brings two security benefits:
+1. ❔ The app can not know where in the pattern the user given PIN is located at. Attackers can not extract the plaintext PIN.
+2. 🕵️ This offers protection against <a href="https://en.wikipedia.org/wiki/Shoulder_surfing_(computer_security)" title="shoulder surfing">Shoulder Surfing</a>, for example while accessing your PIN in a super market or a bank.
+
+<b>Security Aspects</b>
+For technical details about the implemented security take a look at the <a href="https://github.com/cyb3rko/pincredible" title="pincredible github">GitHub repo readme</a>.
+
+<b>Used Icons</b>
+<a href="https://www.flaticon.com/free-icons/information" title="information icons">Information icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/security" title="security icons">Security icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/safe-box" title="safe box icons">Safe box icons created by juicy_fish - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/next" title="next icons">Next icons created by Roundicons - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/branch" title="branch icons">Branch icons created by Creatype - Flaticon</a>
