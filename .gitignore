@@ -30,8 +30,5 @@ render.experimental.xml
 *.hprof
 
 # App logo
-*.svg
-*.png
-
-# F-Droid Metadata
-!metadata/**
+/*.svg
+/*.png
