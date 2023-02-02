@@ -18,6 +18,8 @@ package com.cyb3rko.pincredible.crypto
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import android.util.Log
+import com.cyb3rko.pincredible.BuildConfig
 import com.cyb3rko.pincredible.crypto.xxhash3.XXH3_128
 import com.cyb3rko.pincredible.utils.ObjectSerializer
 import java.io.File
@@ -52,7 +54,11 @@ internal object CryptoManager {
         for (i in ciphertextBytes.indices) {
             sb.append(((ciphertextBytes[i] and 0xff.toByte()) + 0x100).toString(16).substring(1))
         }
-        return sb.toString()
+        val hash = sb.toString()
+        if (BuildConfig.DEBUG) {
+            Log.d("CryptoManager", "Hash: $hash")
+        }
+        return hash
     }
 
     // Random
