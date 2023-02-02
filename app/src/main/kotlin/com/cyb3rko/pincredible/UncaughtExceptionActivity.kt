@@ -17,6 +17,7 @@
 package com.cyb3rko.pincredible
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -39,6 +40,7 @@ class UncaughtExceptionActivity : AppCompatActivity() {
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
         val stacktrace = intent.getStringExtra(ExceptionHandler.EXTRA_STACKTRACE) ?: "no stacktrace"
+        Log.d("UncaughtException", stacktrace)
         binding.stracktraceView.text = stacktrace
         binding.copyButton.setOnClickListener {
             storeToClipboard("Stacktrace", stacktrace)
