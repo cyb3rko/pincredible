@@ -16,12 +16,12 @@
 
 package com.cyb3rko.pincredible.data
 
-import com.cyb3rko.pincredible.BuildConfig
 import com.cyb3rko.pincredible.crypto.CryptoManager
+import java.io.Serializable
 
-internal class PinTable {
+internal class PinTable : Serializable {
     private lateinit var data: Array<IntArray>
-    lateinit var pattern: Array<IntArray>
+    private lateinit var pattern: Array<IntArray>
 
     init {
         reset()
@@ -29,6 +29,7 @@ internal class PinTable {
 
     fun reset() {
         data = Array(ROW_COUNT) { IntArray(COLUMN_COUNT) { -1 } }
+        pattern = Array(ROW_COUNT) { IntArray(COLUMN_COUNT) { -1 } }
     }
 
     fun isFilled(): Boolean {
@@ -42,6 +43,12 @@ internal class PinTable {
         if (row < 0 || row > ROW_COUNT) throw IllegalArgumentException("Invalid row index")
         if (column < 0 || column > COLUMN_COUNT) throw IllegalArgumentException("Invalid row index")
         data[row][column] = value
+    }
+
+    fun putBackground(row: Int, column: Int, background: Int) {
+        if (row < 0 || row > ROW_COUNT) throw IllegalArgumentException("Invalid row index")
+        if (column < 0 || column > COLUMN_COUNT) throw IllegalArgumentException("Invalid row index")
+        pattern[row][column] = background
     }
 
     fun get(row: Int, column: Int) = data[row][column].toString()
@@ -58,40 +65,8 @@ internal class PinTable {
         }
     }
 
-    private fun getPinSequence(): String {
-        var output = ""
-        data.forEach { array ->
-            array.forEach {
-                output += it
-            }
-        }
-        return output
-    }
-
-    private fun getPatternSequence(): String {
-        var output = ""
-        pattern.forEach { array ->
-            array.forEach {
-                output += it
-            }
-        }
-        return output
-    }
-
-    fun getData(): ByteArray {
-        return (
-            BuildConfig.VERSION_CODE.toString() + "-" + getPatternSequence() + "-" +
-                getPinSequence()
-            ).toByteArray()
-    }
-
     companion object {
         const val ROW_COUNT = 7
         const val COLUMN_COUNT = 7
-
-        fun extractData(rawData: ByteArray): Triple<Int, String, String> {
-            val parts = rawData.decodeToString().split("-")
-            return Triple(parts[0].toInt(), parts[1], parts[2])
-        }
     }
 }

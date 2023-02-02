@@ -75,7 +75,6 @@ class PinCreatorFragment : Fragment() {
     }
 
     private fun colorTableView() {
-        val pattern = Array(PinTable.ROW_COUNT) { IntArray(PinTable.COLUMN_COUNT) }
         var randomIndex: Int
         var randomBackgroundInt: Int
         var randomBackground: Drawable
@@ -95,9 +94,8 @@ class PinCreatorFragment : Fragment() {
                 myContext.theme
             )!!
             (view[row] as TableRow)[column].background = randomBackground
-            pattern[row][column] = randomIndex
+            pinTable.putBackground(row, column, randomIndex)
         }
-        pinTable.pattern = pattern
     }
 
     private fun setTableClickListeners() {
@@ -241,7 +239,7 @@ class PinCreatorFragment : Fragment() {
         val newPinFile = File(myContext.filesDir, "p$hash")
         return if (!newPinFile.exists()) {
             newPinFile.createNewFile()
-            CryptoManager.encrypt(pinTable.getData(), newPinFile)
+            CryptoManager.encrypt(ObjectSerializer.serialize(pinTable), newPinFile)
             true
         } else {
             false

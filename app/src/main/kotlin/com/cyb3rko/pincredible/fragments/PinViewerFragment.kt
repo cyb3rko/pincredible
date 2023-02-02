@@ -37,6 +37,7 @@ import com.cyb3rko.pincredible.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.databinding.FragmentPinViewerBinding
 import com.cyb3rko.pincredible.modals.ErrorDialog
+import com.cyb3rko.pincredible.utils.ObjectSerializer
 import com.cyb3rko.pincredible.utils.Vibration
 import com.cyb3rko.pincredible.utils.iterate
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -107,16 +108,14 @@ class PinViewerFragment : Fragment() {
     }
 
     private suspend fun loadDataIntoTable() {
-        val timedValue = CryptoManager.hash(args.pin)
-        hash = timedValue
+        hash = CryptoManager.hash(args.pin)
 
-        val sequences: Pair<String, String>
         try {
-            sequences = decryptData(hash)
+            val pinTable = decryptData(hash)
             withContext(Dispatchers.Main) {
                 binding.progressBar.hide()
-                colorTableView(sequences.first)
-                fillTable(sequences.second)
+                colorTableView(pinTable)
+                fillTable(pinTable)
             }
         } catch (e: EnDecryptionException) {
             Log.d("CryptoManager", e.customStacktrace)
@@ -126,13 +125,11 @@ class PinViewerFragment : Fragment() {
         }
     }
 
-    private fun colorTableView(pattern: String) {
-        var index: Int
+    private fun colorTableView(pinTable: PinTable) {
         var backgroundInt: Int
         var background: Drawable
         binding.tableLayout.table.iterate { view, row, column ->
-            index = row * 7 + column
-            backgroundInt = when (pattern[index] - '0') {
+            backgroundInt = when (pinTable.getBackground(row, column)) {
                 0 -> R.drawable.cell_shape_cyan
                 1 -> R.drawable.cell_shape_green
                 2 -> R.drawable.cell_shape_orange
@@ -149,20 +146,18 @@ class PinViewerFragment : Fragment() {
         }
     }
 
-    private fun fillTable(pinSequence: String) {
-        var index: Int
+    private fun fillTable(pinTable: PinTable) {
         binding.tableLayout.table.iterate { view, row, column ->
-            index = row * 7 + column
-            ((view[row] as TableRow)[column] as TextView).text = pinSequence[index].toString()
+            ((view[row] as TableRow)[column] as TextView).text =
+                pinTable.get(row, column)
         }
     }
 
     @Throws(EnDecryptionException::class)
-    private fun decryptData(hash: String): Pair<String, String> {
+    private fun decryptData(hash: String): PinTable {
         val file = File(myContext.filesDir, "p$hash")
         val secret = CryptoManager.decrypt(file)
-        val triple = PinTable.extractData(secret)
-        return triple.second to triple.third
+        return ObjectSerializer.deserialize(secret) as PinTable
     }
 
     override fun onDestroyView() {

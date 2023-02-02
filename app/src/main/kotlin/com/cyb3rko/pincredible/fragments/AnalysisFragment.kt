@@ -30,6 +30,7 @@ import com.cyb3rko.pincredible.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.databinding.FragmentAnalysisBinding
 import com.cyb3rko.pincredible.modals.ErrorDialog
+import com.cyb3rko.pincredible.utils.ObjectSerializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -97,17 +98,12 @@ class AnalysisFragment : Fragment() {
         )
     }
 
-    private fun getRandomPattern(): Array<IntArray> {
-        val pattern = Array(PinTable.ROW_COUNT) { intArrayOf() }
-        val rowPattern = IntArray(PinTable.COLUMN_COUNT)
-
+    private fun setRandomPattern(pinTable: PinTable) {
         repeat(PinTable.ROW_COUNT) { row ->
             repeat(PinTable.COLUMN_COUNT) { column ->
-                rowPattern[column] = Random.nextInt(5)
+                pinTable.put(row, column, Random.nextInt(5))
             }
-            pattern[row] = rowPattern
         }
-        return pattern
     }
 
     @OptIn(ExperimentalTime::class)
@@ -115,10 +111,12 @@ class AnalysisFragment : Fragment() {
         try {
             val pinTable = PinTable()
             pinTable.fill()
-            pinTable.pattern = getRandomPattern()
+            setRandomPattern(pinTable)
             val tempFile = File(myContext.filesDir, "enc-test")
             tempFile.createNewFile()
-            val time = measureTime { CryptoManager.encrypt(pinTable.getData(), tempFile) }
+            val time = measureTime {
+                CryptoManager.encrypt(ObjectSerializer.serialize(pinTable), tempFile)
+            }
             tempFile.delete()
 
             binding.encryptionSpeed.text = getString(
@@ -136,10 +134,10 @@ class AnalysisFragment : Fragment() {
         try {
             val pinTable = PinTable()
             pinTable.fill()
-            pinTable.pattern = getRandomPattern()
+            setRandomPattern(pinTable)
             val tempFile = File(myContext.filesDir, "dec-test")
             tempFile.createNewFile()
-            CryptoManager.encrypt(pinTable.getData(), tempFile)
+            CryptoManager.encrypt(ObjectSerializer.serialize(pinTable), tempFile)
             val time = measureTime { CryptoManager.decrypt(tempFile) }
             tempFile.delete()
 
