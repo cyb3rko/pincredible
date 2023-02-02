@@ -142,9 +142,7 @@ internal object CryptoManager {
 
         val encryptedBytes = encryptCipher.doFinal(data)
         FileOutputStream(file).use {
-            it.write(encryptCipher.iv.size)
             it.write(encryptCipher.iv)
-            it.write(encryptedBytes.size)
             it.write(encryptedBytes)
         }
         return encryptedBytes
@@ -153,13 +151,9 @@ internal object CryptoManager {
     @Throws(EnDecryptionException::class)
     fun decrypt(file: File): ByteArray {
         return FileInputStream(file).use {
-            val ivSize = it.read()
-            val iv = ByteArray(ivSize)
+            val iv = ByteArray(16)
             it.read(iv)
-
-            val encryptedBytesSize = it.read()
-            val encryptedBytes = ByteArray(encryptedBytesSize)
-            it.read(encryptedBytes)
+            val encryptedBytes = it.readBytes()
 
             val decryptCipher: Cipher
             try {
