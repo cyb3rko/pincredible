@@ -6,7 +6,7 @@
         android:width="3dp"
         android:color="@color/table_cell_selected" />
 
-    <solid android:color="#f44336" />
+    <solid android:color="@color/table_cell_pink" />
 
     <corners android:radius="5dp" />
 </shape>
