@@ -3,10 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <stroke
-        android:width="3dp"
+        android:width="@dimen/table_cell_stroke_selected"
         android:color="@color/table_cell_selected" />
 
-    <solid android:color="#4caf50" />
+    <solid android:color="@color/table_cell_green" />
 
-    <corners android:radius="5dp" />
+    <corners android:radius="@dimen/table_cell_corner_radius" />
 </shape>

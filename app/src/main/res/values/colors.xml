@@ -7,6 +7,7 @@
     <color name="app_bar_icon">@color/md_theme_light_onSurfaceVariant</color>
     <color name="base_dynamic_color">@color/black</color>
     <color name="table_cell_text">@color/black</color>
+    <color name="table_cell_unselected">@color/black</color>
     <color name="table_cell_selected">@color/gray</color>
     <color name="table_cell_cyan">#00C0C6</color>
     <color name="table_cell_green">#7eff00</color>
