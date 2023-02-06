@@ -239,7 +239,9 @@ class PinCreatorFragment : Fragment() {
         val newPinFile = File(myContext.filesDir, "p$hash")
         return if (!newPinFile.exists()) {
             newPinFile.createNewFile()
-            CryptoManager.encrypt(ObjectSerializer.serialize(pinTable), newPinFile)
+            val bytes = ObjectSerializer.serialize(pinTable)
+            val version = CryptoManager.PIN_CRYPTO_ITERATION.toByte()
+            CryptoManager.encrypt(bytes.plus(version), newPinFile)
             true
         } else {
             false

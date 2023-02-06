@@ -16,6 +16,7 @@
 
 package com.cyb3rko.pincredible.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -156,8 +157,11 @@ class PinViewerFragment : Fragment() {
     @Throws(EnDecryptionException::class)
     private fun decryptData(hash: String): PinTable {
         val file = File(myContext.filesDir, "p$hash")
-        val secret = CryptoManager.decrypt(file)
-        return ObjectSerializer.deserialize(secret) as PinTable
+        val bytes = CryptoManager.decrypt(file)
+        val version = bytes[bytes.size - 1]
+        @SuppressLint("SetTextI18n")
+        binding.siidView.text = "SIID: $version"
+        return ObjectSerializer.deserialize(bytes.copyOfRange(0, bytes.size - 1)) as PinTable
     }
 
     override fun onDestroyView() {

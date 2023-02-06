@@ -38,6 +38,7 @@ import kotlin.experimental.and
 import kotlin.jvm.Throws
 
 internal object CryptoManager {
+    internal const val PIN_CRYPTO_ITERATION = 0
     private const val KEYSTORE_ALIAS = "iamsecure"
     private const val ENC_ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
     private const val ENC_BLOCK_MODE = KeyProperties.BLOCK_MODE_CBC
