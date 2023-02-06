@@ -49,6 +49,10 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
+    internal fun showSubtitle(show: Boolean = true) {
+        binding.toolbar.subtitle = if (show) getString(R.string.version_name) else ""
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()

@@ -34,6 +34,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cyb3rko.pincredible.BuildConfig
+import com.cyb3rko.pincredible.MainActivity
 import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.crypto.CryptoManager
 import com.cyb3rko.pincredible.crypto.CryptoManager.EnDecryptionException
@@ -70,6 +71,7 @@ class HomeFragment : Fragment() {
 
         adapter = PinAdapter {
             Vibration.vibrateClick(vibrator)
+            hideSubtitle()
             findNavController().navigate(HomeFragmentDirections.homeToPinviewer(it))
         }
         binding.recycler.layoutManager = LinearLayoutManager(myContext)
@@ -98,8 +100,18 @@ class HomeFragment : Fragment() {
 
         binding.fab.setOnClickListener {
             Vibration.vibrateDoubleClick(vibrator)
+            hideSubtitle()
             findNavController().navigate(HomeFragmentDirections.homeToPincreator())
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (requireActivity() as MainActivity).showSubtitle()
+    }
+
+    private fun hideSubtitle() {
+        (requireActivity() as MainActivity).showSubtitle(false)
     }
 
     @Throws(EnDecryptionException::class)
