@@ -18,7 +18,6 @@
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -39,10 +38,12 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="20dp">
+                android:paddingTop="12dp"
+                android:paddingBottom="20dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/hashing_speed_title"
@@ -51,11 +52,9 @@
                     android:gravity="center_horizontal"
                     android:layout_marginEnd="4dp"
                     android:layout_marginStart="4dp"
-                    android:layout_marginTop="12dp"
                     android:text="@string/analysis_hashing_title"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/hashing_speed"
@@ -66,10 +65,9 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="12dp"
                     android:text="@string/analysis_run"
-                    android:textSize="16sp"
-                    app:layout_constraintTop_toBottomOf="@id/hashing_speed_title" />
+                    android:textSize="16sp" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -82,10 +80,12 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="20dp">
+                android:paddingTop="12dp"
+                android:paddingBottom="20dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/encryption_speed_title"
@@ -94,11 +94,9 @@
                     android:gravity="center_horizontal"
                     android:layout_marginEnd="4dp"
                     android:layout_marginStart="4dp"
-                    android:layout_marginTop="12dp"
                     android:text="@string/analysis_encryption_title"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/encryption_speed"
@@ -109,10 +107,9 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="12dp"
                     android:text="@string/analysis_run"
-                    android:textSize="16sp"
-                    app:layout_constraintTop_toBottomOf="@id/encryption_speed_title" />
+                    android:textSize="16sp" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -125,10 +122,12 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="20dp">
+                android:paddingTop="12dp"
+                android:paddingBottom="20dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/decryption_speed_title"
@@ -137,11 +136,9 @@
                     android:gravity="center_horizontal"
                     android:layout_marginEnd="4dp"
                     android:layout_marginStart="4dp"
-                    android:layout_marginTop="12dp"
                     android:text="@string/analysis_decryption_title"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/decryption_speed"
@@ -152,10 +149,9 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="12dp"
                     android:text="@string/analysis_run"
-                    android:textSize="16sp"
-                    app:layout_constraintTop_toBottomOf="@id/decryption_speed_title" />
+                    android:textSize="16sp" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -168,10 +164,12 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="20dp">
+                android:paddingTop="12dp"
+                android:paddingBottom="20dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/keystore_provider_title"
@@ -180,11 +178,9 @@
                     android:gravity="center_horizontal"
                     android:layout_marginEnd="4dp"
                     android:layout_marginStart="4dp"
-                    android:layout_marginTop="12dp"
                     android:text="@string/analysis_keystore_provider"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/keystore_provider"
@@ -195,10 +191,9 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="8dp"
                     android:textSize="16sp"
-                    app:layout_constraintTop_toBottomOf="@id/keystore_provider_title"
                     tools:text="AndroidKeyStore 1.0 (Android KeyStore security provider)" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -209,12 +204,15 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp">
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="20dp">
+                android:paddingTop="12dp"
+                android:paddingBottom="20dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/random_source_title"
@@ -223,11 +221,9 @@
                     android:gravity="center_horizontal"
                     android:layout_marginEnd="4dp"
                     android:layout_marginStart="4dp"
-                    android:layout_marginTop="12dp"
                     android:text="@string/analysis_random_provider"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/random_source"
@@ -238,10 +234,9 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="8dp"
                     android:textSize="16sp"
-                    app:layout_constraintTop_toBottomOf="@id/random_source_title"
                     tools:text="AndroidOpenSSL 1.0 (Android's OpenSSL-backed security provider)" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
