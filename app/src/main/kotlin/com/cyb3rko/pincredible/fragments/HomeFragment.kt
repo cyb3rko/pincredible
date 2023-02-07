@@ -17,6 +17,7 @@
 package com.cyb3rko.pincredible.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -41,6 +42,7 @@ import com.cyb3rko.pincredible.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.pincredible.databinding.FragmentHomeBinding
 import com.cyb3rko.pincredible.modals.ErrorDialog
 import com.cyb3rko.pincredible.recycler.PinAdapter
+import com.cyb3rko.pincredible.utils.DebugUtils
 import com.cyb3rko.pincredible.utils.ObjectSerializer
 import com.cyb3rko.pincredible.utils.Vibration
 import com.cyb3rko.pincredible.utils.openUrl
@@ -102,6 +104,14 @@ class HomeFragment : Fragment() {
             Vibration.vibrateDoubleClick(vibrator)
             hideSubtitle()
             findNavController().navigate(HomeFragmentDirections.homeToPincreator())
+        }
+        if (BuildConfig.DEBUG) {
+            binding.fab.setOnLongClickListener {
+                DebugUtils.demoData(myContext)
+                requireActivity().finish()
+                startActivity(Intent(myContext, MainActivity::class.java))
+                true
+            }
         }
     }
 

@@ -180,10 +180,10 @@ internal object CryptoManager {
     }
 
     @Throws(EnDecryptionException::class)
-    fun appendString(file: File, newString: String) {
+    fun appendStrings(file: File, vararg newStrings: String) {
         @Suppress("UNCHECKED_CAST")
         var data = ObjectSerializer.deserialize(decrypt(file)) as Set<String>
-        data = data.plus(newString)
+        newStrings.forEach { data = data.plus(it) }
         encrypt(ObjectSerializer.serialize(data), file)
     }
 

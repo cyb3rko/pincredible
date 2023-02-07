@@ -259,7 +259,7 @@ class PinCreatorFragment : Fragment() {
                 pinsFile
             )
         } else {
-            CryptoManager.appendString(pinsFile, name)
+            CryptoManager.appendStrings(pinsFile, name)
         }
     }
 
