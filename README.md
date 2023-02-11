@@ -1,10 +1,17 @@
-# PINcredible (*Beta*)
+<p align="center">
+  <img alt="PINcredible" src="https://i.imgur.com/hwfoyYb.png" width="200"/>
+</p>
+
+<h1 align="center">PINcredible (Beta)</h1>
+
+<p align="center">
+    <font size="+1">Part of </font><a href="https://github.com/cyb3rko/backpack-apps"><font size="+1">BackPack</font></a>
+</p>
+
 [![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat)](https://apilevels.com)
 [![release](https://img.shields.io/github/release/cyb3rko/pincredible.svg)](https://github.com/cyb3rko/pincredible/releases/latest)
 [![license](https://img.shields.io/github/license/cyb3rko/pincredible)](https://www.apache.org/licenses/LICENSE-2.0)
 [![last commit](https://img.shields.io/github/last-commit/cyb3rko/pincredible?color=F34C9F)](https://github.com/cyb3rko/pincredible/commits/main)
-
-![pincredible banner](https://socialify.git.ci/cyb3rko/pincredible/image?description=1&forks=1&issues=1&logo=https%3A%2F%2Fi.imgur.com%2FJ4rQhXH.png&name=1&owner=1&pattern=Brick%20Wall&pulls=1&stargazers=1&theme=Dark)
 
 - [About this project](#about-this-project)   
 - [Feature Overview](#feature-overview)  
@@ -48,7 +55,7 @@ Additionally this app takes advantage of the Android KeyStore system. At the mom
 If you have any problems, maybe even because your device seems to be incompatible, please leave a message [here](https://github.com/cyb3rko/pincredible/issues).
 
 ## Screenshots
-|<img src="https://i.imgur.com/g5v30RS.png" width="270">|<img src="https://i.imgur.com/jxzmJAk.png" width="270">|<img src="https://i.imgur.com/NSTmKss.png" width="270">|
+|<img src="https://i.imgur.com/APgDeAl.png" width="270">|<img src="https://i.imgur.com/WHCXpG3.png" width="270">|<img src="https://i.imgur.com/zPESUDi.png" width="270">|
 |:---:|:---:|:---:|
 
 ## Security Aspects
