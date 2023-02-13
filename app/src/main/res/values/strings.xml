@@ -1,5 +1,6 @@
 <resources>
     <string name="github_link" translatable="false">https://github.com/cyb3rko/pincredible</string>
+    <string name="settings">Settings</string>
 
     <!-- Fragment Labels -->
     <string name="fragment_label_home" translatable="false">PINcredible</string>
@@ -10,6 +11,7 @@
     <!-- Menu Labels -->
     <string name="menu_home_analysis">App Analysis</string>
     <string name="menu_home_github">Git</string>
+    <string name="menu_home_settings">Settings</string>
 
     <!-- Content -->
     <string name="home_found_pins">Found PINs: %d</string>
@@ -37,7 +39,7 @@
     <string name="dialog_about_message">App Version: %1$s (%2$d)\nBuild Type: %3$s\nDevice: %4$s %5$s (%6$s)\nSoftware: Android %7$s (%8$d)</string>
     <string name="dialog_about_title">About</string>
     <string name="dialog_credits_button">Open Flaticon</string>
-    <string name="dialog_credits_message">Information icon created by Freepik - Flaticon\n\nVerified icon created by Freepik - Flaticon\n\nEmpty box icon created by juicy_fish\n\nRight Arrow icon created by Roundicons\n\nGit icon created by Creatype</string>
+    <string name="dialog_credits_message">Information icon created by Freepik - Flaticon\n\nVerified icon created by Freepik - Flaticon\n\nEmpty box icon created by juicy_fish\n\nRight Arrow icon created by Roundicons\n\nGit icon created by Creatype\n\nSetting icon created by Freepik - Flaticon\n\nArt icon created by Freepik - Flaticon</string>
     <string name="dialog_credits_title">Icon Credits</string>
     <string name="dialog_delete_button1">Yes</string>
     <string name="dialog_delete_button2">No</string>
@@ -55,4 +57,13 @@
     <!-- Toasts -->
     <string name="toast_url_failed">"Opening URL failed, copied URL instead"</string>
     <string name="toast_stacktrace">Stracktrace copied</string>
+
+    <!-- Preferences -->
+    <string name="preference_category_appearance">Appearance</string>
+    <string name="preference_item_material_you">Material You (adaptive colors)</string>
+    <string name="preference_item_material_you_summary">Use adaptive system colors over brand colors</string>
+    <string name="preference_item_material_you_note">Not supported by your Android version</string>
+    <string name="dialog_restart_title">Restart required</string>
+    <string name="dialog_restart_message">The change will be visible on next app start.\n\nDo you want to restart now?</string>
+    <string name="dialog_restart_button2">Later</string>
 </resources>

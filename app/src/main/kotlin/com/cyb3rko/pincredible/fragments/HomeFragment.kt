@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cyb3rko.pincredible.BuildConfig
 import com.cyb3rko.pincredible.MainActivity
 import com.cyb3rko.pincredible.R
+import com.cyb3rko.pincredible.SettingsActivity
 import com.cyb3rko.pincredible.crypto.CryptoManager
 import com.cyb3rko.pincredible.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.pincredible.databinding.FragmentHomeBinding
@@ -157,6 +158,10 @@ class HomeFragment : Fragment() {
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                     return when (menuItem.itemId) {
+                        R.id.action_settings -> {
+                            startActivity(Intent(myContext, SettingsActivity::class.java))
+                            true
+                        }
                         R.id.action_analysis -> {
                             val action = HomeFragmentDirections.homeToAnalysis()
                             findNavController().navigate(action)

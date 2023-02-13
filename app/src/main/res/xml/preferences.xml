@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:title="@string/preference_category_appearance">
+
+        <SwitchPreferenceCompat
+            app:key="adaptive_colors"
+            app:defaultValue="false"
+            app:singleLineTitle="false"
+            app:enabled="false"
+            app:title="@string/preference_item_material_you"
+            app:summary="@string/preference_item_material_you_summary"
+            app:icon="@drawable/colored_ic_art" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

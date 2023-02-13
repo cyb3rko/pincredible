@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
+        android:name=".App"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
@@ -30,6 +31,12 @@
             </intent-filter>
 
         </activity>
+
+        <activity
+            android:name="com.cyb3rko.pincredible.SettingsActivity"
+            android:parentActivityName=".MainActivity"
+            android:fitsSystemWindows="true"
+            android:exported="false" />
 
         <activity
             android:name=".UncaughtExceptionActivity"
