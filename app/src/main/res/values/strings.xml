@@ -50,9 +50,11 @@
     <string name="dialog_input_button1">Save</string>
     <string name="dialog_input_button2">Cancel</string>
     <string name="dialog_name_error_exist">This name is already in use</string>
-    <string name="dialog_name_error_length">Use between 1-30 characters</string>
+    <string name="dialog_name_error_length">Use between %d-%d characters</string>
     <string name="dialog_name_hint">Give it a name</string>
     <string name="dialog_name_title">PIN Name</string>
+    <string name="dialog_password_hint">Your Password</string>
+    <string name="dialog_backup_title">Encryption Password</string>
     <string name="dialog_export_title">PIN Export</string>
     <string name="dialog_export_state_retrieving">%d\%% - Retrieving PINs…</string>
     <string name="dialog_export_state_saving">%d\%% - Saving backup file…</string>

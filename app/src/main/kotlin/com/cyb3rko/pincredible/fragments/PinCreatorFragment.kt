@@ -212,7 +212,7 @@ class PinCreatorFragment : Fragment() {
                         ErrorDialog.show(myContext, e)
                     }
                 } else {
-                    inputLayout.error = getString(R.string.dialog_name_error_length)
+                    inputLayout.error = getString(R.string.dialog_name_error_length, 1, 30)
                 }
             }
         }

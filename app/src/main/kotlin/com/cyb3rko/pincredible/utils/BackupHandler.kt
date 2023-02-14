@@ -24,6 +24,7 @@ import androidx.activity.result.ActivityResultLauncher
 import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.crypto.CryptoManager
 import com.cyb3rko.pincredible.data.PinTable
+import com.cyb3rko.pincredible.modals.PasswordDialog
 import com.cyb3rko.pincredible.modals.ProgressDialog
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -42,6 +43,20 @@ internal object BackupHandler {
     }
 
     fun runBackup(context: Context, uri: Uri) {
+        PasswordDialog.show(
+            context,
+            R.string.dialog_backup_title
+        ) { dialog, inputLayout, input ->
+            if (input.isNotEmpty() && input.length in 10..100) {
+                dialog.dismiss()
+                runExport(context, uri, CryptoManager.shaHash(input))
+            } else {
+                inputLayout.error = context.getString(R.string.dialog_name_error_length, 10, 100)
+            }
+        }
+    }
+
+    private fun runExport(context: Context, uri: Uri, hash: String) {
         val progressDialog = ProgressDialog.show(
             context,
             titleRes = R.string.dialog_export_title,
@@ -73,7 +88,7 @@ internal object BackupHandler {
             CryptoManager.encrypt(
                 ObjectSerializer.serialize(pins.toSet()),
                 context.contentResolver.openOutputStream(uri),
-                CryptoManager.shaHash("TODO").take(32)
+                hash.take(32)
             )
 
             progressBar.progress = 100
