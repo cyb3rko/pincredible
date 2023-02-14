@@ -26,6 +26,8 @@ import com.cyb3rko.pincredible.crypto.CryptoManager
 import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.modals.PasswordDialog
 import com.cyb3rko.pincredible.modals.ProgressDialog
+import java.io.File
+import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -85,8 +87,11 @@ internal object BackupHandler {
                 50
             )
 
+            val nameFile = File(context.filesDir, "pins")
+            val names = ObjectSerializer.deserialize(CryptoManager.decrypt(nameFile)) as Set<String>
+
             CryptoManager.encrypt(
-                ObjectSerializer.serialize(pins.toSet()),
+                ObjectSerializer.serialize(BackupStructure(pins.toSet(), names)),
                 context.contentResolver.openOutputStream(uri),
                 hash.take(32)
             )
@@ -107,4 +112,6 @@ internal object BackupHandler {
         }
         launcher.launch(intent)
     }
+
+    class BackupStructure(val pins: Set<PinTable>, val names: Set<String>) : Serializable
 }
