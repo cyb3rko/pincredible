@@ -25,8 +25,11 @@ import com.cyb3rko.pincredible.utils.ObjectSerializer
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.OutputStream
+import java.nio.charset.Charset
 import java.security.KeyStore
 import java.security.KeyStoreException
+import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
 import javax.crypto.Cipher
@@ -34,6 +37,7 @@ import javax.crypto.KeyGenerator
 import javax.crypto.NoSuchPaddingException
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
 import kotlin.experimental.and
 import kotlin.jvm.Throws
 
@@ -49,7 +53,7 @@ internal object CryptoManager {
 
     // Hashing
 
-    fun hash(plaintext: String): String {
+    fun xxHash(plaintext: String): String {
         val ciphertextBytes = XXH3_128().digest(plaintext.toByteArray())
         val sb = StringBuilder()
         for (i in ciphertextBytes.indices) {
@@ -60,6 +64,16 @@ internal object CryptoManager {
             Log.d("CryptoManager", "Hash: $hash")
         }
         return hash
+    }
+
+    fun shaHash(plaintext: String): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        digest.update(plaintext.toByteArray(Charset.defaultCharset()))
+        return digest.digest().toHex()
+    }
+
+    private fun ByteArray.toHex(): String {
+        return joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
     }
 
     // Random
@@ -77,9 +91,14 @@ internal object CryptoManager {
         NoSuchAlgorithmException::class,
         NoSuchPaddingException::class
     )
-    private fun getEncryptCipher(): Cipher {
+    private fun getEncryptCipher(key: String?): Cipher {
+        val secretKey = if (key != null) {
+            SecretKeySpec(key.toByteArray(), ENC_ALGORITHM)
+        } else {
+            null
+        }
         return Cipher.getInstance(ENC_TRANSFORMATION).apply {
-            init(Cipher.ENCRYPT_MODE, getKey())
+            init(Cipher.ENCRYPT_MODE, secretKey ?: getKey())
         }
     }
 
@@ -121,9 +140,27 @@ internal object CryptoManager {
 
     @Throws(EnDecryptionException::class)
     fun encrypt(data: ByteArray, file: File): ByteArray {
+        return doEncrypt(data, FileOutputStream(file), null)
+    }
+
+    @Throws(EnDecryptionException::class)
+    fun encrypt(
+        data: ByteArray,
+        outputStream: OutputStream?,
+        key: String
+    ): ByteArray {
+        return doEncrypt(data, outputStream as FileOutputStream, key)
+    }
+
+    @Throws(EnDecryptionException::class)
+    private fun doEncrypt(
+        data: ByteArray,
+        outputStream: FileOutputStream,
+        key: String? = null
+    ): ByteArray {
         val encryptCipher: Cipher
         try {
-            encryptCipher = getEncryptCipher()
+            encryptCipher = getEncryptCipher(key)
         } catch (e: KeyStoreException) {
             throw EnDecryptionException(
                 "The KeyStore access failed.",
@@ -142,7 +179,7 @@ internal object CryptoManager {
         }
 
         val encryptedBytes = encryptCipher.doFinal(data)
-        FileOutputStream(file).use {
+        outputStream.use {
             it.write(encryptCipher.iv)
             it.write(encryptedBytes)
         }

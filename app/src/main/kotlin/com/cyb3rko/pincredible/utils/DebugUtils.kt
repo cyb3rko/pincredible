@@ -31,7 +31,7 @@ internal object DebugUtils {
             "SIM Card"
         )
         names.forEach {
-            val newPinFile = File(context.filesDir, "p${CryptoManager.hash(it)}")
+            val newPinFile = File(context.filesDir, "p${CryptoManager.xxHash(it)}")
             if (!newPinFile.exists()) {
                 newPinFile.createNewFile()
                 val pinTable = PinTable().apply { fill() }

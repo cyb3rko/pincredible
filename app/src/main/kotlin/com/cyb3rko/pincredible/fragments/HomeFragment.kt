@@ -16,6 +16,8 @@
 
 package com.cyb3rko.pincredible.fragments
 
+import android.animation.Animator
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -27,6 +29,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -43,10 +46,13 @@ import com.cyb3rko.pincredible.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.pincredible.databinding.FragmentHomeBinding
 import com.cyb3rko.pincredible.modals.ErrorDialog
 import com.cyb3rko.pincredible.recycler.PinAdapter
+import com.cyb3rko.pincredible.utils.BackupHandler
 import com.cyb3rko.pincredible.utils.DebugUtils
 import com.cyb3rko.pincredible.utils.ObjectSerializer
 import com.cyb3rko.pincredible.utils.Vibration
+import com.cyb3rko.pincredible.utils.hide
 import com.cyb3rko.pincredible.utils.openUrl
+import com.cyb3rko.pincredible.utils.show
 import com.cyb3rko.pincredible.utils.showDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -62,6 +68,14 @@ class HomeFragment : Fragment() {
     private lateinit var myContext: Context
     private val vibrator by lazy { Vibration.getVibrator(myContext) }
     private lateinit var adapter: PinAdapter
+    private var isFabOpen = false
+
+    private val resultLauncher = registerForActivityResult(StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val uri = result.data?.data ?: return@registerForActivityResult
+            BackupHandler.runBackup(myContext, uri)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -105,6 +119,19 @@ class HomeFragment : Fragment() {
             Vibration.vibrateDoubleClick(vibrator)
             hideSubtitle()
             findNavController().navigate(HomeFragmentDirections.homeToPincreator())
+        }
+        binding.fab2.setOnClickListener {
+            if (!isFabOpen) showFABMenu() else closeFABMenu()
+        }
+        binding.fabBgLayout.setOnClickListener {
+            closeFABMenu()
+        }
+        binding.fabMenu1.setOnClickListener {
+            closeFABMenu()
+            BackupHandler.initiateBackup(myContext, resultLauncher)
+        }
+        binding.fabMenu2.setOnClickListener {
+            closeFABMenu()
         }
         if (BuildConfig.DEBUG) {
             binding.fab.setOnLongClickListener {
@@ -181,6 +208,42 @@ class HomeFragment : Fragment() {
             },
             viewLifecycleOwner,
             Lifecycle.State.RESUMED
+        )
+    }
+
+    private fun showFABMenu() {
+        isFabOpen = true
+        binding.fab.hide()
+        binding.fabLayout1.show()
+        binding.fabLayout2.show()
+        binding.fabBgLayout.show()
+        binding.fab2.animate().rotationBy(180f)
+        binding.fabLayout1.animate().translationY(-resources.getDimension(R.dimen.fab_menu1))
+        binding.fabLayout2.animate().translationY(-resources.getDimension(R.dimen.fab_menu2))
+    }
+
+    private fun closeFABMenu() {
+        isFabOpen = false
+        binding.fab.show()
+        binding.fabBgLayout.hide()
+        binding.fab2.animate().rotation(0f)
+        binding.fabLayout1.animate().translationY(0f)
+        binding.fabLayout2.animate().translationY(0f)
+        binding.fabLayout2.animate().translationY(0f).setListener(
+            object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {}
+
+                override fun onAnimationEnd(animation: Animator) {
+                    if (!isFabOpen) {
+                        binding.fabLayout1.hide()
+                        binding.fabLayout2.hide()
+                    }
+                }
+
+                override fun onAnimationCancel(animation: Animator) {}
+
+                override fun onAnimationRepeat(animation: Animator) {}
+            }
         )
     }
 

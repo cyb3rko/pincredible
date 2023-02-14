@@ -109,7 +109,7 @@ class PinViewerFragment : Fragment() {
     }
 
     private suspend fun loadDataIntoTable() {
-        hash = CryptoManager.hash(args.pin)
+        hash = CryptoManager.xxHash(args.pin)
 
         try {
             val pinTable = decryptData(hash)

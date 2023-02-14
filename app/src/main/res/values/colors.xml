@@ -5,6 +5,7 @@
     <color name="gray">#5A5A5A</color>
 
     <color name="app_bar_icon">@color/md_theme_light_onSurfaceVariant</color>
+    <color name="blur_background">#92000000</color>
     <color name="base_dynamic_color">@color/black</color>
     <color name="table_cell_text">@color/black</color>
     <color name="table_cell_unselected">@color/black</color>

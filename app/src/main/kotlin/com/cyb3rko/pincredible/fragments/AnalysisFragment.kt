@@ -61,7 +61,7 @@ class AnalysisFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        CryptoManager.hash("") // initialize hash mechanism
+        CryptoManager.xxHash("") // initialize hash mechanism
         binding.hashingCard.setOnClickListener { runHash() }
 
         binding.encryptionCard.setOnClickListener { runEncryption() }
@@ -91,7 +91,7 @@ class AnalysisFragment : Fragment() {
 
     @OptIn(ExperimentalTime::class)
     private fun runHash() {
-        val time = measureTime { CryptoManager.hash("This is a test") }
+        val time = measureTime { CryptoManager.xxHash("This is a test") }
         binding.hashingSpeed.text = getString(
             R.string.analysis_hashing_result,
             time.toString()

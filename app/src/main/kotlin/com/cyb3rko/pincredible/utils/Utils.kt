@@ -21,6 +21,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.view.View
 import android.widget.TableLayout
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
@@ -94,4 +95,14 @@ internal fun Context.openUrl(url: String, label: String) {
 
 internal fun Fragment.openUrl(url: String, label: String) {
     this.requireContext().openUrl(url, label)
+}
+
+// View extension functions
+
+internal fun View.show() {
+    this.visibility = View.VISIBLE
+}
+
+internal fun View.hide() {
+    this.visibility = View.GONE
 }

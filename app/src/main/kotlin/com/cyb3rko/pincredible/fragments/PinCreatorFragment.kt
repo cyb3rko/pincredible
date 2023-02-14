@@ -194,7 +194,7 @@ class PinCreatorFragment : Fragment() {
             ) { dialog, inputLayout, input ->
                 if (input.isNotEmpty() && input.length <= 30) {
                     try {
-                        val hash = CryptoManager.hash(input)
+                        val hash = CryptoManager.xxHash(input)
                         val saved = savePinFile(hash)
                         if (saved) {
                             savePinName(input)
