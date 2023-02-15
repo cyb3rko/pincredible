@@ -237,7 +237,11 @@ internal object CryptoManager {
     fun appendStrings(file: File, vararg newStrings: String) {
         @Suppress("UNCHECKED_CAST")
         var data = ObjectSerializer.deserialize(decrypt(file)) as Set<String>
-        newStrings.forEach { data = data.plus(it) }
+        newStrings.forEach {
+            if (!data.contains(it)) {
+                data = data.plus(it)
+            }
+        }
         encrypt(ObjectSerializer.serialize(data), file)
     }
 
