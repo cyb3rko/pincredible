@@ -70,10 +70,19 @@ class HomeFragment : Fragment() {
     private lateinit var adapter: PinAdapter
     private var isFabOpen = false
 
-    private val resultLauncher = registerForActivityResult(StartActivityForResult()) { result ->
+    private val fileCreatorResultLauncher =
+        registerForActivityResult(StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val uri = result.data?.data ?: return@registerForActivityResult
             BackupHandler.runBackup(myContext, uri)
+        }
+    }
+
+    private val filePickerResultLauncher =
+        registerForActivityResult(StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val uri = result.data?.data ?: return@registerForActivityResult
+            BackupHandler.restoreBackup(myContext, uri)
         }
     }
 
@@ -128,10 +137,11 @@ class HomeFragment : Fragment() {
         }
         binding.fabMenu1.setOnClickListener {
             closeFABMenu()
-            BackupHandler.initiateBackup(myContext, resultLauncher)
+            BackupHandler.initiateBackup(myContext, fileCreatorResultLauncher)
         }
         binding.fabMenu2.setOnClickListener {
             closeFABMenu()
+            BackupHandler.initiateRestoreBackup(filePickerResultLauncher)
         }
         if (BuildConfig.DEBUG) {
             binding.fab.setOnLongClickListener {

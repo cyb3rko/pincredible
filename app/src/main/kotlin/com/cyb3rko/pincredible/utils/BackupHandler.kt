@@ -40,7 +40,7 @@ internal object BackupHandler {
             val timestamp = SimpleDateFormat("yyyyMMdd-HHmmss")
                 .format(Date(System.currentTimeMillis()))
             val fileName = "PINs[$numberOfPins]-$timestamp.pinc"
-            showFilePicker(launcher, fileName)
+            showFileCreator(launcher, fileName)
         }
     }
 
@@ -70,10 +70,15 @@ internal object BackupHandler {
         val fileList = context.fileList()
         if (fileList.size > 1) {
             val progressStep = 50 / (fileList.size - 1)
-            val pins = mutableListOf<PinTable>()
+            val pins = mutableListOf<BackupPinTable>()
             context.filesDir.listFiles()?.forEach {
                 if (it.name.startsWith("p") && it.name != "pins") {
-                    pins.add(ObjectSerializer.deserialize(CryptoManager.decrypt(it)) as PinTable)
+                    val bytes = CryptoManager.decrypt(it)
+                    val version = bytes[bytes.size - 1]
+                    val pinTable = ObjectSerializer.deserialize(
+                        bytes.copyOfRange(0, bytes.size - 1)
+                    ) as PinTable
+                    pins.add(BackupPinTable(pinTable, version, it.name))
                     progressBar.progress = progressBar.progress + progressStep
                     progressNote.text = context.getString(
                         R.string.dialog_export_state_retrieving,
@@ -91,7 +96,13 @@ internal object BackupHandler {
             val names = ObjectSerializer.deserialize(CryptoManager.decrypt(nameFile)) as Set<String>
 
             CryptoManager.encrypt(
-                ObjectSerializer.serialize(BackupStructure(pins.toSet(), names)),
+                ObjectSerializer.serialize(
+                    BackupStructure(
+                        pins.toSet(),
+                        names,
+                        CryptoManager.BACKUP_CRYPTO_ITERATION.toByte()
+                    )
+                ),
                 context.contentResolver.openOutputStream(uri),
                 hash.take(32)
             )
@@ -101,7 +112,68 @@ internal object BackupHandler {
         }
     }
 
-    private fun showFilePicker(
+    fun initiateRestoreBackup(launcher: ActivityResultLauncher<Intent>) {
+        showFilePicker(launcher)
+    }
+
+    fun restoreBackup(context: Context, uri: Uri) {
+        PasswordDialog.show(
+            context,
+            R.string.dialog_backup_title
+        ) { dialog, inputLayout, input ->
+            if (input.isNotEmpty() && input.length in 10..100) {
+                dialog.dismiss()
+                doRestoreBackup(context, uri, CryptoManager.shaHash(input))
+            } else {
+                inputLayout.error = context.getString(R.string.dialog_name_error_length, 10, 100)
+            }
+        }
+    }
+
+    private fun doRestoreBackup(
+        context: Context,
+        uri: Uri,
+        hash: String
+    ) {
+        val bytes = CryptoManager.decrypt(
+            context.contentResolver.openInputStream(uri),
+            hash.take(32)
+        )
+        val backup = ObjectSerializer.deserialize(bytes) as BackupStructure
+        val nameFile = File(context.filesDir, "pins")
+        if (nameFile.exists()) {
+            CryptoManager.appendStrings(nameFile, *backup.names.toTypedArray())
+        } else {
+            nameFile.createNewFile()
+            CryptoManager.encrypt(
+                ObjectSerializer.serialize(backup.names),
+                nameFile
+            )
+        }
+        backup.pins.forEach {
+            savePinFile(context, it.fileName, it.pinTable, it.siid)
+        }
+    }
+
+    @Throws(CryptoManager.EnDecryptionException::class)
+    private fun savePinFile(
+        context: Context,
+        fileName: String,
+        pinTable: PinTable,
+        version: Byte
+    ): Boolean {
+        val newPinFile = File(context.filesDir, fileName)
+        return if (!newPinFile.exists()) {
+            newPinFile.createNewFile()
+            val bytes = ObjectSerializer.serialize(pinTable)
+            CryptoManager.encrypt(bytes.plus(version), newPinFile)
+            true
+        } else {
+            false
+        }
+    }
+
+    private fun showFileCreator(
         launcher: ActivityResultLauncher<Intent>,
         fileName: String
     ) {
@@ -113,5 +185,23 @@ internal object BackupHandler {
         launcher.launch(intent)
     }
 
-    class BackupStructure(val pins: Set<PinTable>, val names: Set<String>) : Serializable
+    private fun showFilePicker(launcher: ActivityResultLauncher<Intent>) {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*"
+        }
+        launcher.launch(intent)
+    }
+
+    class BackupPinTable(
+        val pinTable: PinTable,
+        val siid: Byte,
+        val fileName: String
+    ) : Serializable
+
+    class BackupStructure(
+        val pins: Set<BackupPinTable>,
+        val names: Set<String>,
+        val siid: Byte
+    ) : Serializable
 }

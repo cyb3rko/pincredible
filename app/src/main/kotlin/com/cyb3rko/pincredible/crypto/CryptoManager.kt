@@ -25,6 +25,7 @@ import com.cyb3rko.pincredible.utils.ObjectSerializer
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.InputStream
 import java.io.OutputStream
 import java.nio.charset.Charset
 import java.security.KeyStore
@@ -43,6 +44,7 @@ import kotlin.jvm.Throws
 
 internal object CryptoManager {
     internal const val PIN_CRYPTO_ITERATION = 0
+    internal const val BACKUP_CRYPTO_ITERATION = 0
     private const val KEYSTORE_ALIAS = "iamsecure"
     private const val ENC_ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
     private const val ENC_BLOCK_MODE = KeyProperties.BLOCK_MODE_CBC
@@ -107,9 +109,14 @@ internal object CryptoManager {
         NoSuchAlgorithmException::class,
         NoSuchPaddingException::class
     )
-    private fun getDecryptCipherForIv(iv: ByteArray): Cipher {
+    private fun getDecryptCipherForIv(iv: ByteArray, key: String?): Cipher {
+        val secretKey = if (key != null) {
+            SecretKeySpec(key.toByteArray(), ENC_ALGORITHM)
+        } else {
+            null
+        }
         return Cipher.getInstance(ENC_TRANSFORMATION).apply {
-            init(Cipher.DECRYPT_MODE, getKey(), IvParameterSpec(iv))
+            init(Cipher.DECRYPT_MODE, secretKey ?: getKey(), IvParameterSpec(iv))
         }
     }
 
@@ -188,14 +195,24 @@ internal object CryptoManager {
 
     @Throws(EnDecryptionException::class)
     fun decrypt(file: File): ByteArray {
-        return FileInputStream(file).use {
+        return doDecrypt(FileInputStream(file), null)
+    }
+
+    @Throws(EnDecryptionException::class)
+    fun decrypt(inputStream: InputStream?, key: String): ByteArray {
+        return doDecrypt(inputStream as FileInputStream, key)
+    }
+
+    @Throws(EnDecryptionException::class)
+    private fun doDecrypt(inputStream: FileInputStream, key: String? = null): ByteArray {
+        return inputStream.use {
             val iv = ByteArray(16)
             it.read(iv)
             val encryptedBytes = it.readBytes()
 
             val decryptCipher: Cipher
             try {
-                decryptCipher = getDecryptCipherForIv(iv)
+                decryptCipher = getDecryptCipherForIv(iv, key)
             } catch (e: KeyStoreException) {
                 throw EnDecryptionException(
                     "The KeyStore access failed.",
