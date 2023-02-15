@@ -1,0 +1,9 @@
+BREAKING CHANGES!
+Uninstall the previous version before upgrading to prevent crashing the app.
+
+Fixes:
+- BadPaddingException for larger files
+
+Additions:
+- new color palette
+- storage iteration ids for PIN backwards compatibility

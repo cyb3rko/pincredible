@@ -13,8 +13,8 @@ android {
         applicationId 'com.cyb3rko.pincredible'
         minSdk 23
         targetSdk 33
-        versionCode 3
-        versionName '0.2.0'
+        versionCode 4
+        versionName '0.3.0'
         signingConfig signingConfigs.debug
     }
     applicationVariants.all { variant ->

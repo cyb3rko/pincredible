@@ -1,9 +1,6 @@
-BREAKING CHANGES!
-Uninstall the previous version before upgrading to prevent crashing the app.
-
 Fixes:
-- BadPaddingException for larger files
+- NoSuchProviderException when enforcing Android Keystore key generator
 
 Additions:
-- new color palette
-- storage iteration ids for PIN backwards compatibility
+- encrypted import / export functionality
+- optional Material You color adaption
