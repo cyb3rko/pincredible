@@ -130,7 +130,7 @@ internal object CryptoManager {
     }
 
     private fun createKey(): SecretKey {
-        return KeyGenerator.getInstance(ENC_ALGORITHM, "AndroidKeystore").apply {
+        return KeyGenerator.getInstance(ENC_ALGORITHM).apply {
             init(
                 KeyGenParameterSpec.Builder(
                     KEYSTORE_ALIAS,
