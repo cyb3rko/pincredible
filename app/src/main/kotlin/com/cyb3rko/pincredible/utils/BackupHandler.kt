@@ -116,7 +116,11 @@ internal object BackupHandler {
         showFilePicker(launcher)
     }
 
-    fun restoreBackup(context: Context, uri: Uri) {
+    fun restoreBackup(
+        context: Context,
+        uri: Uri,
+        onFinished: () -> Unit
+    ) {
         PasswordDialog.show(
             context,
             R.string.dialog_backup_title
@@ -124,6 +128,7 @@ internal object BackupHandler {
             if (input.isNotEmpty() && input.length in 10..100) {
                 dialog.dismiss()
                 doRestoreBackup(context, uri, CryptoManager.shaHash(input))
+                onFinished()
             } else {
                 inputLayout.error = context.getString(R.string.dialog_name_error_length, 10, 100)
             }

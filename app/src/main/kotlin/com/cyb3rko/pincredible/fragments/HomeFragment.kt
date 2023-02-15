@@ -82,7 +82,9 @@ class HomeFragment : Fragment() {
         registerForActivityResult(StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val uri = result.data?.data ?: return@registerForActivityResult
-            BackupHandler.restoreBackup(myContext, uri)
+            BackupHandler.restoreBackup(myContext, uri) {
+                readAndShowPins()
+            }
         }
     }
 
@@ -108,21 +110,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            val pins: List<String>
-            try {
-                pins = retrievePins()
-                withContext(Dispatchers.Main) {
-                    showSavedPins(pins)
-                }
-            } catch (e: EnDecryptionException) {
-                Log.d("CryptoManager", e.customStacktrace)
-                withContext(Dispatchers.Main) {
-                    binding.progressBar.hide()
-                    ErrorDialog.show(myContext, e)
-                }
-            }
-        }
+        readAndShowPins()
 
         binding.fab.setOnClickListener {
             Vibration.vibrateDoubleClick(vibrator)
@@ -162,6 +150,24 @@ class HomeFragment : Fragment() {
         (requireActivity() as MainActivity).showSubtitle(false)
     }
 
+    private fun readAndShowPins() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val pins: List<String>
+            try {
+                pins = retrievePins()
+                withContext(Dispatchers.Main) {
+                    showSavedPins(pins)
+                }
+            } catch (e: EnDecryptionException) {
+                Log.d("CryptoManager", e.customStacktrace)
+                withContext(Dispatchers.Main) {
+                    binding.progressBar.hide()
+                    ErrorDialog.show(myContext, e)
+                }
+            }
+        }
+    }
+
     @Throws(EnDecryptionException::class)
     private fun retrievePins(): List<String> {
         val pinsFile = File(myContext.filesDir, "pins")
@@ -176,13 +182,14 @@ class HomeFragment : Fragment() {
     private fun showSavedPins(pins: List<String>) {
         binding.progressBar.hide()
         if (pins.isNotEmpty()) {
+            binding.emptyHintContainer.hide()
             adapter.submitList(pins.sorted())
             binding.chip.apply {
                 text = getString(R.string.home_found_pins, pins.size)
                 visibility = View.VISIBLE
             }
         } else {
-            binding.emptyHintContainer.visibility = View.VISIBLE
+            binding.emptyHintContainer.show()
         }
     }
 
