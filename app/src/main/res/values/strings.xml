@@ -20,6 +20,7 @@
     <string name="delete_button">Delete</string>
     <string name="generate_new_pattern">Generate new pattern</string>
     <string name="save_pin">Save PIN</string>
+    <string name="viewer_hash">Hash: %s</string>
     <string name="analysis_run">Run test by clicking me</string>
     <string name="analysis_hashing_title">Hashing Speed (XXHash3 128)</string>
     <string name="analysis_hashing_result">Hashing of "This is a test" took:\n%s</string>

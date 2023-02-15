@@ -56,7 +56,7 @@ class PinViewerFragment : Fragment() {
     private lateinit var myContext: Context
     private val vibrator by lazy { Vibration.getVibrator(myContext) }
     private val args: PinViewerFragmentArgs by navArgs()
-    private var hash = ""
+    private val hash by lazy { CryptoManager.xxHash(args.pin) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,6 +71,7 @@ class PinViewerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.hashView.text = getString(R.string.viewer_hash, hash.take(10))
         binding.pinNameView.text = args.pin
 
         lifecycleScope.launch {
@@ -109,8 +110,6 @@ class PinViewerFragment : Fragment() {
     }
 
     private suspend fun loadDataIntoTable() {
-        hash = CryptoManager.xxHash(args.pin)
-
         try {
             val pinTable = decryptData(hash)
             withContext(Dispatchers.Main) {
