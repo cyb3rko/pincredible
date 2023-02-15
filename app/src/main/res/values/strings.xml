@@ -59,6 +59,10 @@
     <string name="dialog_export_state_retrieving">%d\%% - Retrieving PINs…</string>
     <string name="dialog_export_state_saving">%d\%% - Saving backup file…</string>
     <string name="dialog_export_state_finished">100% - PIN export completed</string>
+    <string name="dialog_import_title">PIN Import</string>
+    <string name="dialog_import_state_retrieving">%d\%% - Reading backup file…</string>
+    <string name="dialog_import_state_saving">%d\%% - Saving restored content…</string>
+    <string name="dialog_import_state_finished">100% - PIN import completed</string>
     
     <!-- Toasts -->
     <string name="toast_url_failed">"Opening URL failed, copied URL instead"</string>

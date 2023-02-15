@@ -135,11 +135,25 @@ internal object BackupHandler {
         uri: Uri,
         hash: String
     ) {
+        val progressDialog = ProgressDialog.show(
+            context,
+            titleRes = R.string.dialog_export_title,
+            initialNote = context.getString(R.string.dialog_import_state_retrieving, 0)
+        )
+        val progressBar = progressDialog.progressBar
+        val progressNote = progressDialog.progressNote
+
         val bytes = CryptoManager.decrypt(
             context.contentResolver.openInputStream(uri),
             hash.take(32)
         )
+        progressBar.progress = 25
+        progressNote.text = context.getString(R.string.dialog_import_state_retrieving, 25)
+
         val backup = ObjectSerializer.deserialize(bytes) as BackupStructure
+        progressBar.progress = 50
+        progressNote.text = context.getString(R.string.dialog_import_state_saving, 50)
+
         val nameFile = File(context.filesDir, "pins")
         if (nameFile.exists()) {
             CryptoManager.appendStrings(nameFile, *backup.names.toTypedArray())
@@ -150,9 +164,17 @@ internal object BackupHandler {
                 nameFile
             )
         }
+        val progressStep = 50 / backup.pins.size
         backup.pins.forEach {
             savePinFile(context, it.fileName, it.pinTable, it.siid)
+            progressBar.progress = progressBar.progress + progressStep
+            progressNote.text = context.getString(
+                R.string.dialog_import_state_saving,
+                progressBar.progress + progressStep
+            )
         }
+        progressBar.progress = 100
+        progressNote.text = context.getString(R.string.dialog_import_state_finished)
     }
 
     @Throws(CryptoManager.EnDecryptionException::class)
