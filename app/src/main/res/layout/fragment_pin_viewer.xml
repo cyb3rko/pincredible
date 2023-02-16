@@ -80,14 +80,30 @@
             tools:text="SIID: 0"
             tools:ignore="SmallSp" />
 
-        <Button
-            style="@style/Widget.Material3.Button.TonalButton"
-            android:id="@+id/delete_button"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="32dp"
-            android:text="@string/delete_button" />
+            android:gravity="center_horizontal">
+
+            <Button
+                style="@style/Widget.Material3.Button"
+                android:id="@+id/save_image_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/save_table_button" />
+
+            <Button
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:id="@+id/delete_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="16dp"
+                android:text="@string/delete_button" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

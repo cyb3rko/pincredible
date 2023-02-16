@@ -17,15 +17,24 @@
 package com.cyb3rko.pincredible.fragments
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.PixelCopy
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
@@ -37,8 +46,10 @@ import com.cyb3rko.pincredible.crypto.CryptoManager
 import com.cyb3rko.pincredible.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.databinding.FragmentPinViewerBinding
+import com.cyb3rko.pincredible.modals.AcceptDialog
 import com.cyb3rko.pincredible.modals.ErrorDialog
 import com.cyb3rko.pincredible.utils.ObjectSerializer
+import com.cyb3rko.pincredible.utils.TableScreenshotHandler
 import com.cyb3rko.pincredible.utils.Vibration
 import com.cyb3rko.pincredible.utils.iterate
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -58,6 +69,26 @@ class PinViewerFragment : Fragment() {
     private val args: PinViewerFragmentArgs by navArgs()
     private val hash by lazy { CryptoManager.xxHash(args.pin) }
 
+    private val fileCreatorResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uri = result.data?.data ?: return@registerForActivityResult
+                AcceptDialog.show(
+                    myContext,
+                    R.string.dialog_image_title,
+                    getString(
+                        R.string.dialog_image_message,
+                        TableScreenshotHandler.getFileName(
+                            myContext,
+                            uri
+                        )
+                    )
+                ) {
+                    generateAndExportImage(uri)
+                }
+            }
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -76,6 +107,13 @@ class PinViewerFragment : Fragment() {
 
         lifecycleScope.launch {
             loadDataIntoTable()
+        }
+
+        binding.saveImageButton.setOnClickListener {
+            TableScreenshotHandler.initiateTableImage(
+                fileCreatorResultLauncher,
+                "${args.pin}.jpg"
+            )
         }
 
         binding.deleteButton.setOnClickListener {
@@ -161,6 +199,47 @@ class PinViewerFragment : Fragment() {
         @SuppressLint("SetTextI18n")
         binding.siidView.text = "SIID: $version"
         return ObjectSerializer.deserialize(bytes.copyOfRange(0, bytes.size - 1)) as PinTable
+    }
+
+    private fun generateAndExportImage(uri: Uri) {
+        val view = binding.tableLayout.table
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+            val locationOfViewInWindow = IntArray(2)
+            view.getLocationInWindow(locationOfViewInWindow)
+            try {
+                PixelCopy.request(
+                    requireActivity().window,
+                    Rect(
+                        locationOfViewInWindow[0],
+                        locationOfViewInWindow[1],
+                        locationOfViewInWindow[0] + view.width,
+                        locationOfViewInWindow[1] + view.height
+                    ),
+                    bitmap,
+                    { copyResult ->
+                        if (copyResult == PixelCopy.SUCCESS) {
+                            saveImage(bitmap, uri)
+                        }
+                    },
+                    Handler(Looper.getMainLooper())
+                )
+            } catch (e: IllegalArgumentException) {
+                e.printStackTrace()
+            }
+        } else {
+            TableScreenshotHandler.generateTableCacheCopy(view) {
+                if (it != null) {
+                    saveImage(it, uri)
+                }
+            }
+        }
+    }
+
+    private fun saveImage(bitmap: Bitmap, uri: Uri) {
+        myContext.contentResolver.openOutputStream(uri).use {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 75, it)
+        }
     }
 
     override fun onDestroyView() {

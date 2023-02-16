@@ -17,6 +17,7 @@
     <string name="home_found_pins">Found PINs: %d</string>
     <string name="no_pins_note">Pretty empty here.\nCurrently there\'s no PIN stored.</string>
     <string name="add_pin">Add PIN</string>
+    <string name="save_table_button">Save as image</string>
     <string name="delete_button">Delete</string>
     <string name="generate_new_pattern">Generate new pattern</string>
     <string name="save_pin">Save PIN</string>
@@ -64,6 +65,8 @@
     <string name="dialog_import_state_retrieving">%d\%% - Reading backup file…</string>
     <string name="dialog_import_state_saving">%d\%% - Saving restored content…</string>
     <string name="dialog_import_state_finished">100% - PIN import completed</string>
+    <string name="dialog_image_title">PIN table image</string>
+    <string name="dialog_image_message">Are you sure?\n\nYou are about to save this unencrypted PIN table to %s.</string>
     
     <!-- Toasts -->
     <string name="toast_url_failed">"Opening URL failed, copied URL instead"</string>
