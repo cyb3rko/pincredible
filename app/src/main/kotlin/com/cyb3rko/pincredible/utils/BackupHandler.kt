@@ -185,8 +185,10 @@ internal object BackupHandler {
                 )
             }
             val progressStep = 50 / backup.pins.size
+            var imports = 0
             backup.pins.forEach {
-                savePinFile(context, it.fileName, it.pinTable, it.siid)
+                val imported = savePinFile(context, it.fileName, it.pinTable, it.siid)
+                if (imported) imports += 1
                 progressBar.progress = progressBar.progress + progressStep
                 progressNote.text = context.getString(
                     R.string.dialog_import_state_saving,
@@ -194,7 +196,11 @@ internal object BackupHandler {
                 )
             }
             progressBar.progress = 100
-            progressNote.text = context.getString(R.string.dialog_import_state_finished)
+            progressNote.text = context.getString(
+                R.string.dialog_import_state_finished,
+                imports,
+                backup.pins.size
+            )
             progressDialog.dialogReference.setCancelable(true)
         } catch (e: Exception) {
             e.printStackTrace()
