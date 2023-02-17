@@ -30,6 +30,9 @@ internal object ErrorDialog {
             .setTitle(context.getString(titleRes))
             .setMessage(error.message)
             .setPositiveButton(android.R.string.ok, null)
+            .setNeutralButton(context.getString(R.string.dialog_error_button2)) { _, _ ->
+                throw error
+            }
             .create()
             .show()
     }

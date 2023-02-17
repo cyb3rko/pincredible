@@ -49,6 +49,7 @@
     <string name="dialog_delete_title">Delete PIN?</string>
     <string name="dialog_delete_error">Deletion Error</string>
     <string name="dialog_error_title">Encryption / Decryption Error</string>
+    <string name="dialog_error_button2">Show error</string>
     <string name="dialog_input_button1">Save</string>
     <string name="dialog_input_button2">Cancel</string>
     <string name="dialog_name_error_exist">This name is already in use</string>
