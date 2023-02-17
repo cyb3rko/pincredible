@@ -24,6 +24,7 @@ import androidx.activity.result.ActivityResultLauncher
 import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.crypto.CryptoManager
 import com.cyb3rko.pincredible.data.PinTable
+import com.cyb3rko.pincredible.modals.ErrorDialog
 import com.cyb3rko.pincredible.modals.PasswordDialog
 import com.cyb3rko.pincredible.modals.ProgressDialog
 import java.io.File
@@ -59,56 +60,67 @@ internal object BackupHandler {
     }
 
     private fun runExport(context: Context, uri: Uri, hash: String) {
-        val progressDialog = ProgressDialog.show(
-            context,
-            titleRes = R.string.dialog_export_title,
-            initialNote = context.getString(R.string.dialog_export_state_retrieving, 0)
-        )
-        val progressBar = progressDialog.progressBar
-        val progressNote = progressDialog.progressNote
+        val progressDialog = ProgressDialog().apply {
+            show(
+                context,
+                titleRes = R.string.dialog_export_title,
+                initialNote = context.getString(R.string.dialog_export_state_retrieving, 0)
+            )
+        }
+        val progressBar = progressDialog.binding.progressBar
+        val progressNote = progressDialog.binding.progressNote
 
-        val fileList = context.fileList()
-        if (fileList.size > 1) {
-            val progressStep = 50 / (fileList.size - 1)
-            val pins = mutableListOf<BackupPinTable>()
-            context.filesDir.listFiles()?.forEach {
-                if (it.name.startsWith("p") && it.name != "pins") {
-                    val bytes = CryptoManager.decrypt(it)
-                    val version = bytes[bytes.size - 1]
-                    val pinTable = ObjectSerializer.deserialize(
-                        bytes.copyOfRange(0, bytes.size - 1)
-                    ) as PinTable
-                    pins.add(BackupPinTable(pinTable, version, it.name))
-                    progressBar.progress = progressBar.progress + progressStep
-                    progressNote.text = context.getString(
-                        R.string.dialog_export_state_retrieving,
-                        progressBar.progress
-                    )
+        try {
+            val fileList = context.fileList()
+            if (fileList.size > 1) {
+                val progressStep = 50 / (fileList.size - 1)
+                val pins = mutableListOf<BackupPinTable>()
+                context.filesDir.listFiles()?.forEach {
+                    if (it.name.startsWith("p") && it.name != "pins") {
+                        val bytes = CryptoManager.decrypt(it)
+                        val version = bytes[bytes.size - 1]
+                        val pinTable = ObjectSerializer.deserialize(
+                            bytes.copyOfRange(0, bytes.size - 1)
+                        ) as PinTable
+                        pins.add(BackupPinTable(pinTable, version, it.name))
+                        progressBar.progress = progressBar.progress + progressStep
+                        progressNote.text = context.getString(
+                            R.string.dialog_export_state_retrieving,
+                            progressBar.progress
+                        )
+                    }
                 }
+                progressBar.progress = 50
+                progressNote.text = context.getString(
+                    R.string.dialog_export_state_saving,
+                    50
+                )
+
+                val nameFile = File(context.filesDir, "pins")
+                val names = ObjectSerializer.deserialize(
+                    CryptoManager.decrypt(nameFile)
+                ) as Set<String>
+
+                CryptoManager.encrypt(
+                    ObjectSerializer.serialize(
+                        BackupStructure(
+                            pins.toSet(),
+                            names,
+                            CryptoManager.BACKUP_CRYPTO_ITERATION.toByte()
+                        )
+                    ),
+                    context.contentResolver.openOutputStream(uri),
+                    hash.take(32)
+                )
+
+                progressBar.progress = 100
+                progressNote.text = context.getString(R.string.dialog_export_state_finished)
+                progressDialog.dialogReference.setCancelable(true)
             }
-            progressBar.progress = 50
-            progressNote.text = context.getString(
-                R.string.dialog_export_state_saving,
-                50
-            )
-
-            val nameFile = File(context.filesDir, "pins")
-            val names = ObjectSerializer.deserialize(CryptoManager.decrypt(nameFile)) as Set<String>
-
-            CryptoManager.encrypt(
-                ObjectSerializer.serialize(
-                    BackupStructure(
-                        pins.toSet(),
-                        names,
-                        CryptoManager.BACKUP_CRYPTO_ITERATION.toByte()
-                    )
-                ),
-                context.contentResolver.openOutputStream(uri),
-                hash.take(32)
-            )
-
-            progressBar.progress = 100
-            progressNote.text = context.getString(R.string.dialog_export_state_finished)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            progressDialog.dialogReference.cancel()
+            ErrorDialog.show(context, e, R.string.dialog_export_error)
         }
     }
 
@@ -140,46 +152,55 @@ internal object BackupHandler {
         uri: Uri,
         hash: String
     ) {
-        val progressDialog = ProgressDialog.show(
-            context,
-            titleRes = R.string.dialog_export_title,
-            initialNote = context.getString(R.string.dialog_import_state_retrieving, 0)
-        )
-        val progressBar = progressDialog.progressBar
-        val progressNote = progressDialog.progressNote
-
-        val bytes = CryptoManager.decrypt(
-            context.contentResolver.openInputStream(uri),
-            hash.take(32)
-        )
-        progressBar.progress = 25
-        progressNote.text = context.getString(R.string.dialog_import_state_retrieving, 25)
-
-        val backup = ObjectSerializer.deserialize(bytes) as BackupStructure
-        progressBar.progress = 50
-        progressNote.text = context.getString(R.string.dialog_import_state_saving, 50)
-
-        val nameFile = File(context.filesDir, "pins")
-        if (nameFile.exists()) {
-            CryptoManager.appendStrings(nameFile, *backup.names.toTypedArray())
-        } else {
-            nameFile.createNewFile()
-            CryptoManager.encrypt(
-                ObjectSerializer.serialize(backup.names),
-                nameFile
+        val progressDialog = ProgressDialog().apply {
+            show(
+                context,
+                titleRes = R.string.dialog_export_title,
+                initialNote = context.getString(R.string.dialog_import_state_retrieving, 0)
             )
         }
-        val progressStep = 50 / backup.pins.size
-        backup.pins.forEach {
-            savePinFile(context, it.fileName, it.pinTable, it.siid)
-            progressBar.progress = progressBar.progress + progressStep
-            progressNote.text = context.getString(
-                R.string.dialog_import_state_saving,
-                progressBar.progress + progressStep
+        val progressBar = progressDialog.binding.progressBar
+        val progressNote = progressDialog.binding.progressNote
+
+        try {
+            val bytes = CryptoManager.decrypt(
+                context.contentResolver.openInputStream(uri),
+                hash.take(32)
             )
+            progressBar.progress = 25
+            progressNote.text = context.getString(R.string.dialog_import_state_retrieving, 25)
+
+            val backup = ObjectSerializer.deserialize(bytes) as BackupStructure
+            progressBar.progress = 50
+            progressNote.text = context.getString(R.string.dialog_import_state_saving, 50)
+
+            val nameFile = File(context.filesDir, "pins")
+            if (nameFile.exists()) {
+                CryptoManager.appendStrings(nameFile, *backup.names.toTypedArray())
+            } else {
+                nameFile.createNewFile()
+                CryptoManager.encrypt(
+                    ObjectSerializer.serialize(backup.names),
+                    nameFile
+                )
+            }
+            val progressStep = 50 / backup.pins.size
+            backup.pins.forEach {
+                savePinFile(context, it.fileName, it.pinTable, it.siid)
+                progressBar.progress = progressBar.progress + progressStep
+                progressNote.text = context.getString(
+                    R.string.dialog_import_state_saving,
+                    progressBar.progress + progressStep
+                )
+            }
+            progressBar.progress = 100
+            progressNote.text = context.getString(R.string.dialog_import_state_finished)
+            progressDialog.dialogReference.setCancelable(true)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            progressDialog.dialogReference.cancel()
+            ErrorDialog.show(context, e, R.string.dialog_import_error)
         }
-        progressBar.progress = 100
-        progressNote.text = context.getString(R.string.dialog_import_state_finished)
     }
 
     @Throws(CryptoManager.EnDecryptionException::class)

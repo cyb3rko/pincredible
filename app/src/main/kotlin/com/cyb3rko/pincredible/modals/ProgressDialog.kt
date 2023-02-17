@@ -18,24 +18,30 @@ package com.cyb3rko.pincredible.modals
 
 import android.content.Context
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import com.cyb3rko.pincredible.databinding.DialogProgressBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-internal object ProgressDialog {
+internal class ProgressDialog {
+    lateinit var dialogReference: AlertDialog
+    lateinit var binding: DialogProgressBinding
+        private set
+
     fun show(
         context: Context,
         @StringRes titleRes: Int,
         initialNote: String
-    ): DialogProgressBinding {
-        val binding = DialogProgressBinding.inflate((context as FragmentActivity).layoutInflater)
+    ) {
+        binding = DialogProgressBinding.inflate((context as FragmentActivity).layoutInflater)
         binding.progressNote.text = initialNote
 
-        MaterialAlertDialogBuilder(context)
+        dialogReference = MaterialAlertDialogBuilder(context)
+            .setCancelable(false)
             .setTitle(titleRes)
             .setView(binding.root)
-            .show()
-
-        return binding
+            .create().apply {
+                show()
+            }
     }
 }
