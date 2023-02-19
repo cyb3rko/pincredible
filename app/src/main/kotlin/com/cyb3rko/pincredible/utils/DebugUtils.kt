@@ -46,7 +46,7 @@ internal object DebugUtils {
             }
         }
 
-        val pinsFile = File(context.filesDir, "pins")
+        val pinsFile = File(context.filesDir, CryptoManager.PINS_FILE)
         if (!pinsFile.exists()) {
             pinsFile.createNewFile()
             CryptoManager.encrypt(ObjectSerializer.serialize(names), pinsFile)

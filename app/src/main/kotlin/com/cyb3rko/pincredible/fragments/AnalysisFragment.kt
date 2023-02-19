@@ -84,7 +84,7 @@ class AnalysisFragment : Fragment() {
         )
 
         lifecycleScope.launch {
-            lifecycleScope.launch((Dispatchers.Main)) {
+            lifecycleScope.launch(Dispatchers.Main) {
             }
         }
     }

@@ -39,7 +39,9 @@ import com.cyb3rko.pincredible.modals.ErrorDialog
 import com.cyb3rko.pincredible.modals.InputDialog
 import com.cyb3rko.pincredible.utils.ObjectSerializer
 import com.cyb3rko.pincredible.utils.Vibration
+import com.cyb3rko.pincredible.utils.hide
 import com.cyb3rko.pincredible.utils.iterate
+import com.cyb3rko.pincredible.utils.show
 import java.io.File
 import kotlin.jvm.Throws
 import kotlin.random.Random
@@ -108,7 +110,7 @@ class PinCreatorFragment : Fragment() {
                     revertSelectedBackground(cell)
                     if (cell.view == it) {
                         clickedCell = null
-                        binding.buttonContainer.visibility = View.GONE
+                        binding.buttonContainer.hide()
                         return@setOnClickListener
                     }
                 }
@@ -128,7 +130,7 @@ class PinCreatorFragment : Fragment() {
                     myContext.theme
                 )!!
                 clickedCell = Cell(it, row, column, currentBackgroundInt)
-                binding.buttonContainer.visibility = View.VISIBLE
+                binding.buttonContainer.show()
             }
         }
     }
@@ -151,14 +153,14 @@ class PinCreatorFragment : Fragment() {
 
     private fun setButtonClickListeners() {
         var clickedCellView: TextView
-        binding.apply {
+        binding.run {
             setOf(
                 button1, button2, button3, button4, button5, button6, button7, button8, button9,
                 button0
             ).forEach { button ->
                 button.setOnClickListener {
                     clickedCell?.let {
-                        buttonContainer.visibility = View.GONE
+                        buttonContainer.hide()
 
                         clickedCellView = it.view
                         clickedCellView.text = button.text
@@ -250,7 +252,7 @@ class PinCreatorFragment : Fragment() {
 
     @Throws(EnDecryptionException::class)
     private fun savePinName(name: String) {
-        val pinsFile = File(myContext.filesDir, "pins")
+        val pinsFile = File(myContext.filesDir, CryptoManager.PINS_FILE)
 
         if (!pinsFile.exists()) {
             pinsFile.createNewFile()

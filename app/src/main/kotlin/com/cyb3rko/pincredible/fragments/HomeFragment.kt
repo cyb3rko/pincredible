@@ -170,7 +170,7 @@ class HomeFragment : Fragment() {
 
     @Throws(EnDecryptionException::class)
     private fun retrievePins(): List<String> {
-        val pinsFile = File(myContext.filesDir, "pins")
+        val pinsFile = File(myContext.filesDir, CryptoManager.PINS_FILE)
         return if (pinsFile.exists()) {
             @Suppress("UNCHECKED_CAST")
             (ObjectSerializer.deserialize(CryptoManager.decrypt(pinsFile)) as Set<String>).toList()
@@ -184,9 +184,9 @@ class HomeFragment : Fragment() {
         if (pins.isNotEmpty()) {
             binding.emptyHintContainer.hide()
             adapter.submitList(pins.sorted())
-            binding.chip.apply {
+            binding.chip.run {
                 text = getString(R.string.home_found_pins, pins.size)
-                visibility = View.VISIBLE
+                show()
             }
         } else {
             binding.emptyHintContainer.show()

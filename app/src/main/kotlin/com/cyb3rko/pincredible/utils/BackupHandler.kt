@@ -33,6 +33,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 internal object BackupHandler {
+    private const val MULTI_BACKUP_FILE = ".pinc"
+
     @SuppressLint("SimpleDateFormat")
     fun initiateBackup(context: Context, launcher: ActivityResultLauncher<Intent>) {
         val fileList = context.fileList()
@@ -40,7 +42,7 @@ internal object BackupHandler {
             val numberOfPins = fileList.size - 1
             val timestamp = SimpleDateFormat("yyyyMMdd-HHmmss")
                 .format(Date(System.currentTimeMillis()))
-            val fileName = "PINs[$numberOfPins]-$timestamp.pinc"
+            val fileName = "PINs[$numberOfPins]-$timestamp$MULTI_BACKUP_FILE"
             showFileCreator(launcher, fileName)
         }
     }
@@ -76,12 +78,10 @@ internal object BackupHandler {
                 val progressStep = 50 / (fileList.size - 1)
                 val pins = mutableListOf<BackupPinTable>()
                 context.filesDir.listFiles()?.forEach {
-                    if (it.name.startsWith("p") && it.name != "pins") {
+                    if (it.name.startsWith("p") && it.name != CryptoManager.PINS_FILE) {
                         val bytes = CryptoManager.decrypt(it)
-                        val version = bytes[bytes.size - 1]
-                        val pinTable = ObjectSerializer.deserialize(
-                            bytes.copyOfRange(0, bytes.size - 1)
-                        ) as PinTable
+                        val version = bytes.last()
+                        val pinTable = ObjectSerializer.deserialize(bytes.withoutLast()) as PinTable
                         pins.add(BackupPinTable(pinTable, version, it.name))
                         progressBar.progress = progressBar.progress + progressStep
                         progressNote.text = context.getString(
@@ -96,7 +96,7 @@ internal object BackupHandler {
                     50
                 )
 
-                val nameFile = File(context.filesDir, "pins")
+                val nameFile = File(context.filesDir, CryptoManager.PINS_FILE)
                 val names = ObjectSerializer.deserialize(
                     CryptoManager.decrypt(nameFile)
                 ) as Set<String>
@@ -167,13 +167,11 @@ internal object BackupHandler {
             progressNote.text = context.getString(R.string.dialog_import_state_retrieving, 25)
 
             val version = bytes.last()
-            val backup = ObjectSerializer.deserialize(
-                bytes.copyOfRange(0, bytes.size - 1)
-            ) as BackupStructure
+            val backup = ObjectSerializer.deserialize(bytes.withoutLast()) as BackupStructure
             progressBar.progress = 50
             progressNote.text = context.getString(R.string.dialog_import_state_saving, 50)
 
-            val nameFile = File(context.filesDir, "pins")
+            val nameFile = File(context.filesDir, CryptoManager.PINS_FILE)
             if (nameFile.exists()) {
                 CryptoManager.appendStrings(nameFile, *backup.names.toTypedArray())
             } else {

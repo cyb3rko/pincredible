@@ -25,6 +25,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 internal class ProgressDialog {
     lateinit var dialogReference: AlertDialog
+        private set
     lateinit var binding: DialogProgressBinding
         private set
 

@@ -52,6 +52,7 @@ import com.cyb3rko.pincredible.utils.ObjectSerializer
 import com.cyb3rko.pincredible.utils.TableScreenshotHandler
 import com.cyb3rko.pincredible.utils.Vibration
 import com.cyb3rko.pincredible.utils.iterate
+import com.cyb3rko.pincredible.utils.withoutLast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -126,7 +127,10 @@ class PinViewerFragment : Fragment() {
                         val deletionSuccess = file.delete()
                         if (deletionSuccess) {
                             Vibration.vibrateDoubleClick(vibrator)
-                            CryptoManager.removeString(File(myContext.filesDir, "pins"), args.pin)
+                            CryptoManager.removeString(
+                                File(myContext.filesDir, CryptoManager.PINS_FILE),
+                                args.pin
+                            )
                             findNavController().navigate(
                                 PinViewerFragmentDirections.pinviewerToHome()
                             )
@@ -195,10 +199,10 @@ class PinViewerFragment : Fragment() {
     private fun decryptData(hash: String): PinTable {
         val file = File(myContext.filesDir, "p$hash")
         val bytes = CryptoManager.decrypt(file)
-        val version = bytes[bytes.size - 1]
+        val version = bytes.last()
         @SuppressLint("SetTextI18n")
         binding.siidView.text = "SIID: $version"
-        return ObjectSerializer.deserialize(bytes.copyOfRange(0, bytes.size - 1)) as PinTable
+        return ObjectSerializer.deserialize(bytes.withoutLast()) as PinTable
     }
 
     private fun generateAndExportImage(uri: Uri) {

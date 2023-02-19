@@ -40,7 +40,7 @@ internal class PinAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val pin = currentList[position]
-        holder.apply {
+        holder.run {
             holder.pinNameView.text = pin
             card.setOnClickListener { action(pin) }
         }

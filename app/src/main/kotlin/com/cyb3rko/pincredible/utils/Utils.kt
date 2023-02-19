@@ -28,6 +28,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.data.PinTable
+import com.google.android.material.R as MaterialR
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 // TableLayout extension functions
@@ -52,7 +53,7 @@ internal fun Context.showDialog(
 ) {
     val builder = MaterialAlertDialogBuilder(
         this,
-        com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered
+        MaterialR.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered
     )
         .setTitle(title)
         .setMessage(message)
@@ -106,3 +107,7 @@ internal fun View.show() {
 internal fun View.hide() {
     this.visibility = View.GONE
 }
+
+// ByteArray extension functions
+
+internal fun ByteArray.withoutLast() = this.copyOfRange(0, this.size - 1)
