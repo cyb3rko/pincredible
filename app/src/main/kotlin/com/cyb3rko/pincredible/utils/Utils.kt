@@ -110,4 +110,10 @@ internal fun View.hide() {
 
 // ByteArray extension functions
 
+internal fun ByteArray.nthLast(n: Int) = this[this.size - n]
+
+internal fun ByteArray.lastN(n: Int) = this.copyOfRange(this.size - n, this.size)
+
 internal fun ByteArray.withoutLast() = this.copyOfRange(0, this.size - 1)
+
+internal fun ByteArray.withoutLastN(n: Int) = this.copyOfRange(0, this.size - n)

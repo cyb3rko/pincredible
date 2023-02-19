@@ -34,6 +34,8 @@ import java.util.Date
 
 internal object BackupHandler {
     private const val MULTI_BACKUP_FILE = ".pinc"
+    private const val INTEGRITY_CHECK = "INTGRTY"
+    private const val OVERHEAD_SIZE = INTEGRITY_CHECK.length + 1
 
     @SuppressLint("SimpleDateFormat")
     fun initiateBackup(context: Context, launcher: ActivityResultLauncher<Intent>) {
@@ -104,7 +106,7 @@ internal object BackupHandler {
                 val bytes = ObjectSerializer.serialize(BackupStructure(pins.toSet(), names))
                 val version = CryptoManager.BACKUP_CRYPTO_ITERATION.toByte()
                 CryptoManager.encrypt(
-                    bytes.plus(version),
+                    bytes.plus(version).plus(INTEGRITY_CHECK.encodeToByteArray()),
                     context.contentResolver.openOutputStream(uri),
                     hash.take(32)
                 )
@@ -127,15 +129,17 @@ internal object BackupHandler {
     fun restoreBackup(
         context: Context,
         uri: Uri,
+        showError: Boolean = false,
         onFinished: () -> Unit
     ) {
         PasswordDialog.show(
             context,
-            R.string.dialog_backup_title
+            R.string.dialog_backup_title,
+            showError
         ) { dialog, inputLayout, input ->
             if (input.isNotEmpty() && input.length in 10..100) {
                 dialog.dismiss()
-                doRestoreBackup(context, uri, CryptoManager.shaHash(input))
+                doRestoreBackup(context, uri, CryptoManager.shaHash(input), onFinished)
                 onFinished()
             } else {
                 inputLayout.error = context.getString(R.string.dialog_name_error_length, 10, 100)
@@ -146,7 +150,8 @@ internal object BackupHandler {
     private fun doRestoreBackup(
         context: Context,
         uri: Uri,
-        hash: String
+        hash: String,
+        onFinished: () -> Unit
     ) {
         val progressDialog = ProgressDialog().apply {
             show(
@@ -166,8 +171,19 @@ internal object BackupHandler {
             progressBar.progress = 25
             progressNote.text = context.getString(R.string.dialog_import_state_retrieving, 25)
 
-            val version = bytes.last()
-            val backup = ObjectSerializer.deserialize(bytes.withoutLast()) as BackupStructure
+            if (bytes.isEmpty() ||
+                bytes.lastN(OVERHEAD_SIZE - 1).decodeToString() != INTEGRITY_CHECK
+            ) {
+                progressDialog.dialogReference.dismiss()
+                // Show password dialog again, but with error message
+                restoreBackup(context, uri, true, onFinished)
+                return
+            }
+
+            val version = bytes.nthLast(OVERHEAD_SIZE)
+            val backup = ObjectSerializer.deserialize(
+                bytes.withoutLastN(OVERHEAD_SIZE)
+            ) as BackupStructure
             progressBar.progress = 50
             progressNote.text = context.getString(R.string.dialog_import_state_saving, 50)
 

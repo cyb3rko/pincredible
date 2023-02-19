@@ -33,6 +33,7 @@ import java.security.KeyStoreException
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
+import javax.crypto.BadPaddingException
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.NoSuchPaddingException
@@ -40,7 +41,6 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import kotlin.experimental.and
-import kotlin.jvm.Throws
 
 internal object CryptoManager {
     const val PIN_CRYPTO_ITERATION = 0
@@ -230,7 +230,16 @@ internal object CryptoManager {
                     e.stackTraceToString()
                 )
             }
-            decryptCipher.doFinal(encryptedBytes)
+            try {
+                decryptCipher.doFinal(encryptedBytes)
+            } catch (e: BadPaddingException) {
+                if (e.stackTraceToString().contains("BAD_DECRYPT")) {
+                    e.printStackTrace()
+                    ByteArray(0)
+                } else {
+                    throw e
+                }
+            }
         }
     }
 

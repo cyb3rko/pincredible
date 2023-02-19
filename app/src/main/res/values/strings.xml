@@ -57,6 +57,7 @@
     <string name="dialog_name_hint">Give it a name</string>
     <string name="dialog_name_title">PIN Name</string>
     <string name="dialog_password_hint">Your Password</string>
+    <string name="dialog_password_error">Invalid integrity, most likely wrong password</string>
     <string name="dialog_backup_title">Encryption Password</string>
     <string name="dialog_export_title">PIN Export</string>
     <string name="dialog_export_state_retrieving">%d\%% - Retrieving PINs…</string>

@@ -29,6 +29,7 @@ internal object PasswordDialog {
     fun show(
         context: Context,
         @StringRes title: Int,
+        showError: Boolean = false,
         onSave: (
             dialog: AlertDialog,
             inputLayout: TextInputLayout,
@@ -36,6 +37,7 @@ internal object PasswordDialog {
         ) -> Unit
     ) {
         val binding = DialogPasswordBinding.inflate((context as FragmentActivity).layoutInflater)
+        if (showError) binding.inputLayout.error = context.getString(R.string.dialog_password_error)
 
         val dialog = MaterialAlertDialogBuilder(context)
             .setTitle(context.getString(title))
