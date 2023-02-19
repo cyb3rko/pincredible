@@ -101,14 +101,10 @@ internal object BackupHandler {
                     CryptoManager.decrypt(nameFile)
                 ) as Set<String>
 
+                val bytes = ObjectSerializer.serialize(BackupStructure(pins.toSet(), names))
+                val version = CryptoManager.BACKUP_CRYPTO_ITERATION.toByte()
                 CryptoManager.encrypt(
-                    ObjectSerializer.serialize(
-                        BackupStructure(
-                            pins.toSet(),
-                            names,
-                            CryptoManager.BACKUP_CRYPTO_ITERATION.toByte()
-                        )
-                    ),
+                    bytes.plus(version),
                     context.contentResolver.openOutputStream(uri),
                     hash.take(32)
                 )
@@ -170,7 +166,10 @@ internal object BackupHandler {
             progressBar.progress = 25
             progressNote.text = context.getString(R.string.dialog_import_state_retrieving, 25)
 
-            val backup = ObjectSerializer.deserialize(bytes) as BackupStructure
+            val version = bytes.last()
+            val backup = ObjectSerializer.deserialize(
+                bytes.copyOfRange(0, bytes.size - 1)
+            ) as BackupStructure
             progressBar.progress = 50
             progressNote.text = context.getString(R.string.dialog_import_state_saving, 50)
 
@@ -255,7 +254,6 @@ internal object BackupHandler {
 
     class BackupStructure(
         val pins: Set<BackupPinTable>,
-        val names: Set<String>,
-        val siid: Byte
+        val names: Set<String>
     ) : Serializable
 }
