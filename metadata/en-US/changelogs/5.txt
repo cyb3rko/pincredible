@@ -1,0 +1,9 @@
+Additions:
+- image export functionality
+- backup integrity check for password validation
+
+Enhancements:
+- improved backup dialog behaviour
+- switch to more useful backup versioning
+- show pin hash in viewer
+- allow throwing caught error for reporting
