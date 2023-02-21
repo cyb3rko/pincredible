@@ -14,7 +14,9 @@
 [![last commit](https://img.shields.io/github/last-commit/cyb3rko/pincredible?color=F34C9F)](https://github.com/cyb3rko/pincredible/commits/main)
 
 - [About this project](#about-this-project)   
+- [Beta Phase - Breaking Changes](#beta-phase---%EF%B8%8Fbreaking-changes%EF%B8%8F)
 - [Feature Overview](#feature-overview)  
+- [Legal Liability](#legal-liability)  
 - [Download](#download)
 - [Supported devices](#supported-devices)
 - [Screenshots](#screenshots)
@@ -29,6 +31,12 @@
 Over time I've used several apps to store my PINs, unfortunately none of them really convinced me.  
 So here we are now, this is my own implementation of a secure PIN manager.
 
+## Beta phase - ⚠️Breaking Changes⚠️
+
+While the app is still in beta phase please expect a few breaking changes.  
+Some beta updates do not work with the previous app versions.  
+Therefore you may have to readd your saved PINs and recreate your backups in never versions.
+
 ## Feature Overview
 | | PINcredible | Others |
 | --- | --- | --- |
@@ -40,14 +48,34 @@ So here we are now, this is my own implementation of a secure PIN manager.
 | 🎞️ Ads | ❌ | ✅ |
 | 🗿 Suspicious Permissions | ❌ | ✅ |
 
+---
+
 The app obfuscates the PIN in a table layout surrounded by secure random numbers.  
 This brings two security benefits:
 1. ❔ The app can not know where in the pattern the user given PIN is located at. Attackers can not extract the plaintext PIN.
 2. 🕵️ This offers protection against [Shoulder Surfing](https://en.wikipedia.org/wiki/Shoulder_surfing_(computer_security)), for example while accessing your PIN in a super market or a bank.
 
+---
+
+For the input of PIN digits the app uses an in-app keyboard.  
+This brings the following two security benefits:
+1. ⌨️ (At least some) protection against [keylogging](https://en.wikipedia.org/wiki/Keystroke_logging)
+2. 📱 *coming soon*
+
+## Legal Liability
+
+In no way do I accept liability for lost PINs and the resulting consequences or other consequences of using the app.  
+Especially in the beta phase, but also afterwards, I do not guarantee that the app will always work properly and PINs will never be lost.
+
+If you don't agree please don't use this app.
+
 ## Download
 
-Google Play and F-Droid download links coming soon
+Google Play download link available after beta phase
+
+[<img height="80" alt="Get it on F-Droid"
+src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+/>](https://f-droid.org/app/com.cyb3rko.flashdim)
 
 ## Supported Devices
 The minimum supported Android version is API level 23, Android 6 (Marshmallow).  
