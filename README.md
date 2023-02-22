@@ -75,7 +75,9 @@ Google Play download link available after beta phase
 
 [<img height="80" alt="Get it on F-Droid"
 src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-/>](https://f-droid.org/app/com.cyb3rko.flashdim)
+/>](https://f-droid.org/packages/com.cyb3rko.pincredible/)
+
+Or get the latest APK from the [Releases Section](https://github.com/cyb3rko/pincredible/releases/latest).
 
 ## Supported Devices
 The minimum supported Android version is API level 23, Android 6 (Marshmallow).  
