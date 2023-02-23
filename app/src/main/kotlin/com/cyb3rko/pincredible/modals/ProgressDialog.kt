@@ -23,7 +23,7 @@ import androidx.fragment.app.FragmentActivity
 import com.cyb3rko.pincredible.databinding.DialogProgressBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-internal class ProgressDialog {
+internal class ProgressDialog(private val indeterminate: Boolean) {
     lateinit var dialogReference: AlertDialog
         private set
     lateinit var binding: DialogProgressBinding
@@ -36,6 +36,7 @@ internal class ProgressDialog {
     ) {
         binding = DialogProgressBinding.inflate((context as FragmentActivity).layoutInflater)
         binding.progressNote.text = initialNote
+        if (indeterminate) binding.progressBar.isIndeterminate = true
 
         dialogReference = MaterialAlertDialogBuilder(context)
             .setCancelable(false)

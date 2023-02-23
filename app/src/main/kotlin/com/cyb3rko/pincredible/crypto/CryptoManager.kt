@@ -44,7 +44,8 @@ import kotlin.experimental.and
 
 internal object CryptoManager {
     const val PIN_CRYPTO_ITERATION = 0
-    const val BACKUP_CRYPTO_ITERATION = 0
+    const val SINGLE_BACKUP_CRYPTO_ITERATION = 0
+    const val MULTI_BACKUP_CRYPTO_ITERATION = 0
     const val PINS_FILE = "pins"
     private const val KEYSTORE_ALIAS = "iamsecure"
     private const val ENC_ALGORITHM = KeyProperties.KEY_ALGORITHM_AES

@@ -59,6 +59,8 @@
     <string name="dialog_password_hint">Your Password</string>
     <string name="dialog_password_error">Invalid integrity, most likely wrong password</string>
     <string name="dialog_backup_title">Encryption Password</string>
+    <string name="dialog_single_export_message">Exporting single PIN…</string>
+    <string name="dialog_single_export_finished">PIN export completed…</string>
     <string name="dialog_export_title">PIN Export</string>
     <string name="dialog_export_state_retrieving">%d\%% - Retrieving PINs…</string>
     <string name="dialog_export_state_saving">%d\%% - Saving backup file…</string>

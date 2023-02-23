@@ -48,6 +48,8 @@ import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.databinding.FragmentPinViewerBinding
 import com.cyb3rko.pincredible.modals.AcceptDialog
 import com.cyb3rko.pincredible.modals.ErrorDialog
+import com.cyb3rko.pincredible.utils.BackupHandler
+import com.cyb3rko.pincredible.utils.BackupHandler.SingleBackupStructure
 import com.cyb3rko.pincredible.utils.ObjectSerializer
 import com.cyb3rko.pincredible.utils.TableScreenshotHandler
 import com.cyb3rko.pincredible.utils.Vibration
@@ -58,6 +60,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import kotlin.properties.Delegates
 
 class PinViewerFragment : Fragment() {
     private var _binding: FragmentPinViewerBinding? = null
@@ -69,8 +72,10 @@ class PinViewerFragment : Fragment() {
     private val vibrator by lazy { Vibration.getVibrator(myContext) }
     private val args: PinViewerFragmentArgs by navArgs()
     private val hash by lazy { CryptoManager.xxHash(args.pin) }
+    private lateinit var pinTable: PinTable
+    private var siid by Delegates.notNull<Byte>()
 
-    private val fileCreatorResultLauncher =
+    private val imageCreatorResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data?.data ?: return@registerForActivityResult
@@ -87,6 +92,15 @@ class PinViewerFragment : Fragment() {
                 ) {
                     generateAndExportImage(uri)
                 }
+            }
+        }
+
+    private val fileCreatorResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uri = result.data?.data ?: return@registerForActivityResult
+                val singleBackup = SingleBackupStructure(pinTable, siid, args.pin)
+                BackupHandler.runBackup(myContext, uri, false, singleBackup)
             }
         }
 
@@ -112,7 +126,7 @@ class PinViewerFragment : Fragment() {
 
         binding.saveImageButton.setOnClickListener {
             TableScreenshotHandler.initiateTableImage(
-                fileCreatorResultLauncher,
+                imageCreatorResultLauncher,
                 "${args.pin}.jpg"
             )
         }
@@ -149,16 +163,21 @@ class PinViewerFragment : Fragment() {
                 .setNegativeButton(R.string.dialog_delete_button2, null)
                 .show()
         }
+
+        binding.exportFab.setOnClickListener {
+            BackupHandler.initiateSingleBackup(hash, fileCreatorResultLauncher)
+        }
     }
 
     private suspend fun loadDataIntoTable() {
         try {
-            val pinTable = decryptData(hash)
+            pinTable = decryptData(hash)
             withContext(Dispatchers.Main) {
                 binding.progressBar.hide()
                 colorTableView(pinTable)
                 fillTable(pinTable)
             }
+            binding.exportFab.show()
         } catch (e: EnDecryptionException) {
             Log.d("CryptoManager", e.customStacktrace)
             withContext(Dispatchers.Main) {
@@ -199,9 +218,9 @@ class PinViewerFragment : Fragment() {
     private fun decryptData(hash: String): PinTable {
         val file = File(myContext.filesDir, "p$hash")
         val bytes = CryptoManager.decrypt(file)
-        val version = bytes.last()
+        siid = bytes.last()
         @SuppressLint("SetTextI18n")
-        binding.siidView.text = "SIID: $version"
+        binding.siidView.text = "SIID: $siid"
         return ObjectSerializer.deserialize(bytes.withoutLast()) as PinTable
     }
 

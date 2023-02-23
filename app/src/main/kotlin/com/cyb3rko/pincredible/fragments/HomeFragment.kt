@@ -74,7 +74,7 @@ class HomeFragment : Fragment() {
         registerForActivityResult(StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val uri = result.data?.data ?: return@registerForActivityResult
-            BackupHandler.runBackup(myContext, uri)
+            BackupHandler.runBackup(myContext, uri, true)
         }
     }
 

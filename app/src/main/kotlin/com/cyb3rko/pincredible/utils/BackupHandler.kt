@@ -33,9 +33,17 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 internal object BackupHandler {
+    private const val SINGLE_BACKUP_FILE = ".pin"
     private const val MULTI_BACKUP_FILE = ".pinc"
     private const val INTEGRITY_CHECK = "INTGRTY"
     private const val OVERHEAD_SIZE = INTEGRITY_CHECK.length + 1
+
+    @SuppressLint("SimpleDateFormat")
+    fun initiateSingleBackup(hash: String, launcher: ActivityResultLauncher<Intent>) {
+        val timestamp = SimpleDateFormat("yyyyMMdd-HHmmss").format(Date(System.currentTimeMillis()))
+        val fileName = "PIN-${hash.take(8)}-$timestamp$SINGLE_BACKUP_FILE"
+        showFileCreator(launcher, fileName)
+    }
 
     @SuppressLint("SimpleDateFormat")
     fun initiateBackup(context: Context, launcher: ActivityResultLauncher<Intent>) {
@@ -49,22 +57,67 @@ internal object BackupHandler {
         }
     }
 
-    fun runBackup(context: Context, uri: Uri) {
+    fun runBackup(
+        context: Context,
+        uri: Uri,
+        multiPin: Boolean,
+        singleBackup: SingleBackupStructure? = null
+    ) {
         PasswordDialog.show(
             context,
             R.string.dialog_backup_title
         ) { dialog, inputLayout, input ->
             if (input.isNotEmpty() && input.length in 10..100) {
                 dialog.dismiss()
-                runExport(context, uri, CryptoManager.shaHash(input))
+                if (!multiPin) {
+                    runSingleExport(context, uri, CryptoManager.shaHash(input), singleBackup!!)
+                } else {
+                    runExport(context, uri, CryptoManager.shaHash(input))
+                }
             } else {
                 inputLayout.error = context.getString(R.string.dialog_name_error_length, 10, 100)
             }
         }
     }
 
+    private fun runSingleExport(
+        context: Context,
+        uri: Uri,
+        hash: String,
+        singleBackup: SingleBackupStructure
+    ) {
+        val progressDialog = ProgressDialog(true).apply {
+            show(
+                context,
+                titleRes = R.string.dialog_export_title,
+                initialNote = context.getString(R.string.dialog_single_export_message)
+            )
+        }
+        val progressBar = progressDialog.binding.progressBar
+        val progressNote = progressDialog.binding.progressNote
+
+        try {
+            val bytes = ObjectSerializer.serialize(singleBackup)
+            val version = CryptoManager.SINGLE_BACKUP_CRYPTO_ITERATION.toByte()
+            CryptoManager.encrypt(
+                bytes.plus(version).plus(INTEGRITY_CHECK.encodeToByteArray()),
+                context.contentResolver.openOutputStream(uri),
+                hash.take(32)
+            )
+
+            progressBar.isIndeterminate = false
+            progressBar.progress = 100
+            progressNote.text = context.getString(R.string.dialog_single_export_finished)
+            progressDialog.dialogReference.setCancelable(true)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            progressDialog.dialogReference.cancel()
+            ErrorDialog.show(context, e, R.string.dialog_export_error)
+        }
+    }
+
     private fun runExport(context: Context, uri: Uri, hash: String) {
-        val progressDialog = ProgressDialog().apply {
+        val progressDialog = ProgressDialog(false).apply {
             show(
                 context,
                 titleRes = R.string.dialog_export_title,
@@ -78,13 +131,13 @@ internal object BackupHandler {
             val fileList = context.fileList()
             if (fileList.size > 1) {
                 val progressStep = 50 / (fileList.size - 1)
-                val pins = mutableListOf<BackupPinTable>()
+                val pins = mutableListOf<MultiBackupPinTable>()
                 context.filesDir.listFiles()?.forEach {
                     if (it.name.startsWith("p") && it.name != CryptoManager.PINS_FILE) {
                         val bytes = CryptoManager.decrypt(it)
                         val version = bytes.last()
                         val pinTable = ObjectSerializer.deserialize(bytes.withoutLast()) as PinTable
-                        pins.add(BackupPinTable(pinTable, version, it.name))
+                        pins.add(MultiBackupPinTable(pinTable, version, it.name))
                         progressBar.progress = progressBar.progress + progressStep
                         progressNote.text = context.getString(
                             R.string.dialog_export_state_retrieving,
@@ -103,8 +156,8 @@ internal object BackupHandler {
                     CryptoManager.decrypt(nameFile)
                 ) as Set<String>
 
-                val bytes = ObjectSerializer.serialize(BackupStructure(pins.toSet(), names))
-                val version = CryptoManager.BACKUP_CRYPTO_ITERATION.toByte()
+                val bytes = ObjectSerializer.serialize(MultiBackupStructure(pins.toSet(), names))
+                val version = CryptoManager.MULTI_BACKUP_CRYPTO_ITERATION.toByte()
                 CryptoManager.encrypt(
                     bytes.plus(version).plus(INTEGRITY_CHECK.encodeToByteArray()),
                     context.contentResolver.openOutputStream(uri),
@@ -153,7 +206,7 @@ internal object BackupHandler {
         hash: String,
         onFinished: () -> Unit
     ) {
-        val progressDialog = ProgressDialog().apply {
+        val progressDialog = ProgressDialog(false).apply {
             show(
                 context,
                 titleRes = R.string.dialog_export_title,
@@ -183,7 +236,7 @@ internal object BackupHandler {
             val version = bytes.nthLast(OVERHEAD_SIZE)
             val backup = ObjectSerializer.deserialize(
                 bytes.withoutLastN(OVERHEAD_SIZE)
-            ) as BackupStructure
+            ) as MultiBackupStructure
             progressBar.progress = 50
             progressNote.text = context.getString(R.string.dialog_import_state_saving, 50)
 
@@ -260,14 +313,20 @@ internal object BackupHandler {
         launcher.launch(intent)
     }
 
-    class BackupPinTable(
+    class SingleBackupStructure(
+        val pinTable: PinTable,
+        val siid: Byte,
+        val name: String
+    ) : Serializable
+
+    class MultiBackupPinTable(
         val pinTable: PinTable,
         val siid: Byte,
         val fileName: String
     ) : Serializable
 
-    class BackupStructure(
-        val pins: Set<BackupPinTable>,
+    class MultiBackupStructure(
+        val pins: Set<MultiBackupPinTable>,
         val names: Set<String>
     ) : Serializable
 }
