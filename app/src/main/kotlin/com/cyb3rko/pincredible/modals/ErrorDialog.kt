@@ -17,6 +17,7 @@
 package com.cyb3rko.pincredible.modals
 
 import android.content.Context
+import androidx.annotation.StringRes
 import com.cyb3rko.pincredible.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -33,6 +34,19 @@ internal object ErrorDialog {
             .setNeutralButton(context.getString(R.string.dialog_error_button2)) { _, _ ->
                 throw error
             }
+            .create()
+            .show()
+    }
+
+    fun showCustom(
+        context: Context,
+        @StringRes titleRes: Int,
+        @StringRes messageRes: Int
+    ) {
+        MaterialAlertDialogBuilder(context)
+            .setTitle(context.getString(titleRes))
+            .setMessage(context.getString(messageRes))
+            .setPositiveButton(android.R.string.ok, null)
             .create()
             .show()
     }

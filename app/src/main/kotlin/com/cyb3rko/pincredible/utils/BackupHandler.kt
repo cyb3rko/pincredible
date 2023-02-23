@@ -19,7 +19,9 @@ package com.cyb3rko.pincredible.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
+import android.provider.OpenableColumns
 import androidx.activity.result.ActivityResultLauncher
 import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.crypto.CryptoManager
@@ -33,6 +35,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 internal object BackupHandler {
+    private enum class BackupType {
+        SINGLE_PIN, MULTI_PIN, UNKNOWN
+    }
     private const val SINGLE_BACKUP_FILE = ".pin"
     private const val MULTI_BACKUP_FILE = ".pinc"
     private const val INTEGRITY_CHECK = "INTGRTY"
@@ -185,6 +190,16 @@ internal object BackupHandler {
         showError: Boolean = false,
         onFinished: () -> Unit
     ) {
+        val backupType = getBackupType(context, uri)
+        if (backupType == BackupType.UNKNOWN) {
+            ErrorDialog.showCustom(
+                context,
+                R.string.dialog_import_error,
+                R.string.dialog_import_error_file_format_message
+            )
+            return
+        }
+
         PasswordDialog.show(
             context,
             R.string.dialog_backup_title,
@@ -192,15 +207,29 @@ internal object BackupHandler {
         ) { dialog, inputLayout, input ->
             if (input.isNotEmpty() && input.length in 10..100) {
                 dialog.dismiss()
-                doRestoreBackup(context, uri, CryptoManager.shaHash(input), onFinished)
-                onFinished()
+                if (backupType == BackupType.SINGLE_PIN) {
+                    doRestoreSingleBackup(context, uri, CryptoManager.shaHash(input), onFinished)
+                } else if (backupType == BackupType.MULTI_PIN) {
+                    doRestoreMultiBackup(context, uri, CryptoManager.shaHash(input), onFinished)
+                }
             } else {
                 inputLayout.error = context.getString(R.string.dialog_name_error_length, 10, 100)
             }
         }
     }
 
-    private fun doRestoreBackup(
+    private fun getBackupType(context: Context, uri: Uri): BackupType {
+        val fileName = getFileName(context, uri) ?: return BackupType.UNKNOWN
+        return if (fileName.endsWith(".pin")) {
+            BackupType.SINGLE_PIN
+        } else if (fileName.endsWith(".pinc")) {
+            BackupType.MULTI_PIN
+        } else {
+            BackupType.UNKNOWN
+        }
+    }
+
+    private fun doRestoreSingleBackup(
         context: Context,
         uri: Uri,
         hash: String,
@@ -209,7 +238,74 @@ internal object BackupHandler {
         val progressDialog = ProgressDialog(false).apply {
             show(
                 context,
-                titleRes = R.string.dialog_export_title,
+                titleRes = R.string.dialog_import_title,
+                initialNote = context.getString(R.string.dialog_import_state_retrieving, 0)
+            )
+        }
+        val progressBar = progressDialog.binding.progressBar
+        val progressNote = progressDialog.binding.progressNote
+
+        try {
+            val bytes = CryptoManager.decrypt(
+                context.contentResolver.openInputStream(uri),
+                hash.take(32)
+            )
+            progressBar.progress = 25
+            progressNote.text = context.getString(R.string.dialog_import_state_retrieving, 25)
+
+            if (bytes.isEmpty() ||
+                bytes.lastN(OVERHEAD_SIZE - 1).decodeToString() != INTEGRITY_CHECK
+            ) {
+                progressDialog.dialogReference.dismiss()
+                // Show password dialog again, but with error message
+                restoreBackup(context, uri, true, onFinished)
+                return
+            }
+
+            val version = bytes.nthLast(OVERHEAD_SIZE)
+            val backup = ObjectSerializer.deserialize(
+                bytes.withoutLastN(OVERHEAD_SIZE)
+            ) as SingleBackupStructure
+            progressBar.progress = 50
+            progressNote.text = context.getString(R.string.dialog_import_state_saving, 50)
+
+            val nameFile = File(context.filesDir, CryptoManager.PINS_FILE)
+            if (nameFile.exists()) {
+                CryptoManager.appendStrings(nameFile, backup.name)
+            } else {
+                nameFile.createNewFile()
+                CryptoManager.encrypt(ObjectSerializer.serialize(backup.name), nameFile)
+            }
+            progressBar.progress = 75
+            progressNote.text = context.getString(R.string.dialog_import_state_saving, 75)
+
+            val fileHash = CryptoManager.xxHash(backup.name)
+            val saved = savePinFile(context, "p${fileHash}", backup.pinTable, backup.siid)
+            progressBar.progress = 100
+            if (saved) {
+                progressNote.text = context.getString(R.string.dialog_single_import_state_finished)
+            } else {
+                progressNote.text = context.getString(R.string.dialog_single_import_state_cancelled)
+            }
+            progressDialog.dialogReference.setCancelable(true)
+            onFinished()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            progressDialog.dialogReference.cancel()
+            ErrorDialog.show(context, e, R.string.dialog_import_error)
+        }
+    }
+
+    private fun doRestoreMultiBackup(
+        context: Context,
+        uri: Uri,
+        hash: String,
+        onFinished: () -> Unit
+    ) {
+        val progressDialog = ProgressDialog(false).apply {
+            show(
+                context,
+                titleRes = R.string.dialog_import_title,
                 initialNote = context.getString(R.string.dialog_import_state_retrieving, 0)
             )
         }
@@ -263,11 +359,12 @@ internal object BackupHandler {
             }
             progressBar.progress = 100
             progressNote.text = context.getString(
-                R.string.dialog_import_state_finished,
+                R.string.dialog_multi_import_state_finished,
                 imports,
                 backup.pins.size
             )
             progressDialog.dialogReference.setCancelable(true)
+            onFinished()
         } catch (e: Exception) {
             e.printStackTrace()
             progressDialog.dialogReference.cancel()
@@ -311,6 +408,25 @@ internal object BackupHandler {
             type = "*/*"
         }
         launcher.launch(intent)
+    }
+
+    private fun getFileName(context: Context, uri: Uri): String? {
+        // The query, because it only applies to a single document, returns only one row. There's no
+        // need to filter, sort, or select fields, because we want all fields for one document.
+        val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null, null)
+
+        cursor?.use {
+            // moveToFirst() returns false if the cursor has 0 rows. Very handy for "if there's
+            // anything to look at, look at it" conditionals.
+            if (it.moveToFirst()) {
+                // Note it's called "Display Name". This is
+                // provider-specific, and might not necessarily be the file name.
+                val index = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (index < 0) return null
+                return it.getString(index)
+            }
+        }
+        return null
     }
 
     class SingleBackupStructure(
