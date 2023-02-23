@@ -29,6 +29,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.cyb3rko.pincredible.KEY_BUTTON_RANDOMIZER
 import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.crypto.CryptoManager
 import com.cyb3rko.pincredible.crypto.CryptoManager.EnDecryptionException
@@ -38,11 +39,13 @@ import com.cyb3rko.pincredible.databinding.FragmentPinCreatorBinding
 import com.cyb3rko.pincredible.modals.ErrorDialog
 import com.cyb3rko.pincredible.modals.InputDialog
 import com.cyb3rko.pincredible.utils.ObjectSerializer
+import com.cyb3rko.pincredible.utils.Safe
 import com.cyb3rko.pincredible.utils.Vibration
 import com.cyb3rko.pincredible.utils.hide
 import com.cyb3rko.pincredible.utils.iterate
 import com.cyb3rko.pincredible.utils.show
 import java.io.File
+import java.security.SecureRandom
 import kotlin.jvm.Throws
 import kotlin.random.Random
 
@@ -130,6 +133,7 @@ class PinCreatorFragment : Fragment() {
                     myContext.theme
                 )!!
                 clickedCell = Cell(it, row, column, currentBackgroundInt)
+                shuffleButtonDigits()
                 binding.buttonContainer.show()
             }
         }
@@ -262,6 +266,21 @@ class PinCreatorFragment : Fragment() {
             )
         } else {
             CryptoManager.appendStrings(pinsFile, name)
+        }
+    }
+
+    private fun shuffleButtonDigits() {
+        if (!Safe.getBoolean(myContext, KEY_BUTTON_RANDOMIZER, false)) return
+        val digits = MutableList(10) { it }.apply {
+            shuffle(SecureRandom())
+        }
+        binding.run {
+            setOf(
+                button1, button2, button3, button4, button5, button6, button7, button8, button9,
+                button0
+            ).forEach { button ->
+                button.text = digits.removeFirst().toString()
+            }
         }
     }
 

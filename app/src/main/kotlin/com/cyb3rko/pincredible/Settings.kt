@@ -11,6 +11,7 @@ import androidx.preference.SwitchPreferenceCompat
 import com.cyb3rko.pincredible.databinding.ActivitySettingsBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
+internal const val KEY_BUTTON_RANDOMIZER = "button_randomizer"
 internal const val KEY_ADAPTIVE_COLORS = "adaptive_colors"
 
 internal class SettingsActivity : AppCompatActivity() {
