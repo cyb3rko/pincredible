@@ -233,7 +233,7 @@ class PinCreatorFragment : Fragment() {
 
     private fun clearTable() {
         binding.fab.hide()
-        pinTable.reset()
+        pinTable.resetDigits()
         binding.tableLayout.table.iterate { view, row, column ->
             ((view[row] as TableRow)[column] as TextView).text = null
         }

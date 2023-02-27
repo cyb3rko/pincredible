@@ -24,11 +24,15 @@ internal class PinTable : Serializable {
     private lateinit var pattern: Array<IntArray>
 
     init {
-        reset()
+        resetDigits()
+        resetPattern()
     }
 
-    fun reset() {
+    fun resetDigits() {
         data = Array(ROW_COUNT) { IntArray(COLUMN_COUNT) { -1 } }
+    }
+
+    private fun resetPattern() {
         pattern = Array(ROW_COUNT) { IntArray(COLUMN_COUNT) { -1 } }
     }
 
