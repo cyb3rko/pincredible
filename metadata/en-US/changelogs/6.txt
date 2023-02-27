@@ -1,0 +1,9 @@
+Fixes:
+- ResourcesNotFoundException for background color when resetting input
+
+Additions:
+- optional digit button randomizer
+- backup of single PIN
+
+Enhancements:
+- allow repeated digit refill with PIN user input
