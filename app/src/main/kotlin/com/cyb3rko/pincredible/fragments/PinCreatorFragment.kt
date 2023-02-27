@@ -59,6 +59,7 @@ class PinCreatorFragment : Fragment() {
 
     private val pinTable by lazy { PinTable() }
     private var clickedCell: Cell? = null
+    private val addedIndices by lazy { mutableSetOf<Int>() }
     private val vibrator by lazy { Vibration.getVibrator(myContext) }
 
     override fun onCreateView(
@@ -169,11 +170,9 @@ class PinCreatorFragment : Fragment() {
                         clickedCellView = it.view
                         clickedCellView.text = button.text
                         revertSelectedBackground(it)
-                        pinTable.put(
-                            it.row,
-                            it.column,
-                            clickedCellView.text.toString().toInt()
-                        )
+                        val number = clickedCellView.text.toString().toInt()
+                        pinTable.put(it.row, it.column, number)
+                        addedIndices.add(it.row * 7 + it.column)
                         clickedCell = null
                         if (pinTable.isFilled()) fab.show()
                     }
@@ -225,7 +224,7 @@ class PinCreatorFragment : Fragment() {
     }
 
     private fun fillTable() {
-        pinTable.fill()
+        pinTable.fill(addedIndices)
         binding.tableLayout.table.iterate { view, row, column ->
             ((view[row] as TableRow)[column] as TextView).text = pinTable.get(row, column)
         }
@@ -238,6 +237,7 @@ class PinCreatorFragment : Fragment() {
         binding.tableLayout.table.iterate { view, row, column ->
             ((view[row] as TableRow)[column] as TextView).text = null
         }
+        addedIndices.clear()
     }
 
     @Throws(EnDecryptionException::class)

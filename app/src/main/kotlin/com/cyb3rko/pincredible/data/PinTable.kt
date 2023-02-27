@@ -55,11 +55,11 @@ internal class PinTable : Serializable {
 
     fun getBackground(row: Int, column: Int) = pattern[row][column]
 
-    fun fill() {
-        data.forEach {
-            it.forEachIndexed { index, i ->
-                if (i == -1) {
-                    it[index] = CryptoManager.getSecureRandom()
+    fun fill(ignoredIndices: Set<Int> = emptySet()) {
+        data.forEachIndexed { rowIndex, row ->
+            row.indices.forEach { columnIndex ->
+                if (!ignoredIndices.contains(rowIndex * 7 + columnIndex)) {
+                    row[columnIndex] = CryptoManager.getSecureRandom()
                 }
             }
         }
