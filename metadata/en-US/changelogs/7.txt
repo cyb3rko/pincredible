@@ -1,0 +1,2 @@
+Fixes:
+- InvalidClassException due to incompatible classes after upgrading
