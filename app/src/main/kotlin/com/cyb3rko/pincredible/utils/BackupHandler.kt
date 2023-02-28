@@ -433,16 +433,28 @@ internal object BackupHandler {
         val pinTable: PinTable,
         val siid: Byte,
         val name: String
-    ) : Serializable
+    ) : Serializable {
+        companion object {
+            private const val serialVersionUID = 2006776746261561110
+        }
+    }
 
     class MultiBackupPinTable(
         val pinTable: PinTable,
         val siid: Byte,
         val fileName: String
-    ) : Serializable
+    ) : Serializable {
+        companion object {
+            private const val serialVersionUID = 8043046138014917867
+        }
+    }
 
     class MultiBackupStructure(
         val pins: Set<MultiBackupPinTable>,
         val names: Set<String>
-    ) : Serializable
+    ) : Serializable {
+        companion object {
+            private const val serialVersionUID = 9095785564497675984
+        }
+    }
 }
