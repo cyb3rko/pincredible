@@ -22,24 +22,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.View
-import android.widget.TableLayout
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.cyb3rko.pincredible.R
-import com.cyb3rko.pincredible.data.PinTable
-import com.google.android.material.R as MaterialR
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-
-// TableLayout extension functions
-
-internal fun TableLayout.iterate(action: (view: TableLayout, row: Int, column: Int) -> Unit) {
-    repeat(PinTable.ROW_COUNT) { row ->
-        repeat(PinTable.COLUMN_COUNT) { column ->
-            action(this, row, column)
-        }
-    }
-}
+import com.google.android.material.R as MaterialR
 
 // Context extension functions
 

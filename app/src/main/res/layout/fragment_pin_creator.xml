@@ -43,9 +43,10 @@
                 android:text="@string/generate_new_pattern"
                 android:textSize="16sp" />
 
-            <include
-                layout="@layout/table_view"
-                android:id="@+id/table_layout" />
+            <com.cyb3rko.pincredible.views.PinTableView
+                android:id="@+id/table_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/button_container"

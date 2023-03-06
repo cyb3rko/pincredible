@@ -18,7 +18,6 @@
 
 <TableLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/table"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -27,526 +26,50 @@
     android:layout_marginTop="16dp"
     android:stretchColumns="*">
 
-    <TableRow android:id="@+id/row1">
+    <include
+        layout="@layout/table_row"
+        android:id="@+id/row1" />
 
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_orange"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_green"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_cyan"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_cyan"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_green"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_yellow"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_orange"
-            tools:text="@string/table_empty_cell" />
-
-    </TableRow>
-
-    <TableRow
+    <include
+        layout="@layout/table_row"
         android:id="@+id/row2"
-        android:layout_marginTop="@dimen/table_vertical_space">
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/table_vertical_space" />
 
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_cyan"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_green"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_red"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_yellow"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_yellow"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_green"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_orange"
-            tools:text="@string/table_empty_cell" />
-
-    </TableRow>
-
-    <TableRow
+    <include
+        layout="@layout/table_row"
         android:id="@+id/row3"
-        android:layout_marginTop="@dimen/table_vertical_space">
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/table_vertical_space" />
 
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_cyan"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_orange"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_green"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_orange"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_cyan"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_red"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_green"
-            tools:text="@string/table_empty_cell" />
-
-    </TableRow>
-
-    <TableRow
+    <include
+        layout="@layout/table_row"
         android:id="@+id/row4"
-        android:layout_marginTop="@dimen/table_vertical_space">
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/table_vertical_space" />
 
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_green"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_red"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_green"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_red"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_red"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_red"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_orange"
-            tools:text="@string/table_empty_cell" />
-
-    </TableRow>
-
-    <TableRow
+    <include
+        layout="@layout/table_row"
         android:id="@+id/row5"
-        android:layout_marginTop="@dimen/table_vertical_space">
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_yellow"
-            tools:text="@string/table_empty_cell" />
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/table_vertical_space" />
 
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_green"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_green"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_cyan"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_cyan"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_cyan"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_yellow"
-            tools:text="@string/table_empty_cell" />
-
-    </TableRow>
-
-    <TableRow
+    <include
+        layout="@layout/table_row"
         android:id="@+id/row6"
-        android:layout_marginTop="@dimen/table_vertical_space">
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/table_vertical_space" />
 
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_orange"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_yellow"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_cyan"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_orange"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_cyan"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_green"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_green"
-            tools:text="@string/table_empty_cell" />
-
-    </TableRow>
-
-    <TableRow
+    <include
+        layout="@layout/table_row"
         android:id="@+id/row7"
-        android:layout_marginTop="@dimen/table_vertical_space">
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_yellow"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_orange"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_orange"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_cyan"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_red"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_cyan"
-            tools:text="@string/table_empty_cell" />
-
-        <TextView
-            android:layout_height="@dimen/table_cell_height"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/table_horizontal_space"
-            android:textColor="@color/table_cell_text"
-            android:textSize="@dimen/table_text_size"
-            android:textStyle="bold"
-            tools:background="@drawable/cell_shape_red"
-            tools:text="@string/table_empty_cell" />
-
-    </TableRow>
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/table_vertical_space" />
 
 </TableLayout>

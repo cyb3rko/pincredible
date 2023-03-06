@@ -17,16 +17,12 @@
 package com.cyb3rko.pincredible.fragments
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TableRow
 import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.cyb3rko.pincredible.KEY_BUTTON_RANDOMIZER
@@ -42,12 +38,9 @@ import com.cyb3rko.pincredible.utils.ObjectSerializer
 import com.cyb3rko.pincredible.utils.Safe
 import com.cyb3rko.pincredible.utils.Vibration
 import com.cyb3rko.pincredible.utils.hide
-import com.cyb3rko.pincredible.utils.iterate
 import com.cyb3rko.pincredible.utils.show
 import java.io.File
 import java.security.SecureRandom
-import kotlin.jvm.Throws
-import kotlin.random.Random
 
 class PinCreatorFragment : Fragment() {
     private var _binding: FragmentPinCreatorBinding? = null
@@ -74,45 +67,21 @@ class PinCreatorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        colorTableView()
+        binding.tableView.colorizeRandom(pinTable)
         setTableClickListeners()
         setButtonClickListeners()
         setFabClickListener()
     }
 
-    private fun colorTableView() {
-        var randomIndex: Int
-        var randomBackgroundInt: Int
-        var randomBackground: Drawable
-        binding.tableLayout.table.iterate { view, row, column ->
-            randomIndex = Random.nextInt(5)
-            randomBackgroundInt = when (randomIndex) {
-                0 -> R.drawable.cell_shape_cyan
-                1 -> R.drawable.cell_shape_green
-                2 -> R.drawable.cell_shape_orange
-                3 -> R.drawable.cell_shape_red
-                4 -> R.drawable.cell_shape_yellow
-                else -> -1 // Not possible to appear
-            }
-            randomBackground = ResourcesCompat.getDrawable(
-                resources,
-                randomBackgroundInt,
-                myContext.theme
-            )!!
-            (view[row] as TableRow)[column].background = randomBackground
-            pinTable.putBackground(row, column, randomIndex)
-        }
-    }
-
     private fun setTableClickListeners() {
         var currentBackgroundInt: Int
-        var selectedBackgroundInt: Int
-        binding.tableLayout.table.iterate { view, row, column ->
-            (view[row] as TableRow)[column].setOnClickListener {
+        binding.tableView.iterate { tableView, row, column ->
+            val cell = tableView.getCell(row, column)
+            cell.setOnClickListener {
                 Vibration.vibrateTick(vibrator)
-                clickedCell?.let { cell ->
-                    revertSelectedBackground(cell)
-                    if (cell.view == it) {
+                clickedCell?.let { safeClickedCell ->
+                    tableView.unselect(safeClickedCell)
+                    if (safeClickedCell.view == it) {
                         clickedCell = null
                         binding.buttonContainer.hide()
                         return@setOnClickListener
@@ -120,40 +89,12 @@ class PinCreatorFragment : Fragment() {
                 }
 
                 currentBackgroundInt = pinTable.getBackground(row, column)
-                selectedBackgroundInt = when (currentBackgroundInt) {
-                    0 -> R.drawable.cell_shape_cyan_selected
-                    1 -> R.drawable.cell_shape_green_selected
-                    2 -> R.drawable.cell_shape_orange_selected
-                    3 -> R.drawable.cell_shape_red_selected
-                    4 -> R.drawable.cell_shape_yellow_selected
-                    else -> -1 // Not possible to appear
-                }
-                (it as TextView).background = ResourcesCompat.getDrawable(
-                    resources,
-                    selectedBackgroundInt,
-                    myContext.theme
-                )!!
-                clickedCell = Cell(it, row, column, currentBackgroundInt)
+                tableView.select(cell, currentBackgroundInt)
+                clickedCell = Cell(cell, row, column, currentBackgroundInt)
                 shuffleButtonDigits()
                 binding.buttonContainer.show()
             }
         }
-    }
-
-    private fun revertSelectedBackground(cell: Cell) {
-        val backgroundInt = when (cell.background) {
-            0 -> R.drawable.cell_shape_cyan
-            1 -> R.drawable.cell_shape_green
-            2 -> R.drawable.cell_shape_orange
-            3 -> R.drawable.cell_shape_red
-            4 -> R.drawable.cell_shape_yellow
-            else -> -1 // Not possible to appear
-        }
-        cell.view.background = ResourcesCompat.getDrawable(
-            resources,
-            backgroundInt,
-            myContext.theme
-        )!!
     }
 
     private fun setButtonClickListeners() {
@@ -169,7 +110,7 @@ class PinCreatorFragment : Fragment() {
 
                         clickedCellView = it.view
                         clickedCellView.text = button.text
-                        revertSelectedBackground(it)
+                        tableView.unselect(it)
                         val number = clickedCellView.text.toString().toInt()
                         pinTable.put(it.row, it.column, number)
                         addedIndices.add(it.row * 7 + it.column)
@@ -179,7 +120,7 @@ class PinCreatorFragment : Fragment() {
                 }
             }
             buttonGenerate.setOnClickListener {
-                colorTableView()
+                binding.tableView.colorizeRandom(pinTable)
             }
             buttonFill.setOnClickListener {
                 fillTable()
@@ -225,18 +166,14 @@ class PinCreatorFragment : Fragment() {
 
     private fun fillTable() {
         pinTable.fill(addedIndices)
-        binding.tableLayout.table.iterate { view, row, column ->
-            ((view[row] as TableRow)[column] as TextView).text = pinTable.get(row, column)
-        }
+        binding.tableView.fill(pinTable)
         binding.fab.show()
     }
 
     private fun clearTable() {
         binding.fab.hide()
         pinTable.resetDigits()
-        binding.tableLayout.table.iterate { view, row, column ->
-            ((view[row] as TableRow)[column] as TextView).text = null
-        }
+        binding.tableView.clear()
         addedIndices.clear()
     }
 

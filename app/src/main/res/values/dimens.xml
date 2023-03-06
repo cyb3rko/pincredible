@@ -4,6 +4,7 @@
     <dimen name="table_cell_stroke_selected">3dp</dimen>
     <dimen name="table_cell_corner_radius">5dp</dimen>
     <dimen name="table_cell_height">45dp</dimen>
+    <dimen name="table_cell_width">@dimen/table_cell_height</dimen>
     <dimen name="table_text_size">20sp</dimen>
     <dimen name="table_vertical_space">2dp</dimen>
     <dimen name="table_horizontal_space">2dp</dimen>

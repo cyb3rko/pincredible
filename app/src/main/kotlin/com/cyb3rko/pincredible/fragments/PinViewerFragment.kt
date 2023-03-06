@@ -21,7 +21,6 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -32,11 +31,7 @@ import android.view.LayoutInflater
 import android.view.PixelCopy
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TableRow
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -53,7 +48,6 @@ import com.cyb3rko.pincredible.utils.BackupHandler.SingleBackupStructure
 import com.cyb3rko.pincredible.utils.ObjectSerializer
 import com.cyb3rko.pincredible.utils.TableScreenshotHandler
 import com.cyb3rko.pincredible.utils.Vibration
-import com.cyb3rko.pincredible.utils.iterate
 import com.cyb3rko.pincredible.utils.withoutLast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
@@ -174,8 +168,8 @@ class PinViewerFragment : Fragment() {
             pinTable = decryptData(hash)
             withContext(Dispatchers.Main) {
                 binding.progressBar.hide()
-                colorTableView(pinTable)
-                fillTable(pinTable)
+                binding.tableView.colorize(pinTable)
+                binding.tableView.fill(pinTable)
             }
             binding.exportFab.show()
         } catch (e: EnDecryptionException) {
@@ -183,34 +177,6 @@ class PinViewerFragment : Fragment() {
             withContext(Dispatchers.Main) {
                 binding.progressBar.hide()
             }
-        }
-    }
-
-    private fun colorTableView(pinTable: PinTable) {
-        var backgroundInt: Int
-        var background: Drawable
-        binding.tableLayout.table.iterate { view, row, column ->
-            backgroundInt = when (pinTable.getBackground(row, column)) {
-                0 -> R.drawable.cell_shape_cyan
-                1 -> R.drawable.cell_shape_green
-                2 -> R.drawable.cell_shape_orange
-                3 -> R.drawable.cell_shape_red
-                4 -> R.drawable.cell_shape_yellow
-                else -> -1 // Not possible to appear
-            }
-            background = ResourcesCompat.getDrawable(
-                resources,
-                backgroundInt,
-                myContext.theme
-            )!!
-            (view[row] as TableRow)[column].background = background
-        }
-    }
-
-    private fun fillTable(pinTable: PinTable) {
-        binding.tableLayout.table.iterate { view, row, column ->
-            ((view[row] as TableRow)[column] as TextView).text =
-                pinTable.get(row, column)
         }
     }
 
@@ -225,19 +191,23 @@ class PinViewerFragment : Fragment() {
     }
 
     private fun generateAndExportImage(uri: Uri) {
-        val view = binding.tableLayout.table
+        val tableView = binding.tableView
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+            val bitmap = Bitmap.createBitmap(
+                tableView.width,
+                tableView.height,
+                Bitmap.Config.ARGB_8888
+            )
             val locationOfViewInWindow = IntArray(2)
-            view.getLocationInWindow(locationOfViewInWindow)
+            tableView.getLocationInWindow(locationOfViewInWindow)
             try {
                 PixelCopy.request(
                     requireActivity().window,
                     Rect(
                         locationOfViewInWindow[0],
                         locationOfViewInWindow[1],
-                        locationOfViewInWindow[0] + view.width,
-                        locationOfViewInWindow[1] + view.height
+                        locationOfViewInWindow[0] + tableView.width,
+                        locationOfViewInWindow[1] + tableView.height
                     ),
                     bitmap,
                     { copyResult ->
@@ -251,7 +221,7 @@ class PinViewerFragment : Fragment() {
                 e.printStackTrace()
             }
         } else {
-            TableScreenshotHandler.generateTableCacheCopy(view) {
+            TableScreenshotHandler.generateTableCacheCopy(tableView) {
                 if (it != null) {
                     saveImage(it, uri)
                 }
