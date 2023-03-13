@@ -63,7 +63,7 @@
 
     <fragment
         android:id="@+id/AnalysisFragment"
-        android:label="@string/fragment_label_analysis"
+        android:label="@string/menu_home_analysis"
         android:name="com.cyb3rko.pincredible.fragments.AnalysisFragment"
         tools:layout="@layout/fragment_analysis">
 

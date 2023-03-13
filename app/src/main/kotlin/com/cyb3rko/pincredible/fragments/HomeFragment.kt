@@ -16,59 +16,49 @@
 
 package com.cyb3rko.pincredible.fragments
 
-import android.animation.Animator
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.cyb3rko.backpack.crypto.CryptoManager
+import com.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
+import com.cyb3rko.backpack.data.BuildInfo
+import com.cyb3rko.backpack.fragments.BackpackMainFragment
+import com.cyb3rko.backpack.interfaces.BackpackMain
+import com.cyb3rko.backpack.modals.ErrorDialog
+import com.cyb3rko.backpack.utils.hide
+import com.cyb3rko.backpack.utils.show
 import com.cyb3rko.pincredible.BuildConfig
 import com.cyb3rko.pincredible.MainActivity
 import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.SettingsActivity
-import com.cyb3rko.pincredible.crypto.CryptoManager
-import com.cyb3rko.pincredible.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.pincredible.databinding.FragmentHomeBinding
-import com.cyb3rko.pincredible.modals.ErrorDialog
 import com.cyb3rko.pincredible.recycler.PinAdapter
 import com.cyb3rko.pincredible.utils.BackupHandler
 import com.cyb3rko.pincredible.utils.DebugUtils
 import com.cyb3rko.pincredible.utils.ObjectSerializer
 import com.cyb3rko.pincredible.utils.Vibration
-import com.cyb3rko.pincredible.utils.hide
-import com.cyb3rko.pincredible.utils.openUrl
-import com.cyb3rko.pincredible.utils.show
-import com.cyb3rko.pincredible.utils.showDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class HomeFragment : Fragment() {
+class HomeFragment : BackpackMainFragment(), BackpackMain {
     private var _binding: FragmentHomeBinding? = null
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var myContext: Context
     private val vibrator by lazy { Vibration.getVibrator(myContext) }
     private lateinit var adapter: PinAdapter
-    private var isFabOpen = false
 
     private val fileCreatorResultLauncher =
         registerForActivityResult(StartActivityForResult()) { result ->
@@ -93,9 +83,9 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
+        bindInterface(this)
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        myContext = requireContext()
-        addMenuProvider()
 
         adapter = PinAdapter {
             Vibration.vibrateClick(vibrator)
@@ -109,7 +99,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         readAndShowPins()
 
         binding.fab.setOnClickListener {
@@ -117,19 +106,19 @@ class HomeFragment : Fragment() {
             hideSubtitle()
             findNavController().navigate(HomeFragmentDirections.homeToPincreator())
         }
-        binding.fab2.setOnClickListener {
-            if (!isFabOpen) showFABMenu() else closeFABMenu()
-        }
-        binding.fabBgLayout.setOnClickListener {
-            closeFABMenu()
-        }
-        binding.fabMenu1.setOnClickListener {
-            closeFABMenu()
-            BackupHandler.initiateBackup(myContext, fileCreatorResultLauncher)
-        }
-        binding.fabMenu2.setOnClickListener {
-            closeFABMenu()
-            BackupHandler.initiateRestoreBackup(filePickerResultLauncher)
+        binding.backupFab.apply {
+            setOnOpen {
+                binding.fab.hide()
+            }
+            setOnClose {
+                binding.fab.show()
+            }
+            setOnExport {
+                BackupHandler.initiateBackup(myContext, fileCreatorResultLauncher)
+            }
+            setOnImport {
+                BackupHandler.initiateRestoreBackup(filePickerResultLauncher)
+            }
         }
         if (BuildConfig.DEBUG) {
             binding.fab.setOnLongClickListener {
@@ -143,11 +132,11 @@ class HomeFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        (requireActivity() as MainActivity).showSubtitle()
+//        (requireActivity() as MainActivity).showSubtitle()
     }
 
     private fun hideSubtitle() {
-        (requireActivity() as MainActivity).showSubtitle(false)
+//        (requireActivity() as MainActivity).showSubtitle(false)
     }
 
     private fun readAndShowPins() {
@@ -170,7 +159,7 @@ class HomeFragment : Fragment() {
 
     @Throws(EnDecryptionException::class)
     private fun retrievePins(): List<String> {
-        val pinsFile = File(myContext.filesDir, CryptoManager.PINS_FILE)
+        val pinsFile = File(myContext.filesDir, BackupHandler.PINS_FILE)
         return if (pinsFile.exists()) {
             @Suppress("UNCHECKED_CAST")
             (ObjectSerializer.deserialize(CryptoManager.decrypt(pinsFile)) as Set<String>).toList()
@@ -193,121 +182,28 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun addMenuProvider() {
-        (requireActivity() as MenuHost).addMenuProvider(
-            object : MenuProvider {
-                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    menuInflater.inflate(R.menu.menu_home, menu)
-                }
-
-                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                    return when (menuItem.itemId) {
-                        R.id.action_settings -> {
-                            startActivity(Intent(myContext, SettingsActivity::class.java))
-                            true
-                        }
-                        R.id.action_analysis -> {
-                            val action = HomeFragmentDirections.homeToAnalysis()
-                            findNavController().navigate(action)
-                            true
-                        }
-                        R.id.action_github -> {
-                            openUrl(getString(R.string.github_link), "PINcredible GitHub")
-                            true
-                        }
-                        R.id.action_about -> {
-                            showAboutDialog()
-                            true
-                        }
-                        else -> false
-                    }
-                }
-            },
-            viewLifecycleOwner,
-            Lifecycle.State.RESUMED
-        )
-    }
-
-    private fun showFABMenu() {
-        isFabOpen = true
-        binding.fab.hide()
-        binding.fabLayout1.show()
-        binding.fabLayout2.show()
-        binding.fabBgLayout.show()
-        binding.fab2.animate().rotationBy(180f)
-        binding.fabLayout1.animate().translationY(-resources.getDimension(R.dimen.fab_menu1))
-        binding.fabLayout2.animate().translationY(-resources.getDimension(R.dimen.fab_menu2))
-    }
-
-    private fun closeFABMenu() {
-        isFabOpen = false
-        binding.fab.show()
-        binding.fabBgLayout.hide()
-        binding.fab2.animate().rotation(0f)
-        binding.fabLayout1.animate().translationY(0f)
-        binding.fabLayout2.animate().translationY(0f)
-        binding.fabLayout2.animate().translationY(0f).setListener(
-            object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator) {}
-
-                override fun onAnimationEnd(animation: Animator) {
-                    if (!isFabOpen) {
-                        binding.fabLayout1.hide()
-                        binding.fabLayout2.hide()
-                    }
-                }
-
-                override fun onAnimationCancel(animation: Animator) {}
-
-                override fun onAnimationRepeat(animation: Animator) {}
-            }
-        )
-    }
-
-    private fun showAboutDialog() {
-        myContext.showDialog(
-            getString(R.string.dialog_about_title),
-            getString(
-                R.string.dialog_about_message,
-                BuildConfig.VERSION_NAME,
-                BuildConfig.VERSION_CODE,
-                BuildConfig.BUILD_TYPE,
-                Build.MANUFACTURER,
-                Build.MODEL,
-                Build.DEVICE,
-                when (Build.VERSION.SDK_INT) {
-                    19, 20 -> "4"
-                    21, 22 -> "5"
-                    23 -> "6"
-                    24, 25 -> "7"
-                    26, 27 -> "8"
-                    28 -> "9"
-                    29 -> "10"
-                    30 -> "11"
-                    31, 32 -> "12"
-                    33 -> "13"
-                    else -> "> 13"
-                },
-                Build.VERSION.SDK_INT
-            ),
-            R.drawable.colored_ic_information,
-            { showIconCreditsDialog() },
-            getString(R.string.dialog_about_button)
-        )
-    }
-
-    private fun showIconCreditsDialog() {
-        myContext.showDialog(
-            getString(R.string.dialog_credits_title),
-            getString(R.string.dialog_credits_message),
-            R.drawable.colored_ic_information,
-            { openUrl("https://flaticon.com", "Flaticon") },
-            getString(R.string.dialog_credits_button)
-        )
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun getSettingsIntent(): Intent {
+        return Intent(myContext, SettingsActivity::class.java)
+    }
+
+    override fun getAnalysisNavigation(): NavDirections {
+        return HomeFragmentDirections.homeToAnalysis()
+    }
+
+    override fun getGithubLink(): Int {
+        return R.string.github_link
+    }
+
+    override fun getBuildInfo(): BuildInfo {
+        return BuildInfo(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, BuildConfig.BUILD_TYPE)
+    }
+
+    override fun getIconCredits(): Int {
+        return R.string.icon_credits
     }
 }

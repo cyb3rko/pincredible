@@ -25,31 +25,32 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.cyb3rko.pincredible.KEY_BUTTON_RANDOMIZER
+import com.cyb3rko.backpack.crypto.CryptoManager
+import com.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
+import com.cyb3rko.backpack.modals.ErrorDialog
+import com.cyb3rko.backpack.utils.hide
+import com.cyb3rko.backpack.utils.show
 import com.cyb3rko.pincredible.R
-import com.cyb3rko.pincredible.crypto.CryptoManager
-import com.cyb3rko.pincredible.crypto.CryptoManager.EnDecryptionException
+import com.cyb3rko.pincredible.SettingsActivity
 import com.cyb3rko.pincredible.data.Cell
 import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.databinding.FragmentPinCreatorBinding
-import com.cyb3rko.pincredible.modals.ErrorDialog
 import com.cyb3rko.pincredible.modals.InputDialog
+import com.cyb3rko.pincredible.utils.BackupHandler
 import com.cyb3rko.pincredible.utils.ObjectSerializer
 import com.cyb3rko.pincredible.utils.Safe
 import com.cyb3rko.pincredible.utils.Vibration
-import com.cyb3rko.pincredible.utils.hide
-import com.cyb3rko.pincredible.utils.show
 import java.io.File
 import java.security.SecureRandom
 
 class PinCreatorFragment : Fragment() {
     private var _binding: FragmentPinCreatorBinding? = null
-    private lateinit var myContext: Context
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private lateinit var myContext: Context
     private val pinTable by lazy { PinTable() }
     private var clickedCell: Cell? = null
     private val addedIndices by lazy { mutableSetOf<Int>() }
@@ -183,7 +184,7 @@ class PinCreatorFragment : Fragment() {
         return if (!newPinFile.exists()) {
             newPinFile.createNewFile()
             val bytes = ObjectSerializer.serialize(pinTable)
-            val version = CryptoManager.PIN_CRYPTO_ITERATION.toByte()
+            val version = BackupHandler.PIN_CRYPTO_ITERATION.toByte()
             CryptoManager.encrypt(bytes.plus(version), newPinFile)
             true
         } else {
@@ -193,7 +194,7 @@ class PinCreatorFragment : Fragment() {
 
     @Throws(EnDecryptionException::class)
     private fun savePinName(name: String) {
-        val pinsFile = File(myContext.filesDir, CryptoManager.PINS_FILE)
+        val pinsFile = File(myContext.filesDir, BackupHandler.PINS_FILE)
 
         if (!pinsFile.exists()) {
             pinsFile.createNewFile()
@@ -207,7 +208,7 @@ class PinCreatorFragment : Fragment() {
     }
 
     private fun shuffleButtonDigits() {
-        if (!Safe.getBoolean(myContext, KEY_BUTTON_RANDOMIZER, false)) return
+        if (!Safe.getBoolean(myContext, SettingsActivity.KEY_BUTTON_RANDOMIZER, false)) return
         val digits = MutableList(10) { it }.apply {
             shuffle(SecureRandom())
         }

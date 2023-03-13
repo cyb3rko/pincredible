@@ -94,79 +94,10 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
-        android:id="@+id/fab_bg_Layout"
+    <com.cyb3rko.backpack.views.BackupFab
+        android:id="@+id/backup_fab"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/blur_background"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/fab_layout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:gravity="center_vertical"
-        android:layout_gravity="bottom|start"
-        android:padding="@dimen/fab_margin"
-        android:visibility="gone">
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_menu1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/stat_sys_download" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="Export"
-            android:textColor="#FFFFFF" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/fab_layout2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:gravity="center_vertical"
-        android:layout_gravity="bottom|start"
-        android:padding="@dimen/fab_margin"
-        android:visibility="gone">
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_menu2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/stat_sys_upload" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="Import"
-            android:textColor="#FFFFFF" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/fab_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:layout_gravity="bottom|start"
-        android:padding="@dimen/fab_margin">
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:src="@android:drawable/stat_notify_sdcard" />
-
-    </LinearLayout>
+        android:layout_height="match_parent" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Primary"

@@ -36,19 +36,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.cyb3rko.backpack.crypto.CryptoManager
+import com.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
+import com.cyb3rko.backpack.modals.ErrorDialog
+import com.cyb3rko.backpack.utils.withoutLast
 import com.cyb3rko.pincredible.R
-import com.cyb3rko.pincredible.crypto.CryptoManager
-import com.cyb3rko.pincredible.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.databinding.FragmentPinViewerBinding
 import com.cyb3rko.pincredible.modals.AcceptDialog
-import com.cyb3rko.pincredible.modals.ErrorDialog
 import com.cyb3rko.pincredible.utils.BackupHandler
 import com.cyb3rko.pincredible.utils.BackupHandler.SingleBackupStructure
 import com.cyb3rko.pincredible.utils.ObjectSerializer
 import com.cyb3rko.pincredible.utils.TableScreenshotHandler
 import com.cyb3rko.pincredible.utils.Vibration
-import com.cyb3rko.pincredible.utils.withoutLast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -136,7 +136,7 @@ class PinViewerFragment : Fragment() {
                         if (deletionSuccess) {
                             Vibration.vibrateDoubleClick(vibrator)
                             CryptoManager.removeString(
-                                File(myContext.filesDir, CryptoManager.PINS_FILE),
+                                File(myContext.filesDir, BackupHandler.PINS_FILE),
                                 args.pin
                             )
                             findNavController().navigate(

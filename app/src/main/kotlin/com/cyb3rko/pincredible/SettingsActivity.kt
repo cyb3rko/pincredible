@@ -17,19 +17,26 @@
 package com.cyb3rko.pincredible
 
 import android.os.Bundle
-import androidx.navigation.findNavController
-import com.cyb3rko.backpack.activities.BackpackMainActivity
-import com.cyb3rko.pincredible.databinding.ActivityMainBinding
+import com.cyb3rko.backpack.activities.BackpackSettingsActivity
+import com.cyb3rko.backpack.fragments.BackpackSettingsFragment
+import com.cyb3rko.backpack.interfaces.BackpackSettings
+import com.cyb3rko.pincredible.fragments.SettingsFragment
 
-class MainActivity : BackpackMainActivity() {
-    private lateinit var binding: ActivityMainBinding
-
+internal class SettingsActivity : BackpackSettingsActivity(), BackpackSettings {
     override fun onCreate(savedInstanceState: Bundle?) {
+        bindInterface(this)
         super.onCreate(savedInstanceState)
-        Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler(this))
+    }
 
-        binding = ActivityMainBinding.inflate(layoutInflater).asContentView()
-        setSupportActionBar(binding.toolbar)
-        findNavController(R.id.nav_host_fragment_content_main).applyToActionBar()
+    override fun getPreferences(): Int {
+        return R.xml.preferences
+    }
+
+    override fun getSettingsFragment(): BackpackSettingsFragment {
+        return SettingsFragment()
+    }
+
+    companion object {
+        const val KEY_BUTTON_RANDOMIZER = "button_randomizer"
     }
 }

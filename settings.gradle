@@ -14,4 +14,6 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "PINcredible"
-include ':app'
+include ':app', ':backpack'
+
+project(':backpack').projectDir=new File(rootDir, "../backpack-apps/backpack")

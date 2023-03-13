@@ -23,18 +23,27 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.activity.result.ActivityResultLauncher
+import com.cyb3rko.backpack.crypto.CryptoManager
+import com.cyb3rko.backpack.data.Serializable
+import com.cyb3rko.backpack.utils.lastN
+import com.cyb3rko.backpack.modals.ErrorDialog
+import com.cyb3rko.backpack.utils.nthLast
+import com.cyb3rko.backpack.utils.withoutLast
+import com.cyb3rko.backpack.utils.withoutLastN
 import com.cyb3rko.pincredible.R
-import com.cyb3rko.pincredible.crypto.CryptoManager
 import com.cyb3rko.pincredible.data.PinTable
-import com.cyb3rko.pincredible.modals.ErrorDialog
 import com.cyb3rko.pincredible.modals.PasswordDialog
 import com.cyb3rko.pincredible.modals.ProgressDialog
 import java.io.File
-import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.Date
 
 internal object BackupHandler {
+    const val PIN_CRYPTO_ITERATION = 0
+    private const val SINGLE_BACKUP_CRYPTO_ITERATION = 0
+    private const val MULTI_BACKUP_CRYPTO_ITERATION = 0
+    const val PINS_FILE = "pins"
+
     private enum class BackupType {
         SINGLE_PIN, MULTI_PIN, UNKNOWN
     }
@@ -103,7 +112,7 @@ internal object BackupHandler {
 
         try {
             val bytes = ObjectSerializer.serialize(singleBackup)
-            val version = CryptoManager.SINGLE_BACKUP_CRYPTO_ITERATION.toByte()
+            val version = SINGLE_BACKUP_CRYPTO_ITERATION.toByte()
             CryptoManager.encrypt(
                 bytes.plus(version).plus(INTEGRITY_CHECK.encodeToByteArray()),
                 context.contentResolver.openOutputStream(uri),
@@ -138,7 +147,7 @@ internal object BackupHandler {
                 val progressStep = 50 / (fileList.size - 1)
                 val pins = mutableListOf<MultiBackupPinTable>()
                 context.filesDir.listFiles()?.forEach {
-                    if (it.name.startsWith("p") && it.name != CryptoManager.PINS_FILE) {
+                    if (it.name.startsWith("p") && it.name != PINS_FILE) {
                         val bytes = CryptoManager.decrypt(it)
                         val version = bytes.last()
                         val pinTable = ObjectSerializer.deserialize(bytes.withoutLast()) as PinTable
@@ -156,13 +165,13 @@ internal object BackupHandler {
                     50
                 )
 
-                val nameFile = File(context.filesDir, CryptoManager.PINS_FILE)
+                val nameFile = File(context.filesDir, PINS_FILE)
                 val names = ObjectSerializer.deserialize(
                     CryptoManager.decrypt(nameFile)
                 ) as Set<String>
 
                 val bytes = ObjectSerializer.serialize(MultiBackupStructure(pins.toSet(), names))
-                val version = CryptoManager.MULTI_BACKUP_CRYPTO_ITERATION.toByte()
+                val version = MULTI_BACKUP_CRYPTO_ITERATION.toByte()
                 CryptoManager.encrypt(
                     bytes.plus(version).plus(INTEGRITY_CHECK.encodeToByteArray()),
                     context.contentResolver.openOutputStream(uri),
@@ -269,7 +278,7 @@ internal object BackupHandler {
             progressBar.progress = 50
             progressNote.text = context.getString(R.string.dialog_import_state_saving, 50)
 
-            val nameFile = File(context.filesDir, CryptoManager.PINS_FILE)
+            val nameFile = File(context.filesDir, PINS_FILE)
             if (nameFile.exists()) {
                 CryptoManager.appendStrings(nameFile, backup.name)
             } else {
@@ -336,7 +345,7 @@ internal object BackupHandler {
             progressBar.progress = 50
             progressNote.text = context.getString(R.string.dialog_import_state_saving, 50)
 
-            val nameFile = File(context.filesDir, CryptoManager.PINS_FILE)
+            val nameFile = File(context.filesDir, PINS_FILE)
             if (nameFile.exists()) {
                 CryptoManager.appendStrings(nameFile, *backup.names.toTypedArray())
             } else {
@@ -433,7 +442,7 @@ internal object BackupHandler {
         val pinTable: PinTable,
         val siid: Byte,
         val name: String
-    ) : Serializable {
+    ) : Serializable() {
         companion object {
             private const val serialVersionUID = 2006776746261561110
         }
@@ -443,7 +452,7 @@ internal object BackupHandler {
         val pinTable: PinTable,
         val siid: Byte,
         val fileName: String
-    ) : Serializable {
+    ) : Serializable() {
         companion object {
             private const val serialVersionUID = 8043046138014917867
         }
@@ -452,7 +461,7 @@ internal object BackupHandler {
     class MultiBackupStructure(
         val pins: Set<MultiBackupPinTable>,
         val names: Set<String>
-    ) : Serializable {
+    ) : Serializable() {
         companion object {
             private const val serialVersionUID = 9095785564497675984
         }

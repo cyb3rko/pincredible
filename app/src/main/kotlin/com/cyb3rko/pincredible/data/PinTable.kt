@@ -16,10 +16,10 @@
 
 package com.cyb3rko.pincredible.data
 
-import com.cyb3rko.pincredible.crypto.CryptoManager
-import java.io.Serializable
+import com.cyb3rko.backpack.crypto.CryptoManager
+import com.cyb3rko.backpack.data.Serializable
 
-internal class PinTable : Serializable {
+internal class PinTable : Serializable() {
     private lateinit var data: Array<IntArray>
     private lateinit var pattern: Array<IntArray>
 

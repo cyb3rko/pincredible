@@ -17,7 +17,7 @@
 package com.cyb3rko.pincredible.utils
 
 import android.content.Context
-import com.cyb3rko.pincredible.crypto.CryptoManager
+import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.pincredible.data.PinTable
 import java.io.File
 import kotlin.random.Random
@@ -41,12 +41,12 @@ internal object DebugUtils {
                     }
                 }
                 val bytes = ObjectSerializer.serialize(pinTable)
-                val version = CryptoManager.PIN_CRYPTO_ITERATION.toByte()
+                val version = BackupHandler.PIN_CRYPTO_ITERATION.toByte()
                 CryptoManager.encrypt(bytes.plus(version), newPinFile)
             }
         }
 
-        val pinsFile = File(context.filesDir, CryptoManager.PINS_FILE)
+        val pinsFile = File(context.filesDir, BackupHandler.PINS_FILE)
         if (!pinsFile.exists()) {
             pinsFile.createNewFile()
             CryptoManager.encrypt(ObjectSerializer.serialize(names), pinsFile)

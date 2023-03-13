@@ -21,10 +21,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import com.cyb3rko.backpack.utils.openUrl
+import com.cyb3rko.backpack.utils.showToast
+import com.cyb3rko.backpack.utils.storeToClipboard
 import com.cyb3rko.pincredible.databinding.ActivityUncaughtExceptionBinding
-import com.cyb3rko.pincredible.utils.openUrl
-import com.cyb3rko.pincredible.utils.showToast
-import com.cyb3rko.pincredible.utils.storeToClipboard
 
 class UncaughtExceptionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUncaughtExceptionBinding

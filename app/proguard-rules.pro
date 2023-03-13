@@ -20,6 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class com.cyb3rko.pincredible.** {
-    <methods>;
-}
+-keep class com.cyb3rko.pincredible.** { **; }

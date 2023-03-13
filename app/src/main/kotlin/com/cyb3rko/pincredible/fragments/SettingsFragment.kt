@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible
+package com.cyb3rko.pincredible.fragments
 
-import android.app.Application
-import androidx.preference.PreferenceManager
-import com.google.android.material.color.DynamicColors
+import android.os.Bundle
+import com.cyb3rko.backpack.fragments.BackpackSettingsFragment
+import com.cyb3rko.backpack.interfaces.BackpackSettingsView
+import com.cyb3rko.pincredible.R
 
-class App : Application() {
-    override fun onCreate() {
-        val spf = PreferenceManager.getDefaultSharedPreferences(this)
-        if (spf.getBoolean(KEY_ADAPTIVE_COLORS, false)) {
-            DynamicColors.applyToActivitiesIfAvailable(this)
-        }
-        super.onCreate()
+internal class SettingsFragment : BackpackSettingsFragment(), BackpackSettingsView {
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        bindInterface(this)
+        super.onCreatePreferences(savedInstanceState, rootKey)
+    }
+
+    override fun getPreferences(): Int {
+        return R.xml.preferences
     }
 }

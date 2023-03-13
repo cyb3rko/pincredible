@@ -3,6 +3,7 @@ buildscript {
     ext {
         kotlin_version = '1.7.21'
         navigation_version = '2.5.3'
+        preference_version = '1.2.0'
     }
     dependencies {
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigation_version"
