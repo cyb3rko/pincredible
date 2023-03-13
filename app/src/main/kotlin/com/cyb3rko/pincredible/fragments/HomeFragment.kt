@@ -32,7 +32,7 @@ import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.backpack.data.BuildInfo
 import com.cyb3rko.backpack.fragments.BackpackMainFragment
-import com.cyb3rko.backpack.interfaces.BackpackMain
+import com.cyb3rko.backpack.interfaces.BackpackMainView
 import com.cyb3rko.backpack.modals.ErrorDialog
 import com.cyb3rko.backpack.utils.hide
 import com.cyb3rko.backpack.utils.show
@@ -51,7 +51,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class HomeFragment : BackpackMainFragment(), BackpackMain {
+class HomeFragment : BackpackMainFragment(), BackpackMainView {
     private var _binding: FragmentHomeBinding? = null
 
     // This property is only valid between onCreateView and onDestroyView.
@@ -132,11 +132,11 @@ class HomeFragment : BackpackMainFragment(), BackpackMain {
 
     override fun onStart() {
         super.onStart()
-//        (requireActivity() as MainActivity).showSubtitle()
+        (requireActivity() as MainActivity).showSubtitle()
     }
 
     private fun hideSubtitle() {
-//        (requireActivity() as MainActivity).showSubtitle(false)
+        (requireActivity() as MainActivity).showSubtitle(false)
     }
 
     private fun readAndShowPins() {
