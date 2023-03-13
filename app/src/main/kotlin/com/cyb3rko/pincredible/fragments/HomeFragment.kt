@@ -62,21 +62,21 @@ class HomeFragment : BackpackMainFragment(), BackpackMain {
 
     private val fileCreatorResultLauncher =
         registerForActivityResult(StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val uri = result.data?.data ?: return@registerForActivityResult
-            BackupHandler.runBackup(myContext, uri, true)
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uri = result.data?.data ?: return@registerForActivityResult
+                BackupHandler.runBackup(myContext, uri, true)
+            }
         }
-    }
 
     private val filePickerResultLauncher =
         registerForActivityResult(StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val uri = result.data?.data ?: return@registerForActivityResult
-            BackupHandler.restoreBackup(myContext, uri) {
-                readAndShowPins()
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uri = result.data?.data ?: return@registerForActivityResult
+                BackupHandler.restoreBackup(myContext, uri) {
+                    readAndShowPins()
+                }
             }
         }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

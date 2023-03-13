@@ -25,8 +25,8 @@ import android.provider.OpenableColumns
 import androidx.activity.result.ActivityResultLauncher
 import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.backpack.data.Serializable
-import com.cyb3rko.backpack.utils.lastN
 import com.cyb3rko.backpack.modals.ErrorDialog
+import com.cyb3rko.backpack.utils.lastN
 import com.cyb3rko.backpack.utils.nthLast
 import com.cyb3rko.backpack.utils.withoutLast
 import com.cyb3rko.backpack.utils.withoutLastN
@@ -289,7 +289,7 @@ internal object BackupHandler {
             progressNote.text = context.getString(R.string.dialog_import_state_saving, 75)
 
             val fileHash = CryptoManager.xxHash(backup.name)
-            val saved = savePinFile(context, "p${fileHash}", backup.pinTable, backup.siid)
+            val saved = savePinFile(context, "p$fileHash", backup.pinTable, backup.siid)
             progressBar.progress = 100
             if (saved) {
                 progressNote.text = context.getString(R.string.dialog_single_import_state_finished)
