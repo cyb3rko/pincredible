@@ -28,6 +28,7 @@ import androidx.navigation.fragment.findNavController
 import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.backpack.modals.ErrorDialog
+import com.cyb3rko.backpack.utils.Vibration
 import com.cyb3rko.backpack.utils.hide
 import com.cyb3rko.backpack.utils.show
 import com.cyb3rko.pincredible.R
@@ -39,7 +40,6 @@ import com.cyb3rko.pincredible.modals.InputDialog
 import com.cyb3rko.pincredible.utils.BackupHandler
 import com.cyb3rko.pincredible.utils.ObjectSerializer
 import com.cyb3rko.pincredible.utils.Safe
-import com.cyb3rko.pincredible.utils.Vibration
 import java.io.File
 import java.security.SecureRandom
 
@@ -47,7 +47,6 @@ class PinCreatorFragment : Fragment() {
     private var _binding: FragmentPinCreatorBinding? = null
 
     // This property is only valid between onCreateView and onDestroyView.
-
     private val binding get() = _binding!!
 
     private lateinit var myContext: Context
