@@ -18,6 +18,7 @@ package com.cyb3rko.pincredible
 
 import android.os.Bundle
 import androidx.navigation.findNavController
+import androidx.viewbinding.ViewBinding
 import com.cyb3rko.backpack.activities.BackpackMainActivity
 import com.cyb3rko.backpack.interfaces.BackpackMain
 import com.cyb3rko.pincredible.databinding.ActivityMainBinding
@@ -30,12 +31,12 @@ class MainActivity : BackpackMainActivity(), BackpackMain {
         super.onCreate(savedInstanceState)
         Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler(this))
         binding = ActivityMainBinding.inflate(layoutInflater).asContentView()
+        findNavController(R.id.nav_host_fragment_content_main).apply()
         bindInterface(this)
     }
 
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        findNavController(R.id.nav_host_fragment_content_main).applyToActionBar()
+    override fun getBinding(): ViewBinding {
+        return binding
     }
 
     override fun getToolbar(): MaterialToolbar {

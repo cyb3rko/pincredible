@@ -33,6 +33,11 @@
         </activity>
 
         <activity
+            android:name="com.cyb3rko.backpack.activities.BackpackAuthenticationActivity"
+            android:exported="false"
+            android:fitsSystemWindows="true" />
+
+        <activity
             android:name="com.cyb3rko.pincredible.SettingsActivity"
             android:parentActivityName=".MainActivity"
             android:fitsSystemWindows="true"

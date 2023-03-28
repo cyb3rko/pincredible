@@ -6,6 +6,14 @@
         app:title="@string/preference_category_security">
 
         <SwitchPreferenceCompat
+            app:key="app_lock"
+            app:defaultValue="false"
+            app:singleLineTitle="false"
+            app:title="@string/preference_item_app_lock"
+            app:summary="@string/preference_item_app_lock_summary"
+            app:icon="@drawable/colored_ic_biometry" />
+
+        <SwitchPreferenceCompat
             app:key="button_randomizer"
             app:defaultValue="false"
             app:singleLineTitle="false"
