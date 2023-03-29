@@ -444,7 +444,7 @@ internal object BackupHandler {
         val name: String
     ) : Serializable() {
         companion object {
-            private const val serialVersionUID = 2006776746261561110
+            private const val serialVersionUID = -2831435563176726440
         }
     }
 
@@ -454,7 +454,7 @@ internal object BackupHandler {
         val fileName: String
     ) : Serializable() {
         companion object {
-            private const val serialVersionUID = 8043046138014917867
+            private const val serialVersionUID = 8205381827686169546
         }
     }
 
@@ -463,7 +463,7 @@ internal object BackupHandler {
         val names: Set<String>
     ) : Serializable() {
         companion object {
-            private const val serialVersionUID = 9095785564497675984
+            private const val serialVersionUID = 3259317506686259398
         }
     }
 }

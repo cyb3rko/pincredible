@@ -72,6 +72,6 @@ internal class PinTable : Serializable() {
     companion object {
         const val ROW_COUNT = 7
         const val COLUMN_COUNT = 7
-        private const val serialVersionUID = 8063487384233439016
+        private const val serialVersionUID = 5997637778385570065
     }
 }
