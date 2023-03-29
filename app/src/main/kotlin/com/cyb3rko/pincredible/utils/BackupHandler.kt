@@ -445,6 +445,8 @@ internal object BackupHandler {
     ) : Serializable() {
         companion object {
             private const val serialVersionUID = -2831435563176726440
+
+            fun getSerialUID() = serialVersionUID
         }
     }
 
@@ -455,6 +457,8 @@ internal object BackupHandler {
     ) : Serializable() {
         companion object {
             private const val serialVersionUID = 8205381827686169546
+
+            fun getSerialUID() = serialVersionUID
         }
     }
 
@@ -464,6 +468,8 @@ internal object BackupHandler {
     ) : Serializable() {
         companion object {
             private const val serialVersionUID = 3259317506686259398
+
+            fun getSerialUID() = serialVersionUID
         }
     }
 }

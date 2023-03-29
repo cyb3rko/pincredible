@@ -24,6 +24,7 @@ import com.cyb3rko.backpack.data.Serializable
 import com.cyb3rko.backpack.fragments.BackpackAnalysisFragment
 import com.cyb3rko.backpack.interfaces.BackpackAnalysis
 import com.cyb3rko.pincredible.data.PinTable
+import com.cyb3rko.pincredible.utils.BackupHandler
 import kotlin.random.Random
 
 class AnalysisFragment : BackpackAnalysisFragment(), BackpackAnalysis {
@@ -54,5 +55,14 @@ class AnalysisFragment : BackpackAnalysisFragment(), BackpackAnalysis {
             setRandomPattern(this)
         }
         return pinTable
+    }
+
+    override fun getSerializableUids(): List<Pair<String, Long>> {
+        return listOf(
+            "PinTable" to PinTable.getSerialUID(),
+            "SingleBackupStructure" to BackupHandler.SingleBackupStructure.getSerialUID(),
+            "MultiBackupPinTable" to BackupHandler.MultiBackupPinTable.getSerialUID(),
+            "MultiBackupStructure" to BackupHandler.MultiBackupStructure.getSerialUID()
+        )
     }
 }

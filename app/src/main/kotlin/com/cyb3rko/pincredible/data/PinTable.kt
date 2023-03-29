@@ -73,5 +73,7 @@ internal class PinTable : Serializable() {
         const val ROW_COUNT = 7
         const val COLUMN_COUNT = 7
         private const val serialVersionUID = 5997637778385570065
+
+        fun getSerialUID() = serialVersionUID
     }
 }
