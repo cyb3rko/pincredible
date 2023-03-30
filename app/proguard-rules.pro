@@ -20,4 +20,8 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class com.cyb3rko.pincredible.** { **; }
+-keep class com.cyb3rko.pincredible.**
+
+-keepclassmembers class * implements com.cyb3rko.backpack.data.Serializable {
+    static final long serialVersionUID;
+}
