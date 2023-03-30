@@ -15,6 +15,7 @@ android {
         targetSdk 33
         versionCode 7
         versionName '0.4.2'
+        resValue 'string', "app_name", "PINcredible DEV"
         signingConfig signingConfigs.debug
     }
     applicationVariants.all { variant ->
@@ -25,7 +26,6 @@ android {
             minifyEnabled false
             debuggable true
             applicationIdSuffix ".dev"
-            resValue 'string', "app_name", "PINcredible DEV"
         }
         release {
             minifyEnabled true
@@ -48,6 +48,9 @@ android {
         storeArchive {
             enable = false
         }
+    }
+    lintOptions {
+        disable "Instantiatable"
     }
 }
 
