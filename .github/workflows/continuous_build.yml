@@ -1,0 +1,47 @@
+name: Continuous Builder
+on:
+  [workflow_dispatch, push, pull_request]
+
+jobs:
+  build:
+    name: Continuous Builder
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout local repo
+        uses: actions/checkout@v2
+        with:
+          path: ./pincredible
+      - name: Checkout backpack repo
+        uses: actions/checkout@v2
+        with:
+          repository: cyb3rko/backpack-apps
+          path: ./backpack-apps
+          
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with: 
+          distribution: 'zulu'
+          java-version: '11'
+          
+      - name: Show root directory
+        run: ls
+      - name: Show pincredible directory
+        run: |
+          cd pincredible
+          ls
+          cd ..
+      - name: Show backpack directory
+        run: |
+          cd backpack-apps
+          ls
+          cd ..
+        
+      - name: Build APK
+        run: |
+          cd pincredible
+          ./gradlew build --stacktrace
+          
+      - name: List build output
+        run: |
+          cd pincredible/app/build/outputs/apk/release/
+          ls
