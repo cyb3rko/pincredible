@@ -82,29 +82,17 @@ jobs:
           CHANGELOG: ${{ steps.github_release.outputs.changelog }}
         run: echo "$CHANGELOG"
         
-      - name: Checkout local repo
+      - name: Checkout repo including backpack submodule
         uses: actions/checkout@v2
         with:
-          path: ./pincredible
-      - name: Checkout backpack repo
-        uses: actions/checkout@v2
-        with:
-          repository: cyb3rko/backpack-apps
-          path: ./backpack-apps
+          submodules: recursive
           
       - name: Setup JDK
         uses: actions/setup-java@v3
         with: 
           distribution: 'zulu'
           java-version: '11'
-          
-      - name: Show root directory
-        run: ls
-      - name: Show pincredible directory
-        run: |
-          cd pincredible
-          ls
-          cd ..
+
       - name: Show backpack directory
         run: |
           cd backpack-apps
@@ -116,7 +104,6 @@ jobs:
         
       - name: Build APK
         run: |
-          cd pincredible
           export KEYSTORE_FILE=$(pwd)/keystore.jks
           echo $KEYSTORE | base64 -d > $KEYSTORE_FILE
           ./gradlew -Psign build --stacktrace
@@ -129,7 +116,7 @@ jobs:
           
       - name: List build output
         run: |
-          cd pincredible/app/build/outputs/apk/release/
+          cd app/build/outputs/apk/release/
           ls
         
       - name: Create Release
@@ -137,4 +124,4 @@ jobs:
         with:
           name: "Version ${{ env.RELEASE_VERSION }}"
           body: ${{steps.github_release.outputs.changelog}}
-          files: pincredible/app/build/outputs/apk/release/PINcredible-${{env.RELEASE_VERSION}}.apk
+          files: app/build/outputs/apk/release/PINcredible-${{env.RELEASE_VERSION}}.apk
