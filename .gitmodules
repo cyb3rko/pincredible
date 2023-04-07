@@ -1,0 +1,3 @@
+[submodule "backpack-apps"]
+	path = backpack-apps
+	url = https://github.com/cyb3rko/backpack-apps
