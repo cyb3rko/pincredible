@@ -1,6 +1,15 @@
 name: Continuous Builder
 on:
-  [workflow_dispatch, push, pull_request]
+  workflow_dispatch:
+  push:
+    paths-ignore:
+      - 'metadata/**'
+      - 'legal/**'
+      - '**.md'
+      - 'LICENSE'
+      - '.github/workflows/release-builder.yml'
+      - '.github/FUNDING.yml'
+  pull_request:
 
 jobs:
   build:
