@@ -49,6 +49,9 @@ android {
             enable = false
         }
     }
+    lint {
+        disable 'Instantiatable'
+    }
 }
 
 if (project.hasProperty('sign')) {
