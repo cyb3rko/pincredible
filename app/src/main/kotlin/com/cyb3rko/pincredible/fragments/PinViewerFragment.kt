@@ -40,15 +40,19 @@ import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.backpack.modals.ErrorDialog
 import com.cyb3rko.backpack.utils.Vibration
+import com.cyb3rko.backpack.utils.show
 import com.cyb3rko.backpack.utils.withoutLast
 import com.cyb3rko.pincredible.R
+import com.cyb3rko.pincredible.SettingsActivity
 import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.databinding.FragmentPinViewerBinding
 import com.cyb3rko.pincredible.modals.AcceptDialog
 import com.cyb3rko.pincredible.utils.BackupHandler
 import com.cyb3rko.pincredible.utils.BackupHandler.SingleBackupStructure
 import com.cyb3rko.pincredible.utils.ObjectSerializer
+import com.cyb3rko.pincredible.utils.Safe
 import com.cyb3rko.pincredible.utils.TableScreenshotHandler
+import com.cyb3rko.pincredible.views.CoordinateViewManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -114,6 +118,13 @@ class PinViewerFragment : Fragment() {
 
         binding.hashView.text = getString(R.string.viewer_hash, hash.take(10))
         binding.pinNameView.text = args.pin
+
+        CoordinateViewManager.initializeViews(
+            myContext,
+            binding.coordinatesRow1,
+            binding.coordinatesCol1,
+            binding.coordinatesCol2
+        )
 
         lifecycleScope.launch {
             loadDataIntoTable()

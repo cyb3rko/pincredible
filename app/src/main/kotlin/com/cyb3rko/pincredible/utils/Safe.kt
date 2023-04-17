@@ -25,4 +25,10 @@ internal object Safe {
         key: String,
         default: Boolean
     ) = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(key, default)
+
+    internal fun getString(
+        context: Context,
+        key: String,
+        default: String
+    ) = PreferenceManager.getDefaultSharedPreferences(context).getString(key, default)
 }

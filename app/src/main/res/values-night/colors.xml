@@ -2,5 +2,6 @@
 <resources>
 
     <color name="table_cell_selected">@color/white</color>
+    <color name="table_coordinate_text">@color/white</color>
 
 </resources>

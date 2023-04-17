@@ -40,6 +40,7 @@ import com.cyb3rko.pincredible.modals.InputDialog
 import com.cyb3rko.pincredible.utils.BackupHandler
 import com.cyb3rko.pincredible.utils.ObjectSerializer
 import com.cyb3rko.pincredible.utils.Safe
+import com.cyb3rko.pincredible.views.CoordinateViewManager
 import java.io.File
 import java.security.SecureRandom
 
@@ -71,6 +72,13 @@ class PinCreatorFragment : Fragment() {
         setTableClickListeners()
         setButtonClickListeners()
         setFabClickListener()
+
+        CoordinateViewManager.initializeViews(
+            myContext,
+            binding.coordinatesRow1,
+            binding.coordinatesCol1,
+            binding.coordinatesCol2
+        )
     }
 
     private fun setTableClickListeners() {

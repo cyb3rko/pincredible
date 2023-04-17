@@ -10,5 +10,6 @@
     <color name="table_cell_orange">#ffa500</color>
     <color name="table_cell_pink">#ff0e00</color>
     <color name="table_cell_yellow">#F0FF00</color>
+    <color name="table_coordinate_text">@color/gray</color>
 
 </resources>

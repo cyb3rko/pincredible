@@ -5,6 +5,8 @@
     <dimen name="table_cell_height">45dp</dimen>
     <dimen name="table_cell_width">@dimen/table_cell_height</dimen>
     <dimen name="table_text_size">20sp</dimen>
+    <dimen name="table_coordinate_text_size">10sp</dimen>
+    <dimen name="table_coordinate_size">20dp</dimen>
     <dimen name="table_vertical_space">2dp</dimen>
     <dimen name="table_horizontal_space">2dp</dimen>
     <dimen name="dialog_progress_padding_top_left_right">24dp</dimen>

@@ -18,6 +18,7 @@
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -56,12 +57,53 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginBottom="12dp"
                 android:layout_marginStart="16dp" />
 
-            <com.cyb3rko.pincredible.views.PinTableView
-                android:id="@+id/table_view"
+            <include
+                layout="@layout/table_coordinates_hori"
+                android:id="@+id/coordinates_row1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="21dp"
+                android:layout_marginStart="21dp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    layout="@layout/table_coordinates_vert"
+                    android:id="@+id/coordinates_col1"
+                    android:layout_width="@dimen/table_coordinate_size"
+                    android:layout_height="0dp"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="@id/table_view"
+                    app:layout_constraintTop_toTopOf="@id/table_view"
+                    tools:visibility="visible" />
+
+                <com.cyb3rko.pincredible.views.PinTableView
+                    android:id="@+id/table_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@id/coordinates_col2"
+                    app:layout_constraintStart_toEndOf="@id/coordinates_col1"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <include
+                    layout="@layout/table_coordinates_vert"
+                    android:id="@+id/coordinates_col2"
+                    android:layout_width="@dimen/table_coordinate_size"
+                    android:layout_height="0dp"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="@id/table_view"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/table_view"
+                    tools:visibility="visible" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/hash_view"

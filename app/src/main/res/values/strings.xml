@@ -21,7 +21,7 @@
     <string name="exception_copy">Copy to clipboard</string>
 
     <!-- Dialog Content -->
-    <string name="icon_credits">Touch Id icon created by Vectors Tank - Flaticon\n\nPalm Scanner created by juicy_fish - Flaticon\n\nRandom icon created by Uniconlabs</string>
+    <string name="icon_credits">Touch Id icon created by Vectors Tank - Flaticon\n\nPalm Scanner created by juicy_fish - Flaticon\n\nRandom icon created by Uniconlabs - Flaticon\n\nGrid icons created by prettycons - Flaticon</string>
     <string name="dialog_credits_title">Icon Credits</string>
     <string name="dialog_delete_button1">Yes</string>
     <string name="dialog_delete_button2">No</string>
@@ -66,6 +66,8 @@
     <string name="preference_item_material_you">Material You (adaptive colors)</string>
     <string name="preference_item_material_you_summary">Use adaptive system colors over brand colors</string>
     <string name="preference_item_material_you_note">Not supported by your Android version</string>
+    <string name="preference_item_coordinate_frame">Coordinate Frame</string>
+    <string name="preference_item_coordinate_frame_summary">Show a frame around tables</string>
     <string name="dialog_restart_title">Restart required</string>
     <string name="dialog_restart_message">The change will be visible on next app start.\n\nDo you want to restart now?</string>
     <string name="dialog_restart_button2">Later</string>
