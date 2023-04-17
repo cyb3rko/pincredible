@@ -165,6 +165,7 @@ internal object BackupHandler {
                 )
 
                 val nameFile = File(context.filesDir, PINS_FILE)
+
                 @Suppress("UNCHECKED_CAST")
                 val names = ObjectSerializer.deserialize(
                     CryptoManager.decrypt(nameFile)
