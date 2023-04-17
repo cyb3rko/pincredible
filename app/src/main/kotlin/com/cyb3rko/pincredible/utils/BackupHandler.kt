@@ -19,15 +19,17 @@ package com.cyb3rko.pincredible.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
-import android.provider.OpenableColumns
+import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.backpack.data.Serializable
+import com.cyb3rko.backpack.managers.StorageManager
 import com.cyb3rko.backpack.modals.ErrorDialog
+import com.cyb3rko.backpack.utils.dateNow
 import com.cyb3rko.backpack.utils.lastN
 import com.cyb3rko.backpack.utils.nthLast
+import com.cyb3rko.backpack.utils.toFormattedString
 import com.cyb3rko.backpack.utils.withoutLast
 import com.cyb3rko.backpack.utils.withoutLastN
 import com.cyb3rko.pincredible.R
@@ -35,8 +37,6 @@ import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.modals.PasswordDialog
 import com.cyb3rko.pincredible.modals.ProgressDialog
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
 
 internal object BackupHandler {
     const val PIN_CRYPTO_ITERATION = 0
@@ -54,9 +54,9 @@ internal object BackupHandler {
 
     @SuppressLint("SimpleDateFormat")
     fun initiateSingleBackup(hash: String, launcher: ActivityResultLauncher<Intent>) {
-        val timestamp = SimpleDateFormat("yyyyMMdd-HHmmss").format(Date(System.currentTimeMillis()))
+        val timestamp = dateNow().toFormattedString()
         val fileName = "PIN-${hash.take(8)}-$timestamp$SINGLE_BACKUP_FILE"
-        showFileCreator(launcher, fileName)
+        StorageManager.launchFileCreator(launcher, fileName)
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -64,10 +64,9 @@ internal object BackupHandler {
         val fileList = context.fileList()
         if (fileList.size > 1) {
             val numberOfPins = fileList.size - 1
-            val timestamp = SimpleDateFormat("yyyyMMdd-HHmmss")
-                .format(Date(System.currentTimeMillis()))
+            val timestamp = dateNow().toFormattedString()
             val fileName = "PINs[$numberOfPins]-$timestamp$MULTI_BACKUP_FILE"
-            showFileCreator(launcher, fileName)
+            StorageManager.launchFileCreator(launcher, fileName)
         }
     }
 
@@ -166,6 +165,7 @@ internal object BackupHandler {
                 )
 
                 val nameFile = File(context.filesDir, PINS_FILE)
+                @Suppress("UNCHECKED_CAST")
                 val names = ObjectSerializer.deserialize(
                     CryptoManager.decrypt(nameFile)
                 ) as Set<String>
@@ -190,7 +190,7 @@ internal object BackupHandler {
     }
 
     fun initiateRestoreBackup(launcher: ActivityResultLauncher<Intent>) {
-        showFilePicker(launcher)
+        StorageManager.launchFileSelector(launcher)
     }
 
     fun restoreBackup(
@@ -228,7 +228,7 @@ internal object BackupHandler {
     }
 
     private fun getBackupType(context: Context, uri: Uri): BackupType {
-        val fileName = getFileName(context, uri) ?: return BackupType.UNKNOWN
+        val fileName = StorageManager.getUriFileName(context, uri) ?: return BackupType.UNKNOWN
         return if (fileName.endsWith(".pin")) {
             BackupType.SINGLE_PIN
         } else if (fileName.endsWith(".pinc")) {
@@ -272,6 +272,7 @@ internal object BackupHandler {
             }
 
             val version = bytes.nthLast(OVERHEAD_SIZE)
+            Log.d("PINcredible Backup", "Backup version $version found")
             val backup = ObjectSerializer.deserialize(
                 bytes.withoutLastN(OVERHEAD_SIZE)
             ) as SingleBackupStructure
@@ -339,6 +340,7 @@ internal object BackupHandler {
             }
 
             val version = bytes.nthLast(OVERHEAD_SIZE)
+            Log.d("PINcredible Backup", "Backup version $version found")
             val backup = ObjectSerializer.deserialize(
                 bytes.withoutLastN(OVERHEAD_SIZE)
             ) as MultiBackupStructure
@@ -397,45 +399,6 @@ internal object BackupHandler {
         } else {
             false
         }
-    }
-
-    private fun showFileCreator(
-        launcher: ActivityResultLauncher<Intent>,
-        fileName: String
-    ) {
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "*/*"
-            putExtra(Intent.EXTRA_TITLE, fileName)
-        }
-        launcher.launch(intent)
-    }
-
-    private fun showFilePicker(launcher: ActivityResultLauncher<Intent>) {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "*/*"
-        }
-        launcher.launch(intent)
-    }
-
-    private fun getFileName(context: Context, uri: Uri): String? {
-        // The query, because it only applies to a single document, returns only one row. There's no
-        // need to filter, sort, or select fields, because we want all fields for one document.
-        val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null, null)
-
-        cursor?.use {
-            // moveToFirst() returns false if the cursor has 0 rows. Very handy for "if there's
-            // anything to look at, look at it" conditionals.
-            if (it.moveToFirst()) {
-                // Note it's called "Display Name". This is
-                // provider-specific, and might not necessarily be the file name.
-                val index = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                if (index < 0) return null
-                return it.getString(index)
-            }
-        }
-        return null
     }
 
     class SingleBackupStructure(
