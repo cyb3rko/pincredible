@@ -16,9 +16,11 @@
 
 package com.cyb3rko.pincredible
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.cyb3rko.backpack.utils.openUrl
@@ -35,6 +37,14 @@ class UncaughtExceptionActivity : AppCompatActivity() {
 
         binding = ActivityUncaughtExceptionBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+                startActivity(Intent(applicationContext, MainActivity::class.java))
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
