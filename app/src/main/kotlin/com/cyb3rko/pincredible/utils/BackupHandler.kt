@@ -23,6 +23,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import com.cyb3rko.backpack.crypto.CryptoManager
+import com.cyb3rko.backpack.crypto.CryptoManager.Hash
 import com.cyb3rko.backpack.data.Serializable
 import com.cyb3rko.backpack.managers.StorageManager
 import com.cyb3rko.backpack.modals.ErrorDialog
@@ -96,7 +97,7 @@ internal object BackupHandler {
     private fun runSingleExport(
         context: Context,
         uri: Uri,
-        hash: String,
+        hash: Hash,
         singleBackup: SingleBackupStructure
     ) {
         val progressDialog = ProgressDialog(true).apply {
@@ -115,7 +116,7 @@ internal object BackupHandler {
             CryptoManager.encrypt(
                 bytes.plus(version).plus(INTEGRITY_CHECK.encodeToByteArray()),
                 context.contentResolver.openOutputStream(uri),
-                hash.take(32)
+                hash
             )
 
             progressBar.isIndeterminate = false
@@ -129,7 +130,11 @@ internal object BackupHandler {
         }
     }
 
-    private fun runExport(context: Context, uri: Uri, hash: String) {
+    private fun runExport(
+        context: Context,
+        uri: Uri,
+        hash: Hash
+    ) {
         val progressDialog = ProgressDialog(false).apply {
             show(
                 context,
@@ -174,9 +179,11 @@ internal object BackupHandler {
                 val bytes = ObjectSerializer.serialize(MultiBackupStructure(pins.toSet(), names))
                 val version = MULTI_BACKUP_CRYPTO_ITERATION.toByte()
                 CryptoManager.encrypt(
-                    bytes.plus(version).plus(INTEGRITY_CHECK.encodeToByteArray()),
+                    bytes
+                        .plus(version)
+                        .plus(INTEGRITY_CHECK.encodeToByteArray()),
                     context.contentResolver.openOutputStream(uri),
-                    hash.take(32)
+                    hash
                 )
 
                 progressBar.progress = 100
@@ -218,9 +225,9 @@ internal object BackupHandler {
             if (input.isNotEmpty() && input.length in 10..100) {
                 dialog.dismiss()
                 if (backupType == BackupType.SINGLE_PIN) {
-                    doRestoreSingleBackup(context, uri, CryptoManager.shaHash(input), onFinished)
+                    doRestoreSingleBackup(context, uri, input, onFinished)
                 } else if (backupType == BackupType.MULTI_PIN) {
-                    doRestoreMultiBackup(context, uri, CryptoManager.shaHash(input), onFinished)
+                    doRestoreMultiBackup(context, uri, input, onFinished)
                 }
             } else {
                 inputLayout.error = context.getString(R.string.dialog_name_error_length, 10, 100)
@@ -242,7 +249,7 @@ internal object BackupHandler {
     private fun doRestoreSingleBackup(
         context: Context,
         uri: Uri,
-        hash: String,
+        input: String,
         onFinished: () -> Unit
     ) {
         val progressDialog = ProgressDialog(false).apply {
@@ -258,7 +265,7 @@ internal object BackupHandler {
         try {
             val bytes = CryptoManager.decrypt(
                 context.contentResolver.openInputStream(uri),
-                hash.take(32)
+                input
             )
             progressBar.progress = 25
             progressNote.text = context.getString(R.string.dialog_import_state_retrieving, 25)
@@ -310,7 +317,7 @@ internal object BackupHandler {
     private fun doRestoreMultiBackup(
         context: Context,
         uri: Uri,
-        hash: String,
+        input: String,
         onFinished: () -> Unit
     ) {
         val progressDialog = ProgressDialog(false).apply {
@@ -326,7 +333,7 @@ internal object BackupHandler {
         try {
             val bytes = CryptoManager.decrypt(
                 context.contentResolver.openInputStream(uri),
-                hash.take(32)
+                input
             )
             progressBar.progress = 25
             progressNote.text = context.getString(R.string.dialog_import_state_retrieving, 25)
