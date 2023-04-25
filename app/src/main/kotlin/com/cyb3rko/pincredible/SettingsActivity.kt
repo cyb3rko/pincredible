@@ -38,6 +38,7 @@ internal class SettingsActivity : BackpackSettingsActivity(), BackpackSettings {
 
     companion object {
         const val KEY_BUTTON_RANDOMIZER = "button_randomizer"
+        const val KEY_COLOR_BLIND = "color_blindness"
         const val KEY_COORDINATE_FRAME = "coordinate_frame"
     }
 }

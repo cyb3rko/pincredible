@@ -55,6 +55,9 @@ class PinCreatorFragment : Fragment() {
     private var clickedCell: Cell? = null
     private val addedIndices by lazy { mutableSetOf<Int>() }
     private val vibrator by lazy { Vibration.getVibrator(myContext) }
+    private val colorBlindAlternative by lazy {
+        Safe.getBoolean(myContext, SettingsActivity.KEY_COLOR_BLIND, false)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,7 +71,7 @@ class PinCreatorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.tableView.colorizeRandom(pinTable)
+        binding.tableView.colorizeRandom(pinTable, colorBlindAlternative)
         setTableClickListeners()
         setButtonClickListeners()
         setFabClickListener()
@@ -88,7 +91,7 @@ class PinCreatorFragment : Fragment() {
             cell.setOnClickListener {
                 Vibration.vibrateTick(vibrator)
                 clickedCell?.let { safeClickedCell ->
-                    tableView.unselect(safeClickedCell)
+                    tableView.unselect(safeClickedCell, colorBlindAlternative)
                     if (safeClickedCell.view == it) {
                         clickedCell = null
                         binding.buttonContainer.hide()
@@ -97,7 +100,7 @@ class PinCreatorFragment : Fragment() {
                 }
 
                 currentBackgroundInt = pinTable.getBackground(row, column)
-                tableView.select(cell, currentBackgroundInt)
+                tableView.select(cell, currentBackgroundInt, colorBlindAlternative)
                 clickedCell = Cell(cell, row, column, currentBackgroundInt)
                 shuffleButtonDigits()
                 binding.buttonContainer.show()
@@ -118,7 +121,7 @@ class PinCreatorFragment : Fragment() {
 
                         clickedCellView = it.view
                         clickedCellView.text = button.text
-                        tableView.unselect(it)
+                        tableView.unselect(it, colorBlindAlternative)
                         val number = clickedCellView.text.toString().toInt()
                         pinTable.put(it.row, it.column, number)
                         addedIndices.add(it.row * 7 + it.column)
@@ -128,7 +131,7 @@ class PinCreatorFragment : Fragment() {
                 }
             }
             buttonGenerate.setOnClickListener {
-                binding.tableView.colorizeRandom(pinTable)
+                binding.tableView.colorizeRandom(pinTable, colorBlindAlternative)
             }
             buttonFill.setOnClickListener {
                 fillTable()

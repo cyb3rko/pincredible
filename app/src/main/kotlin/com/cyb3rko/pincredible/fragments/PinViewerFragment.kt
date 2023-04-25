@@ -42,12 +42,14 @@ import com.cyb3rko.backpack.modals.ErrorDialog
 import com.cyb3rko.backpack.utils.Vibration
 import com.cyb3rko.backpack.utils.withoutLast
 import com.cyb3rko.pincredible.R
+import com.cyb3rko.pincredible.SettingsActivity
 import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.databinding.FragmentPinViewerBinding
 import com.cyb3rko.pincredible.modals.AcceptDialog
 import com.cyb3rko.pincredible.utils.BackupHandler
 import com.cyb3rko.pincredible.utils.BackupHandler.SingleBackupStructure
 import com.cyb3rko.pincredible.utils.ObjectSerializer
+import com.cyb3rko.pincredible.utils.Safe
 import com.cyb3rko.pincredible.utils.TableScreenshotHandler
 import com.cyb3rko.pincredible.views.CoordinateViewManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -70,6 +72,9 @@ class PinViewerFragment : Fragment() {
     private val hash by lazy { CryptoManager.xxHash(args.pin) }
     private lateinit var pinTable: PinTable
     private var siid by Delegates.notNull<Byte>()
+    private val colorBlindAlternative by lazy {
+        Safe.getBoolean(myContext, SettingsActivity.KEY_COLOR_BLIND, false)
+    }
 
     private val imageCreatorResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -177,7 +182,7 @@ class PinViewerFragment : Fragment() {
             pinTable = decryptData(hash)
             withContext(Dispatchers.Main) {
                 binding.progressBar.hide()
-                binding.tableView.colorize(pinTable)
+                binding.tableView.colorize(pinTable, colorBlindAlternative)
                 binding.tableView.fill(pinTable)
             }
             binding.exportFab.show()

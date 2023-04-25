@@ -10,6 +10,11 @@
     <color name="table_cell_orange">#ffa500</color>
     <color name="table_cell_pink">#ff0e00</color>
     <color name="table_cell_yellow">#F0FF00</color>
+    <color name="table_cell_cb_blue">#648FFF</color>
+    <color name="table_cell_cb_purple">#785EF0</color>
+    <color name="table_cell_cb_pink">#DC267F</color>
+    <color name="table_cell_cb_orange">#FE6100</color>
+    <color name="table_cell_cb_yellow">#FFB000</color>
     <color name="table_coordinate_text">@color/gray</color>
 
 </resources>

@@ -25,10 +25,10 @@ import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.get
+import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.data.Cell
 import com.cyb3rko.pincredible.data.PinTable
-import kotlin.random.Random
 
 internal class PinTableView(
     private val context: Context,
@@ -56,17 +56,12 @@ internal class PinTableView(
         }
     }
 
-    fun colorize(pinTable: PinTable) {
+    fun colorize(pinTable: PinTable, colorBlindAlternative: Boolean) {
+        var colorIndex: Int
         var backgroundInt: Int
         iterate { _, row, column ->
-            backgroundInt = when (pinTable.getBackground(row, column)) {
-                0 -> R.drawable.cell_shape_cyan
-                1 -> R.drawable.cell_shape_green
-                2 -> R.drawable.cell_shape_orange
-                3 -> R.drawable.cell_shape_red
-                4 -> R.drawable.cell_shape_yellow
-                else -> -1 // Not possible to appear
-            }
+            colorIndex = pinTable.getBackground(row, column)
+            backgroundInt = colorIndexToDrawableID(colorIndex, colorBlindAlternative)
             getCell(row, column).background = ResourcesCompat.getDrawable(
                 resources,
                 backgroundInt,
@@ -75,20 +70,13 @@ internal class PinTableView(
         }
     }
 
-    fun colorizeRandom(pinTable: PinTable) {
+    fun colorizeRandom(pinTable: PinTable, colorBlindAlternative: Boolean) {
         var randomIndex: Int
         var randomBackgroundInt: Int
         var randomBackground: Drawable
         iterate { _, row, column ->
-            randomIndex = Random.nextInt(5)
-            randomBackgroundInt = when (randomIndex) {
-                0 -> R.drawable.cell_shape_cyan
-                1 -> R.drawable.cell_shape_green
-                2 -> R.drawable.cell_shape_orange
-                3 -> R.drawable.cell_shape_red
-                4 -> R.drawable.cell_shape_yellow
-                else -> -1 // Not possible to appear
-            }
+            randomIndex = CryptoManager.getRandom(0, 5)
+            randomBackgroundInt = colorIndexToDrawableID(randomIndex, colorBlindAlternative)
             randomBackground = ResourcesCompat.getDrawable(
                 resources,
                 randomBackgroundInt,
@@ -99,15 +87,15 @@ internal class PinTableView(
         }
     }
 
-    fun select(cell: TextView, @ColorRes backgroundInt: Int) {
-        val selectedBackgroundInt = when (backgroundInt) {
-            0 -> R.drawable.cell_shape_cyan_selected
-            1 -> R.drawable.cell_shape_green_selected
-            2 -> R.drawable.cell_shape_orange_selected
-            3 -> R.drawable.cell_shape_red_selected
-            4 -> R.drawable.cell_shape_yellow_selected
-            else -> -1 // Not possible to appear
-        }
+    fun select(
+        cell: TextView,
+        @ColorRes backgroundInt: Int,
+        colorBlindAlternative: Boolean
+    ) {
+        val selectedBackgroundInt = colorIndexToSelectedDrawableID(
+            backgroundInt,
+            colorBlindAlternative
+        )
         cell.background = ResourcesCompat.getDrawable(
             resources,
             selectedBackgroundInt,
@@ -115,15 +103,8 @@ internal class PinTableView(
         )!!
     }
 
-    fun unselect(cell: Cell) {
-        val backgroundInt = when (cell.background) {
-            0 -> R.drawable.cell_shape_cyan
-            1 -> R.drawable.cell_shape_green
-            2 -> R.drawable.cell_shape_orange
-            3 -> R.drawable.cell_shape_red
-            4 -> R.drawable.cell_shape_yellow
-            else -> -1 // Not possible to appear
-        }
+    fun unselect(cell: Cell, colorBlindAlternative: Boolean) {
+        val backgroundInt = colorIndexToDrawableID(cell.background, colorBlindAlternative)
         cell.view.background = ResourcesCompat.getDrawable(
             resources,
             backgroundInt,
@@ -134,6 +115,38 @@ internal class PinTableView(
     fun clear() {
         iterate { _, row, column ->
             getCell(row, column).text = null
+        }
+    }
+
+    private fun colorIndexToDrawableID(index: Int, colorBlindAlternative: Boolean): Int {
+        return when (if (!colorBlindAlternative) index else index + 5) {
+            0 -> R.drawable.cell_shape_cyan
+            1 -> R.drawable.cell_shape_green
+            2 -> R.drawable.cell_shape_orange
+            3 -> R.drawable.cell_shape_red
+            4 -> R.drawable.cell_shape_yellow
+            5 -> R.drawable.cell_shape_cb_blue
+            6 -> R.drawable.cell_shape_cb_purple
+            7 -> R.drawable.cell_shape_cb_orange
+            8 -> R.drawable.cell_shape_cb_pink
+            9 -> R.drawable.cell_shape_cb_yellow
+            else -> -1 // Not possible to appear
+        }
+    }
+
+    private fun colorIndexToSelectedDrawableID(index: Int, colorBlindAlternative: Boolean): Int {
+        return when (if (!colorBlindAlternative) index else index + 5) {
+            0 -> R.drawable.cell_shape_cyan_selected
+            1 -> R.drawable.cell_shape_green_selected
+            2 -> R.drawable.cell_shape_orange_selected
+            3 -> R.drawable.cell_shape_red_selected
+            4 -> R.drawable.cell_shape_yellow_selected
+            5 -> R.drawable.cell_shape_cb_blue_selected
+            6 -> R.drawable.cell_shape_cb_purple_selected
+            7 -> R.drawable.cell_shape_cb_orange_selected
+            8 -> R.drawable.cell_shape_cb_pink_selected
+            9 -> R.drawable.cell_shape_cb_yellow_selected
+            else -> -1 // Not possible to appear
         }
     }
 }

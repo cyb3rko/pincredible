@@ -63,7 +63,7 @@ internal class PinTable : Serializable() {
         data.forEachIndexed { rowIndex, row ->
             row.indices.forEach { columnIndex ->
                 if (!ignoredIndices.contains(rowIndex * 7 + columnIndex)) {
-                    row[columnIndex] = CryptoManager.getSecureRandom()
+                    row[columnIndex] = CryptoManager.getSecureRandom(10)
                 }
             }
         }

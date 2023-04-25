@@ -35,6 +35,14 @@
             app:summary="@string/preference_item_material_you_summary"
             app:icon="@drawable/colored_ic_art" />
 
+        <SwitchPreferenceCompat
+            app:key="color_blindness"
+            app:defaultValue="false"
+            app:singleLineTitle="false"
+            app:title="@string/preference_item_color_blindness"
+            app:summary="@string/preference_item_color_blindness_summary"
+            app:icon="@drawable/colored_ic_color_blind" />
+
         <ListPreference
             app:key="coordinate_frame"
             app:defaultValue="-1"
