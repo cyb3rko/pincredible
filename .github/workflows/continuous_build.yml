@@ -8,6 +8,7 @@ on:
       - '**.md'
       - 'LICENSE'
       - '.github/workflows/release-builder.yml'
+      - '.github/workflows/fossa.yml'
       - '.github/FUNDING.yml'
   pull_request:
 
