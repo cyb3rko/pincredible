@@ -10,8 +10,11 @@
 
 [![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat)](https://apilevels.com)
 [![release](https://img.shields.io/github/release/cyb3rko/pincredible.svg)](https://github.com/cyb3rko/pincredible/releases/latest)
+[![fdroid](https://img.shields.io/f-droid/v/com.cyb3rko.pincredible.svg)](https://f-droid.org/packages/com.cyb3rko.pincredible)
 [![license](https://img.shields.io/github/license/cyb3rko/pincredible)](https://www.apache.org/licenses/LICENSE-2.0)
 [![last commit](https://img.shields.io/github/last-commit/cyb3rko/pincredible?color=F34C9F)](https://github.com/cyb3rko/pincredible/commits/main)
+
+[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B35689%2Fgithub.com%2Fcyb3rko%2Fpincredible.svg?type=small)](https://fossa.com/)
 
 - [About this project](#about-this-project)   
 - [Beta Phase - Breaking Changes](#beta-phase---%EF%B8%8Fbreaking-changes%EF%B8%8F)
