@@ -49,6 +49,9 @@ android {
             enable = false
         }
     }
+    packagingOptions {
+        exclude 'META-INF/*.version'
+    }
     lint {
         disable 'Instantiatable'
     }
