@@ -57,6 +57,7 @@ internal object BackupHandler {
     fun initiateSingleBackup(hash: String, launcher: ActivityResultLauncher<Intent>) {
         val timestamp = dateNow().toFormattedString()
         val fileName = "PIN-${hash.take(8)}-$timestamp$SINGLE_BACKUP_FILE"
+        Log.d("PINcredible", "Initiated single backup: initially $fileName")
         StorageManager.launchFileCreator(launcher, fileName)
     }
 
@@ -67,6 +68,7 @@ internal object BackupHandler {
             val numberOfPins = fileList.size - 1
             val timestamp = dateNow().toFormattedString()
             val fileName = "PINs[$numberOfPins]-$timestamp$MULTI_BACKUP_FILE"
+            Log.d("PINcredible", "Initiated full backup: initially $fileName")
             StorageManager.launchFileCreator(launcher, fileName)
         }
     }
@@ -100,6 +102,7 @@ internal object BackupHandler {
         hash: Hash,
         singleBackup: SingleBackupStructure
     ) {
+        Log.d("PINcredible", "Running single export")
         val progressDialog = ProgressDialog(true).apply {
             show(
                 context,
@@ -135,6 +138,7 @@ internal object BackupHandler {
         uri: Uri,
         hash: Hash
     ) {
+        Log.d("PINcredible", "Running full export")
         val progressDialog = ProgressDialog(false).apply {
             show(
                 context,
@@ -198,6 +202,7 @@ internal object BackupHandler {
     }
 
     fun initiateRestoreBackup(launcher: ActivityResultLauncher<Intent>) {
+        Log.d("PINcredible", "Initiated backup restore")
         StorageManager.launchFileSelector(launcher)
     }
 
@@ -252,6 +257,7 @@ internal object BackupHandler {
         input: String,
         onFinished: () -> Unit
     ) {
+        Log.d("PINcredible", "Running single backup restore")
         val progressDialog = ProgressDialog(false).apply {
             show(
                 context,
@@ -280,7 +286,7 @@ internal object BackupHandler {
             }
 
             val version = bytes.nthLast(OVERHEAD_SIZE)
-            Log.d("PINcredible Backup", "Backup version $version found")
+            Log.d("PINcredible Backup", "Single backup version $version found")
             val backup = ObjectSerializer.deserialize(
                 bytes.withoutLastN(OVERHEAD_SIZE)
             ) as SingleBackupStructure
@@ -320,6 +326,7 @@ internal object BackupHandler {
         input: String,
         onFinished: () -> Unit
     ) {
+        Log.d("PINcredible", "Running full backup restore")
         val progressDialog = ProgressDialog(false).apply {
             show(
                 context,
@@ -348,7 +355,7 @@ internal object BackupHandler {
             }
 
             val version = bytes.nthLast(OVERHEAD_SIZE)
-            Log.d("PINcredible Backup", "Backup version $version found")
+            Log.d("PINcredible Backup", "Full backup version $version found")
             val backup = ObjectSerializer.deserialize(
                 bytes.withoutLastN(OVERHEAD_SIZE)
             ) as MultiBackupStructure

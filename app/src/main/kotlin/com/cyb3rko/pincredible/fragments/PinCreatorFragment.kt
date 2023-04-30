@@ -196,6 +196,7 @@ class PinCreatorFragment : Fragment() {
             val bytes = ObjectSerializer.serialize(pinTable)
             val version = BackupHandler.PIN_CRYPTO_ITERATION.toByte()
             CryptoManager.encrypt(bytes.plus(version), newPinFile)
+            Log.d("PINcredible", "New PIN - Hash:$hash, version:$version")
             true
         } else {
             false
@@ -207,12 +208,14 @@ class PinCreatorFragment : Fragment() {
         val pinsFile = File(myContext.filesDir, BackupHandler.PINS_FILE)
 
         if (!pinsFile.exists()) {
+            Log.d("PINcredible", "Creating new PINs file")
             pinsFile.createNewFile()
             CryptoManager.encrypt(
                 ObjectSerializer.serialize(setOf(name)),
                 pinsFile
             )
         } else {
+            Log.d("PINcredible", "Appending PIN to PINs file")
             CryptoManager.appendStrings(pinsFile, name)
         }
     }

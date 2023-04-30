@@ -143,6 +143,7 @@ class HomeFragment : BackpackMainFragment(), BackpackMainView {
             val pins: List<String>
             try {
                 pins = retrievePins()
+                Log.d("PINcredible", "${pins.size} PINs found")
                 withContext(Dispatchers.Main) {
                     showSavedPins(pins)
                 }

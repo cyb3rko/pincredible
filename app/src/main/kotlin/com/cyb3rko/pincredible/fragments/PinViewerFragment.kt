@@ -201,6 +201,7 @@ class PinViewerFragment : Fragment() {
         siid = bytes.last()
         @SuppressLint("SetTextI18n")
         binding.siidView.text = "SIID: $siid"
+        Log.d("PINcredible", "PIN - Hash:$hash, version:$siid")
         return ObjectSerializer.deserialize(bytes.withoutLast()) as PinTable
     }
 
