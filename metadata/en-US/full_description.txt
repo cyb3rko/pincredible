@@ -14,8 +14,6 @@ This brings two security benefits:
 For technical details about the implemented security take a look at the <a href="https://github.com/cyb3rko/pincredible" title="pincredible github">GitHub repo readme</a>.
 
 <b>Used Icons</b>
-<a href="https://www.flaticon.com/free-icons/information" title="information icons">Information icons created by Freepik - Flaticon</a>
-<a href="https://www.flaticon.com/free-icons/security" title="security icons">Security icons created by Freepik - Flaticon</a>
-<a href="https://www.flaticon.com/free-icons/safe-box" title="safe box icons">Safe box icons created by juicy_fish - Flaticon</a>
-<a href="https://www.flaticon.com/free-icons/next" title="next icons">Next icons created by Roundicons - Flaticon</a>
-<a href="https://www.flaticon.com/free-icons/branch" title="branch icons">Branch icons created by Creatype - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/color-blindness-test" title="color-blindness-test icons">Color-blindness-test icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/grid" title="grid icons">Grid icons created by prettycons - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/random" title="random icons">Random icons created by Uniconlabs - Flaticon</a>
