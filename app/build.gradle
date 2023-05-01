@@ -13,8 +13,8 @@ android {
         applicationId 'com.cyb3rko.pincredible'
         minSdk 23
         targetSdk 33
-        versionCode 9
-        versionName '0.5.1'
+        versionCode 10
+        versionName '0.6.0'
         resValue 'string', "app_name", "PINcredible DEV"
         signingConfig signingConfigs.debug
     }
