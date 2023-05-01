@@ -19,6 +19,7 @@
 - [About this project](#about-this-project)   
 - [Beta Phase - Breaking Changes](#beta-phase---%EF%B8%8Fbreaking-changes%EF%B8%8F)
 - [Feature Overview](#feature-overview)  
+  - [Accessible color palette](#accessible-color-palette)
 - [Legal Liability](#legal-liability)  
 - [Download](#download)
 - [Supported devices](#supported-devices)
@@ -63,7 +64,11 @@ This brings two security benefits:
 For the input of PIN digits the app uses an in-app keyboard.  
 This brings the following two security benefits:
 1. ⌨️ (At least some) protection against [keylogging](https://en.wikipedia.org/wiki/Keystroke_logging)
-2. 📱 *coming soon*
+2. 📱 (Optional) protection against touch location logging (by shuffling digit keyboard buttons)
+
+### Accessible color palette
+
+In addition to the default color palette PINcredible offers an accessible color palette (following the [IBM Color Blindness Palette](https://davidmathlogic.com/colorblind/#%23648FFF-%23785EF0-%23DC267F-%23FE6100-%23FFB000)).  
 
 ## Legal Liability
 
@@ -95,8 +100,9 @@ If you have any problems, maybe even because your device seems to be incompatibl
 Let's take a look at the technical details.
 
 At first here are the algorithms used:
+- AES/GCM/NoPadding (Advanced Encryption Standard in Galois/Counter Mode)
 - XXH128 (XXHash3-128) [[xxHash Repo](https://github.com/Cyan4973/xxHash), thanks to [Matthew Dolan](https://github.com/mattmook) for the [Kotlin implementation](https://github.com/appmattus/crypto/tree/main/cryptohash/src/commonMain/kotlin/com/appmattus/crypto/internal/core/xxh3)]
-- AES/CBC/PKCS7 (Advanced Encryption Standard in CBC mode with PKCS7 padding)
+- SHA512 (250.000 iterations; used for backup password inputs)
 
 For easier understanding how the app works internally I've created the following diagram.  
 Find the detailed explanation below.
@@ -107,18 +113,23 @@ Find the detailed explanation below.
 
 **So what's happening here?**
 
-1. **App Start**  
-When you open the app the home screen shows up and lists the stored PINs. In the background the symmetric AES key from the Android Keystore and the encrypted file containing the available PIN names are retrieved. After decrypting we have the available PIN names to show in the list.
-2. **Clicking on a PIN**  
-The next step would be clicking on a listed PIN name. It is handed over to the next screen and gets hashed by xxHash.  
-This hash can then be used to find the corresponding file in the file system containing the encrypted PIN pattern (including colors).  
-Again the AES key is retrieved and used to decrypt the retrieved file. The app is now ready to process the decrypted data and present you the stored PIN pattern in the table view.
-3. **Clicking on 'add' button**  
-The last step I want to talk about is the creation of new PIN patterns:  
-The creation screen contains an empty but colored table view. First you decide rather you want to use the initial color pattern or let the app generate a new one (using standard random numbers, no SecureRandom here as it's not cryptographically relevant).  
-When you've chosen a fitting pattern you start by putting in as many digits as you want into the table. Clicking the 'fill' button will then fill the remaining empty cells with SecureRandom numbers provided by your device.  
-Before saving the PIN pattern you type in a custom name, which again will be hashed and used as the file name.  
-Finally we again retrieve the AES key to encrypt the new PIN pattern file, save it in the file system and append the chosen PIN name to the PIN name file for your home screen.
+### 1. App Start  
+- retrieval of symmetric AES key and encrypted file containing available PIN names
+- decryption of the file contents
+- presenting available PIN names on screen
+
+### 2. Clicking on a PIN  
+- handing over PIN name to next screen and hashing it (XXHash)
+- find corresponding file containing encrypted PIN pattern (including colors)
+- retrieval of symmetric AES key and encrypted file containing PIN pattern
+- presenting decrypted PIN pattern in table view
+
+### 3. Clicking on 'add' button (PIN creation)
+- decide rather you want to use the initial color pattern or generate a new one (using standard random numbers, no SecureRandom here as it's not cryptographically relevant)
+- fill in your PIN somewhere and fill the remaining empty cells (using SecureRandom provided by your device)
+- type in a custom name, it will be hashed and used as the file name
+- retrieval of symmetric AES key
+- encrypt and save PIN pattern to file, append chosen PIN name to PIN name file (for the home screen)
 
 That's the whole magic behind PINcredible, if you have questions or if you are a Security Expert and you have recommendations for improving the overall security, please tell me [via the issues](https://github.com/cyb3rko/pincredible/issues) or via e-mail:  niko @ cyb3rko.de.
 
@@ -133,11 +144,9 @@ Using a unified code format makes it much easier for me and for everyone else.
 
 | 💛 |
 | --- |  
-| <a href="https://www.flaticon.com/free-icons/information" title="information icons">Information icons created by Freepik - Flaticon</a> |
-| <a href="https://www.flaticon.com/free-icons/security" title="security icons">Security icons created by Freepik - Flaticon</a> |
-| <a href="https://www.flaticon.com/free-icons/safe-box" title="safe box icons">Safe box icons created by juicy_fish - Flaticon</a> |
-| <a href="https://www.flaticon.com/free-icons/next" title="next icons">Next icons created by Roundicons - Flaticon</a> |
-| <a href="https://www.flaticon.com/free-icons/branch" title="branch icons">Branch icons created by Creatype - Flaticon</a> |
+| <a href="https://www.flaticon.com/free-icons/color-blindness-test" title="color-blindness-test icons">Color-blindness-test icons created by Freepik - Flaticon</a> |
+| <a href="https://www.flaticon.com/free-icons/grid" title="grid icons">Grid icons created by prettycons - Flaticon</a> |
+| <a href="https://www.flaticon.com/free-icons/random" title="random icons">Random icons created by Uniconlabs - Flaticon</a> |
 
 ## License
 
