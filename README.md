@@ -16,17 +16,18 @@
 
 [![FOSSA Status](https://app.fossa.com/api/projects/custom%2B35689%2Fgithub.com%2Fcyb3rko%2Fpincredible.svg?type=small)](https://fossa.com/)
 
-- [About this project](#about-this-project)   
-- [Beta Phase - Breaking Changes](#beta-phase---%EF%B8%8Fbreaking-changes%EF%B8%8F)
+- [About this project](#about-this-project)  
+- [Beta Phase - Breaking Changes](#beta-phase---%EF%B8%8Fbreaking-changes%EF%B8%8F)  
 - [Feature Overview](#feature-overview)  
-  - [Accessible color palette](#accessible-color-palette)
+  - [Accessible color palette](#accessible-color-palette)  
 - [Legal Liability](#legal-liability)  
-- [Download](#download)
-- [Supported devices](#supported-devices)
-- [Screenshots](#screenshots)
-- [Security Aspects](#security-aspects)
-- [Contribute](#contribute)
-- [Used Icons](#used-icons)
+- [Download](#download)  
+  - [Verification](#verification)  
+- [Supported devices](#supported-devices)  
+- [Screenshots](#screenshots)  
+- [Security Aspects](#security-aspects)  
+- [Contribute](#contribute)  
+- [Used Icons](#used-icons)  
 - [License](#license)
 
 ---
@@ -84,8 +85,33 @@ Google Play download link available after beta phase
 [<img height="80" alt="Get it on F-Droid"
 src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
 />](https://f-droid.org/packages/com.cyb3rko.pincredible/)
+[<img height="80" src="https://raw.githubusercontent.com/gotify/android/master/download-badge.png"/>](https://github.com/cyb3rko/pincredible/releases/latest)
 
-Or get the latest APK from the [Releases Section](https://github.com/cyb3rko/pincredible/releases/latest).
+### Verification
+
+APK releases on F-Droid and GitHub are signed using the same key. They can be verified using [apksigner](https://developer.android.com/studio/command-line/apksigner.html#options-verify):
+
+```
+apksigner verify --print-certs -v example.apk
+```
+
+The output should look like:
+
+```
+Verifies
+Verified using v1 scheme (JAR signing): true
+Verified using v2 scheme (APK Signature Scheme v2): true
+```
+
+The certificate content and digests should look like this:
+
+```
+DN: C=DE, CN=Niko Diamadis
+Certificate Digests:
+  SHA-256: 7b:d9:79:cd:5f:f9:29:e0:72:90:e8:8d:67:b2:d8:1f:22:8e:a2:64:e4:33:f7:84:e4:c6:63:73:e3:16:bc:ad
+  SHA-1:   c7:52:14:9f:4d:c3:e4:02:26:92:0b:68:20:94:6e:da:99:01:69:29
+  MD5:     8d:15:71:36:6e:30:7c:23:c9:2c:e8:9d:f2:38:5f:e1
+```
 
 ## Supported Devices
 The minimum supported Android version is API level 23, Android 6 (Marshmallow).  
