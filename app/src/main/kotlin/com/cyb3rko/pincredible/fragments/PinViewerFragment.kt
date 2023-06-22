@@ -39,6 +39,8 @@ import androidx.navigation.fragment.navArgs
 import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.backpack.modals.ErrorDialog
+import com.cyb3rko.backpack.utils.ObjectSerializer
+import com.cyb3rko.backpack.utils.Safe
 import com.cyb3rko.backpack.utils.Vibration
 import com.cyb3rko.backpack.utils.withoutLast
 import com.cyb3rko.pincredible.R
@@ -48,8 +50,6 @@ import com.cyb3rko.pincredible.databinding.FragmentPinViewerBinding
 import com.cyb3rko.pincredible.modals.AcceptDialog
 import com.cyb3rko.pincredible.utils.BackupHandler
 import com.cyb3rko.pincredible.utils.BackupHandler.SingleBackupStructure
-import com.cyb3rko.pincredible.utils.ObjectSerializer
-import com.cyb3rko.pincredible.utils.Safe
 import com.cyb3rko.pincredible.utils.TableScreenshotHandler
 import com.cyb3rko.pincredible.views.CoordinateViewManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -73,7 +73,7 @@ class PinViewerFragment : Fragment() {
     private lateinit var pinTable: PinTable
     private var siid by Delegates.notNull<Byte>()
     private val colorBlindAlternative by lazy {
-        Safe.getBoolean(myContext, SettingsActivity.KEY_COLOR_BLIND, false)
+        Safe.getBoolean(SettingsActivity.KEY_COLOR_BLIND, false)
     }
 
     private val imageCreatorResultLauncher =
@@ -122,7 +122,6 @@ class PinViewerFragment : Fragment() {
         binding.pinNameView.text = args.pin
 
         CoordinateViewManager.initializeViews(
-            myContext,
             binding.coordinatesRow1,
             binding.coordinatesCol1,
             binding.coordinatesCol2

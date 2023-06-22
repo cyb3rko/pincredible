@@ -28,6 +28,8 @@ import androidx.navigation.fragment.findNavController
 import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.backpack.modals.ErrorDialog
+import com.cyb3rko.backpack.utils.ObjectSerializer
+import com.cyb3rko.backpack.utils.Safe
 import com.cyb3rko.backpack.utils.Vibration
 import com.cyb3rko.backpack.utils.hide
 import com.cyb3rko.backpack.utils.show
@@ -38,8 +40,6 @@ import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.databinding.FragmentPinCreatorBinding
 import com.cyb3rko.pincredible.modals.InputDialog
 import com.cyb3rko.pincredible.utils.BackupHandler
-import com.cyb3rko.pincredible.utils.ObjectSerializer
-import com.cyb3rko.pincredible.utils.Safe
 import com.cyb3rko.pincredible.views.CoordinateViewManager
 import java.io.File
 import java.security.SecureRandom
@@ -56,7 +56,7 @@ class PinCreatorFragment : Fragment() {
     private val addedIndices by lazy { mutableSetOf<Int>() }
     private val vibrator by lazy { Vibration.getVibrator(myContext) }
     private val colorBlindAlternative by lazy {
-        Safe.getBoolean(myContext, SettingsActivity.KEY_COLOR_BLIND, false)
+        Safe.getBoolean(SettingsActivity.KEY_COLOR_BLIND, false)
     }
 
     override fun onCreateView(
@@ -77,7 +77,6 @@ class PinCreatorFragment : Fragment() {
         setFabClickListener()
 
         CoordinateViewManager.initializeViews(
-            myContext,
             binding.coordinatesRow1,
             binding.coordinatesCol1,
             binding.coordinatesCol2
@@ -221,7 +220,7 @@ class PinCreatorFragment : Fragment() {
     }
 
     private fun shuffleButtonDigits() {
-        if (!Safe.getBoolean(myContext, SettingsActivity.KEY_BUTTON_RANDOMIZER, false)) return
+        if (!Safe.getBoolean(SettingsActivity.KEY_BUTTON_RANDOMIZER, false)) return
         val digits = MutableList(10) { it }.apply {
             shuffle(SecureRandom())
         }

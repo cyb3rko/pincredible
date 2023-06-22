@@ -34,6 +34,7 @@ import com.cyb3rko.backpack.data.BuildInfo
 import com.cyb3rko.backpack.fragments.BackpackMainFragment
 import com.cyb3rko.backpack.interfaces.BackpackMainView
 import com.cyb3rko.backpack.modals.ErrorDialog
+import com.cyb3rko.backpack.utils.ObjectSerializer
 import com.cyb3rko.backpack.utils.Vibration
 import com.cyb3rko.backpack.utils.hide
 import com.cyb3rko.backpack.utils.show
@@ -45,7 +46,6 @@ import com.cyb3rko.pincredible.databinding.FragmentHomeBinding
 import com.cyb3rko.pincredible.recycler.PinAdapter
 import com.cyb3rko.pincredible.utils.BackupHandler
 import com.cyb3rko.pincredible.utils.DebugUtils
-import com.cyb3rko.pincredible.utils.ObjectSerializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

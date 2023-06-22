@@ -27,6 +27,7 @@ import com.cyb3rko.backpack.crypto.CryptoManager.Hash
 import com.cyb3rko.backpack.data.Serializable
 import com.cyb3rko.backpack.managers.StorageManager
 import com.cyb3rko.backpack.modals.ErrorDialog
+import com.cyb3rko.backpack.utils.ObjectSerializer
 import com.cyb3rko.backpack.utils.dateNow
 import com.cyb3rko.backpack.utils.lastN
 import com.cyb3rko.backpack.utils.nthLast

@@ -16,14 +16,13 @@
 
 package com.cyb3rko.pincredible.views
 
-import android.content.Context
 import android.widget.LinearLayout
 import androidx.core.view.children
+import com.cyb3rko.backpack.utils.Safe
 import com.cyb3rko.backpack.utils.show
 import com.cyb3rko.pincredible.SettingsActivity
 import com.cyb3rko.pincredible.databinding.TableCoordinatesHoriBinding
 import com.cyb3rko.pincredible.databinding.TableCoordinatesVertBinding
-import com.cyb3rko.pincredible.utils.Safe
 import com.google.android.material.textview.MaterialTextView
 
 internal object CoordinateViewManager {
@@ -37,35 +36,30 @@ internal object CoordinateViewManager {
     }
 
     fun initializeViews(
-        context: Context,
         row: TableCoordinatesHoriBinding,
         col1: TableCoordinatesVertBinding,
         col2: TableCoordinatesVertBinding
     ) {
-        if (Safe.getString(context, SettingsActivity.KEY_COORDINATE_FRAME, "-1") != "-1") {
-            fillView(context, row)
-            fillView(context, col1)
-            fillView(context, col2)
+        if (Safe.getString(SettingsActivity.KEY_COORDINATE_FRAME, "-1") != "-1") {
+            fillView(row)
+            fillView(col1)
+            fillView(col2)
             row.root.show()
             col1.root.show()
             col2.root.show()
         }
     }
 
-    private fun fillView(context: Context, view: TableCoordinatesHoriBinding) {
-        lowerFillView(context, view.root, Orientation.HORIZONTAL)
+    private fun fillView(view: TableCoordinatesHoriBinding) {
+        lowerFillView(view.root, Orientation.HORIZONTAL)
     }
 
-    private fun fillView(context: Context, view: TableCoordinatesVertBinding) {
-        lowerFillView(context, view.root, Orientation.VERTICAL)
+    private fun fillView(view: TableCoordinatesVertBinding) {
+        lowerFillView(view.root, Orientation.VERTICAL)
     }
 
-    private fun lowerFillView(
-        context: Context,
-        view: LinearLayout,
-        orientation: Orientation
-    ) {
-        val setting = Safe.getString(context, SettingsActivity.KEY_COORDINATE_FRAME, "-1")!!
+    private fun lowerFillView(view: LinearLayout, orientation: Orientation) {
+        val setting = Safe.getString(SettingsActivity.KEY_COORDINATE_FRAME, "-1")!!
         val frame = when (setting.toInt()) {
             0 -> Frame.INDEX
             1 -> Frame.CHESS

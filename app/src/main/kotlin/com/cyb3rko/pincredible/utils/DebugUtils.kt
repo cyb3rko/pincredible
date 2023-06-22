@@ -18,6 +18,7 @@ package com.cyb3rko.pincredible.utils
 
 import android.content.Context
 import com.cyb3rko.backpack.crypto.CryptoManager
+import com.cyb3rko.backpack.utils.ObjectSerializer
 import com.cyb3rko.pincredible.data.PinTable
 import java.io.File
 import kotlin.random.Random
