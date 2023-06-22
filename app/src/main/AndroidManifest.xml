@@ -44,7 +44,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".UncaughtExceptionActivity"
+            android:name="com.cyb3rko.backpack.UncaughtExceptionActivity"
             android:exported="false"
             android:fitsSystemWindows="true" />
 

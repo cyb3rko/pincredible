@@ -29,7 +29,6 @@ class MainActivity : BackpackMainActivity(), BackpackMain {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler(this))
         binding = ActivityMainBinding.inflate(layoutInflater).asContentView()
         findNavController(R.id.nav_host_fragment_content_main).apply()
         bindInterface(this)
@@ -45,5 +44,9 @@ class MainActivity : BackpackMainActivity(), BackpackMain {
 
     override fun getVersionName(): String {
         return getString(R.string.version_name)
+    }
+
+    override fun getGitHubLink(): String {
+        return getString(R.string.github_link)
     }
 }

@@ -17,8 +17,6 @@
     <string name="save_pin">Save PIN</string>
     <string name="viewer_hash">Hash: %s</string>
     <string name="table_empty_cell" translatable="false">0</string>
-    <string name="exception_report">Report to app creator</string>
-    <string name="exception_copy">Copy to clipboard</string>
 
     <!-- Dialog Content -->
     <string name="icon_credits">Touch Id icon created by Vectors Tank - Flaticon\n\nPalm Scanner created by juicy_fish - Flaticon\n\nRandom icon created by Uniconlabs - Flaticon\n\nColor-blindness-test icons created by Freepik - Flaticon\n\nGrid icons created by prettycons - Flaticon</string>
