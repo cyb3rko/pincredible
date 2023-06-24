@@ -27,6 +27,7 @@ import com.cyb3rko.backpack.crypto.CryptoManager.Hash
 import com.cyb3rko.backpack.data.Serializable
 import com.cyb3rko.backpack.managers.StorageManager
 import com.cyb3rko.backpack.modals.ErrorDialog
+import com.cyb3rko.backpack.modals.PasswordDialog
 import com.cyb3rko.backpack.utils.ObjectSerializer
 import com.cyb3rko.backpack.utils.dateNow
 import com.cyb3rko.backpack.utils.lastN
@@ -36,7 +37,6 @@ import com.cyb3rko.backpack.utils.withoutLast
 import com.cyb3rko.backpack.utils.withoutLastN
 import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.data.PinTable
-import com.cyb3rko.pincredible.modals.PasswordDialog
 import com.cyb3rko.pincredible.modals.ProgressDialog
 import java.io.File
 
@@ -80,19 +80,11 @@ internal object BackupHandler {
         multiPin: Boolean,
         singleBackup: SingleBackupStructure? = null
     ) {
-        PasswordDialog.show(
-            context,
-            R.string.dialog_backup_title
-        ) { dialog, inputLayout, input ->
-            if (input.isNotEmpty() && input.length in 10..100) {
-                dialog.dismiss()
-                if (!multiPin) {
-                    runSingleExport(context, uri, CryptoManager.shaHash(input), singleBackup!!)
-                } else {
-                    runExport(context, uri, CryptoManager.shaHash(input))
-                }
+        PasswordDialog.show(context, R.string.dialog_backup_title) { input ->
+            if (!multiPin) {
+                runSingleExport(context, uri, CryptoManager.shaHash(input), singleBackup!!)
             } else {
-                inputLayout.error = context.getString(R.string.dialog_name_error_length, 10, 100)
+                runExport(context, uri, CryptoManager.shaHash(input))
             }
         }
     }
@@ -227,16 +219,11 @@ internal object BackupHandler {
             context,
             R.string.dialog_backup_title,
             showError
-        ) { dialog, inputLayout, input ->
-            if (input.isNotEmpty() && input.length in 10..100) {
-                dialog.dismiss()
-                if (backupType == BackupType.SINGLE_PIN) {
-                    doRestoreSingleBackup(context, uri, input, onFinished)
-                } else if (backupType == BackupType.MULTI_PIN) {
-                    doRestoreMultiBackup(context, uri, input, onFinished)
-                }
-            } else {
-                inputLayout.error = context.getString(R.string.dialog_name_error_length, 10, 100)
+        ) { input ->
+            if (backupType == BackupType.SINGLE_PIN) {
+                doRestoreSingleBackup(context, uri, input, onFinished)
+            } else if (backupType == BackupType.MULTI_PIN) {
+                doRestoreMultiBackup(context, uri, input, onFinished)
             }
         }
     }

@@ -32,8 +32,6 @@
     <string name="dialog_name_error_length">Use between %1$d-%2$d characters</string>
     <string name="dialog_name_hint">Give it a name</string>
     <string name="dialog_name_title">PIN Name</string>
-    <string name="dialog_password_hint">Your Password</string>
-    <string name="dialog_password_error">Invalid integrity, most likely wrong password</string>
     <string name="dialog_backup_title">Encryption Password</string>
     <string name="dialog_single_export_message">Exporting single PIN…</string>
     <string name="dialog_single_export_finished">PIN export completed…</string>
