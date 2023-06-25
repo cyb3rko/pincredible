@@ -28,6 +28,7 @@ import androidx.navigation.fragment.findNavController
 import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.backpack.modals.ErrorDialog
+import com.cyb3rko.backpack.modals.InputDialog
 import com.cyb3rko.backpack.utils.ObjectSerializer
 import com.cyb3rko.backpack.utils.Safe
 import com.cyb3rko.backpack.utils.Vibration
@@ -38,7 +39,6 @@ import com.cyb3rko.pincredible.SettingsActivity
 import com.cyb3rko.pincredible.data.Cell
 import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.databinding.FragmentPinCreatorBinding
-import com.cyb3rko.pincredible.modals.InputDialog
 import com.cyb3rko.pincredible.utils.BackupHandler
 import com.cyb3rko.pincredible.views.CoordinateViewManager
 import java.io.File
@@ -146,29 +146,26 @@ class PinCreatorFragment : Fragment() {
             InputDialog.show(
                 myContext,
                 R.string.dialog_name_title,
-                R.string.dialog_name_hint
+                R.string.dialog_name_hint,
+                maxInputLength = 30
             ) { dialog, inputLayout, input ->
-                if (input.isNotEmpty() && input.length <= 30) {
-                    try {
-                        val hash = CryptoManager.xxHash(input)
-                        val saved = savePinFile(hash)
-                        if (saved) {
-                            savePinName(input)
-                            Vibration.vibrateDoubleClick(vibrator)
-                            dialog.dismiss()
-                            findNavController().navigate(
-                                PinCreatorFragmentDirections.pinCreatorToHome()
-                            )
-                        } else {
-                            inputLayout.error = getString(R.string.dialog_name_error_exist)
-                        }
-                    } catch (e: EnDecryptionException) {
-                        Log.d("CryptoManager", e.customStacktrace)
+                try {
+                    val hash = CryptoManager.xxHash(input)
+                    val saved = savePinFile(hash)
+                    if (saved) {
+                        savePinName(input)
+                        Vibration.vibrateDoubleClick(vibrator)
                         dialog.dismiss()
-                        ErrorDialog.show(myContext, e)
+                        findNavController().navigate(
+                            PinCreatorFragmentDirections.pinCreatorToHome()
+                        )
+                    } else {
+                        inputLayout.error = getString(R.string.dialog_name_error_exist)
                     }
-                } else {
-                    inputLayout.error = getString(R.string.dialog_name_error_length, 1, 30)
+                } catch (e: EnDecryptionException) {
+                    Log.d("CryptoManager", e.customStacktrace)
+                    dialog.dismiss()
+                    ErrorDialog.show(myContext, e)
                 }
             }
         }

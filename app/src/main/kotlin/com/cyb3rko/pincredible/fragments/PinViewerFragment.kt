@@ -38,6 +38,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
+import com.cyb3rko.backpack.modals.AcceptDialog
 import com.cyb3rko.backpack.modals.ErrorDialog
 import com.cyb3rko.backpack.utils.ObjectSerializer
 import com.cyb3rko.backpack.utils.Safe
@@ -47,7 +48,6 @@ import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.SettingsActivity
 import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.databinding.FragmentPinViewerBinding
-import com.cyb3rko.pincredible.modals.AcceptDialog
 import com.cyb3rko.pincredible.utils.BackupHandler
 import com.cyb3rko.pincredible.utils.BackupHandler.SingleBackupStructure
 import com.cyb3rko.pincredible.utils.TableScreenshotHandler

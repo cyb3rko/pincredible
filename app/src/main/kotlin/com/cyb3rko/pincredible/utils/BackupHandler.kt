@@ -28,6 +28,7 @@ import com.cyb3rko.backpack.data.Serializable
 import com.cyb3rko.backpack.managers.StorageManager
 import com.cyb3rko.backpack.modals.ErrorDialog
 import com.cyb3rko.backpack.modals.PasswordDialog
+import com.cyb3rko.backpack.modals.ProgressDialog
 import com.cyb3rko.backpack.utils.ObjectSerializer
 import com.cyb3rko.backpack.utils.dateNow
 import com.cyb3rko.backpack.utils.lastN
@@ -37,7 +38,6 @@ import com.cyb3rko.backpack.utils.withoutLast
 import com.cyb3rko.backpack.utils.withoutLastN
 import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.data.PinTable
-import com.cyb3rko.pincredible.modals.ProgressDialog
 import java.io.File
 
 internal object BackupHandler {
@@ -103,8 +103,6 @@ internal object BackupHandler {
                 initialNote = context.getString(R.string.dialog_single_export_message)
             )
         }
-        val progressBar = progressDialog.binding.progressBar
-        val progressNote = progressDialog.binding.progressNote
 
         try {
             val bytes = ObjectSerializer.serialize(singleBackup)
@@ -114,14 +112,10 @@ internal object BackupHandler {
                 context.contentResolver.openOutputStream(uri),
                 hash
             )
-
-            progressBar.isIndeterminate = false
-            progressBar.progress = 100
-            progressNote.text = context.getString(R.string.dialog_single_export_finished)
-            progressDialog.dialogReference.setCancelable(true)
+            progressDialog.complete(context.getString(R.string.dialog_single_export_finished))
         } catch (e: Exception) {
             e.printStackTrace()
-            progressDialog.dialogReference.cancel()
+            progressDialog.cancel()
             ErrorDialog.show(context, e, R.string.dialog_export_error)
         }
     }
@@ -139,32 +133,33 @@ internal object BackupHandler {
                 initialNote = context.getString(R.string.dialog_export_state_retrieving, 0)
             )
         }
-        val progressBar = progressDialog.binding.progressBar
-        val progressNote = progressDialog.binding.progressNote
 
         try {
             val fileList = context.fileList()
             if (fileList.size > 1) {
                 val progressStep = 50 / (fileList.size - 1)
                 val pins = mutableListOf<MultiBackupPinTable>()
+                var message: String
                 context.filesDir.listFiles()?.forEach {
                     if (it.name.startsWith("p") && it.name != PINS_FILE) {
                         val bytes = CryptoManager.decrypt(it)
                         val version = bytes.last()
                         val pinTable = ObjectSerializer.deserialize(bytes.withoutLast()) as PinTable
                         pins.add(MultiBackupPinTable(pinTable, version, it.name))
-                        progressBar.progress = progressBar.progress + progressStep
-                        progressNote.text = context.getString(
+                        progressDialog.updateRelative(progressStep)
+                        message = context.getString(
                             R.string.dialog_export_state_retrieving,
-                            progressBar.progress
+                            progressDialog.getProgress()
                         )
+                        progressDialog.updateText(message)
                     }
                 }
-                progressBar.progress = 50
-                progressNote.text = context.getString(
+                progressDialog.updateAbsolute(50)
+                message = context.getString(
                     R.string.dialog_export_state_saving,
                     50
                 )
+                progressDialog.updateText(message)
 
                 val nameFile = File(context.filesDir, PINS_FILE)
 
@@ -182,14 +177,11 @@ internal object BackupHandler {
                     context.contentResolver.openOutputStream(uri),
                     hash
                 )
-
-                progressBar.progress = 100
-                progressNote.text = context.getString(R.string.dialog_export_state_finished)
-                progressDialog.dialogReference.setCancelable(true)
+                progressDialog.complete(context.getString(R.string.dialog_export_state_finished))
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            progressDialog.dialogReference.cancel()
+            progressDialog.cancel()
             ErrorDialog.show(context, e, R.string.dialog_export_error)
         }
     }
@@ -253,21 +245,21 @@ internal object BackupHandler {
                 initialNote = context.getString(R.string.dialog_import_state_retrieving, 0)
             )
         }
-        val progressBar = progressDialog.binding.progressBar
-        val progressNote = progressDialog.binding.progressNote
 
         try {
             val bytes = CryptoManager.decrypt(
                 context.contentResolver.openInputStream(uri),
                 input
             )
-            progressBar.progress = 25
-            progressNote.text = context.getString(R.string.dialog_import_state_retrieving, 25)
+            progressDialog.updateAbsolute(25)
+            progressDialog.updateText(
+                context.getString(R.string.dialog_import_state_retrieving, 25)
+            )
 
             if (bytes.isEmpty() ||
                 bytes.lastN(OVERHEAD_SIZE - 1).decodeToString() != INTEGRITY_CHECK
             ) {
-                progressDialog.dialogReference.dismiss()
+                progressDialog.dismiss()
                 // Show password dialog again, but with error message
                 restoreBackup(context, uri, true, onFinished)
                 return
@@ -278,8 +270,8 @@ internal object BackupHandler {
             val backup = ObjectSerializer.deserialize(
                 bytes.withoutLastN(OVERHEAD_SIZE)
             ) as SingleBackupStructure
-            progressBar.progress = 50
-            progressNote.text = context.getString(R.string.dialog_import_state_saving, 50)
+            progressDialog.updateAbsolute(50)
+            progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 50))
 
             val nameFile = File(context.filesDir, PINS_FILE)
             if (nameFile.exists()) {
@@ -288,22 +280,21 @@ internal object BackupHandler {
                 nameFile.createNewFile()
                 CryptoManager.encrypt(ObjectSerializer.serialize(backup.name), nameFile)
             }
-            progressBar.progress = 75
-            progressNote.text = context.getString(R.string.dialog_import_state_saving, 75)
+            progressDialog.updateAbsolute(75)
+            progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 75))
 
             val fileHash = CryptoManager.xxHash(backup.name)
             val saved = savePinFile(context, "p$fileHash", backup.pinTable, backup.siid)
-            progressBar.progress = 100
-            if (saved) {
-                progressNote.text = context.getString(R.string.dialog_single_import_state_finished)
+            val messageRes = if (saved) {
+                R.string.dialog_single_import_state_finished
             } else {
-                progressNote.text = context.getString(R.string.dialog_single_import_state_cancelled)
+                R.string.dialog_single_import_state_cancelled
             }
-            progressDialog.dialogReference.setCancelable(true)
+            progressDialog.complete(context.getString(messageRes))
             onFinished()
         } catch (e: Exception) {
             e.printStackTrace()
-            progressDialog.dialogReference.cancel()
+            progressDialog.cancel()
             ErrorDialog.show(context, e, R.string.dialog_import_error)
         }
     }
@@ -322,21 +313,21 @@ internal object BackupHandler {
                 initialNote = context.getString(R.string.dialog_import_state_retrieving, 0)
             )
         }
-        val progressBar = progressDialog.binding.progressBar
-        val progressNote = progressDialog.binding.progressNote
 
         try {
             val bytes = CryptoManager.decrypt(
                 context.contentResolver.openInputStream(uri),
                 input
             )
-            progressBar.progress = 25
-            progressNote.text = context.getString(R.string.dialog_import_state_retrieving, 25)
+            progressDialog.updateAbsolute(25)
+            progressDialog.updateText(
+                context.getString(R.string.dialog_import_state_retrieving, 25)
+            )
 
             if (bytes.isEmpty() ||
                 bytes.lastN(OVERHEAD_SIZE - 1).decodeToString() != INTEGRITY_CHECK
             ) {
-                progressDialog.dialogReference.dismiss()
+                progressDialog.dismiss()
                 // Show password dialog again, but with error message
                 restoreBackup(context, uri, true, onFinished)
                 return
@@ -347,8 +338,8 @@ internal object BackupHandler {
             val backup = ObjectSerializer.deserialize(
                 bytes.withoutLastN(OVERHEAD_SIZE)
             ) as MultiBackupStructure
-            progressBar.progress = 50
-            progressNote.text = context.getString(R.string.dialog_import_state_saving, 50)
+            progressDialog.updateAbsolute(50)
+            progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 50))
 
             val nameFile = File(context.filesDir, PINS_FILE)
             if (nameFile.exists()) {
@@ -360,28 +351,29 @@ internal object BackupHandler {
                     nameFile
                 )
             }
+            var message: String
             val progressStep = 50 / backup.pins.size
             var imports = 0
             backup.pins.forEach {
                 val imported = savePinFile(context, it.fileName, it.pinTable, it.siid)
                 if (imported) imports += 1
-                progressBar.progress = progressBar.progress + progressStep
-                progressNote.text = context.getString(
+                progressDialog.updateRelative(progressStep)
+                message = context.getString(
                     R.string.dialog_import_state_saving,
-                    progressBar.progress + progressStep
+                    progressDialog.getProgress() + progressStep
                 )
+                progressDialog.updateText(message)
             }
-            progressBar.progress = 100
-            progressNote.text = context.getString(
+            message = context.getString(
                 R.string.dialog_multi_import_state_finished,
                 imports,
                 backup.pins.size
             )
-            progressDialog.dialogReference.setCancelable(true)
+            progressDialog.complete(message)
             onFinished()
         } catch (e: Exception) {
             e.printStackTrace()
-            progressDialog.dialogReference.cancel()
+            progressDialog.cancel()
             ErrorDialog.show(context, e, R.string.dialog_import_error)
         }
     }
