@@ -42,8 +42,10 @@ import java.io.File
 
 internal object BackupHandler {
     const val PIN_CRYPTO_ITERATION = 0
-    private const val SINGLE_BACKUP_CRYPTO_ITERATION = 0
-    private const val MULTI_BACKUP_CRYPTO_ITERATION = 0
+    // v1: Use Argon2 instead of SHA-512
+    private const val SINGLE_BACKUP_CRYPTO_ITERATION = 1
+    // v1: Use Argon2 instead of SHA-512
+    private const val MULTI_BACKUP_CRYPTO_ITERATION = 1
     const val PINS_FILE = "pins"
 
     private enum class BackupType {
@@ -82,9 +84,9 @@ internal object BackupHandler {
     ) {
         PasswordDialog.show(context, R.string.dialog_backup_title) { input ->
             if (!multiPin) {
-                runSingleExport(context, uri, CryptoManager.shaHash(input), singleBackup!!)
+                runSingleExport(context, uri, CryptoManager.argon2Hash(input), singleBackup!!)
             } else {
-                runExport(context, uri, CryptoManager.shaHash(input))
+                runExport(context, uri, CryptoManager.argon2Hash(input))
             }
         }
     }
