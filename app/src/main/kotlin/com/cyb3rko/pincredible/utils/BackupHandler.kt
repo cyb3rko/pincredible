@@ -22,6 +22,7 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
+import androidx.lifecycle.LifecycleCoroutineScope
 import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.backpack.crypto.CryptoManager.Hash
 import com.cyb3rko.backpack.data.Serializable
@@ -38,19 +39,24 @@ import com.cyb3rko.backpack.utils.withoutLast
 import com.cyb3rko.backpack.utils.withoutLastN
 import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.data.PinTable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 internal object BackupHandler {
     const val PIN_CRYPTO_ITERATION = 0
+
     // v1: Use Argon2 instead of SHA-512
     private const val SINGLE_BACKUP_CRYPTO_ITERATION = 1
+
     // v1: Use Argon2 instead of SHA-512
     private const val MULTI_BACKUP_CRYPTO_ITERATION = 1
-    const val PINS_FILE = "pins"
 
     private enum class BackupType {
         SINGLE_PIN, MULTI_PIN, UNKNOWN
     }
+    const val PINS_FILE = "pins"
     private const val SINGLE_BACKUP_FILE = ".pin"
     private const val MULTI_BACKUP_FILE = ".pinc"
     private const val INTEGRITY_CHECK = "INTGRTY"
@@ -80,32 +86,46 @@ internal object BackupHandler {
         context: Context,
         uri: Uri,
         multiPin: Boolean,
+        coroutineScope: LifecycleCoroutineScope,
         singleBackup: SingleBackupStructure? = null
     ) {
         PasswordDialog.show(context, R.string.dialog_backup_title) { input ->
-            if (!multiPin) {
-                runSingleExport(context, uri, CryptoManager.argon2Hash(input), singleBackup!!)
-            } else {
-                runExport(context, uri, CryptoManager.argon2Hash(input))
+            val progressDialog = ProgressDialog(true).apply {
+                show(
+                    context,
+                    titleRes = R.string.dialog_export_title,
+                    initialNote = context.getString(R.string.dialog_single_export_message)
+                )
+            }
+            coroutineScope.launch(Dispatchers.IO) {
+                if (!multiPin) {
+                    runSingleExport(
+                        context,
+                        uri,
+                        CryptoManager.argon2Hash(input),
+                        singleBackup!!,
+                        progressDialog
+                    )
+                } else {
+                    runExport(
+                        context,
+                        uri,
+                        CryptoManager.argon2Hash(input),
+                        progressDialog
+                    )
+                }
             }
         }
     }
 
-    private fun runSingleExport(
+    private suspend fun runSingleExport(
         context: Context,
         uri: Uri,
         hash: Hash,
-        singleBackup: SingleBackupStructure
+        singleBackup: SingleBackupStructure,
+        progressDialog: ProgressDialog
     ) {
         Log.d("PINcredible", "Running single export")
-        val progressDialog = ProgressDialog(true).apply {
-            show(
-                context,
-                titleRes = R.string.dialog_export_title,
-                initialNote = context.getString(R.string.dialog_single_export_message)
-            )
-        }
-
         try {
             val bytes = ObjectSerializer.serialize(singleBackup)
             val version = SINGLE_BACKUP_CRYPTO_ITERATION.toByte()
@@ -114,28 +134,25 @@ internal object BackupHandler {
                 context.contentResolver.openOutputStream(uri),
                 hash
             )
-            progressDialog.complete(context.getString(R.string.dialog_single_export_finished))
+            withContext(Dispatchers.Main) {
+                progressDialog.complete(context.getString(R.string.dialog_single_export_finished))
+            }
         } catch (e: Exception) {
             e.printStackTrace()
-            progressDialog.cancel()
-            ErrorDialog.show(context, e, R.string.dialog_export_error)
+            withContext(Dispatchers.Main) {
+                progressDialog.cancel()
+                ErrorDialog.show(context, e, R.string.dialog_export_error)
+            }
         }
     }
 
-    private fun runExport(
+    private suspend fun runExport(
         context: Context,
         uri: Uri,
-        hash: Hash
+        hash: Hash,
+        progressDialog: ProgressDialog
     ) {
         Log.d("PINcredible", "Running full export")
-        val progressDialog = ProgressDialog(false).apply {
-            show(
-                context,
-                titleRes = R.string.dialog_export_title,
-                initialNote = context.getString(R.string.dialog_export_state_retrieving, 0)
-            )
-        }
-
         try {
             val fileList = context.fileList()
             if (fileList.size > 1) {
@@ -148,20 +165,24 @@ internal object BackupHandler {
                         val version = bytes.last()
                         val pinTable = ObjectSerializer.deserialize(bytes.withoutLast()) as PinTable
                         pins.add(MultiBackupPinTable(pinTable, version, it.name))
-                        progressDialog.updateRelative(progressStep)
-                        message = context.getString(
-                            R.string.dialog_export_state_retrieving,
-                            progressDialog.getProgress()
-                        )
-                        progressDialog.updateText(message)
+                        withContext(Dispatchers.Main) {
+                            progressDialog.updateRelative(progressStep)
+                            message = context.getString(
+                                R.string.dialog_export_state_retrieving,
+                                progressDialog.getProgress()
+                            )
+                            progressDialog.updateText(message)
+                        }
                     }
                 }
-                progressDialog.updateAbsolute(50)
-                message = context.getString(
-                    R.string.dialog_export_state_saving,
-                    50
-                )
-                progressDialog.updateText(message)
+                withContext(Dispatchers.Main) {
+                    progressDialog.updateAbsolute(50)
+                    message = context.getString(
+                        R.string.dialog_export_state_saving,
+                        50
+                    )
+                    progressDialog.updateText(message)
+                }
 
                 val nameFile = File(context.filesDir, PINS_FILE)
 
@@ -179,12 +200,18 @@ internal object BackupHandler {
                     context.contentResolver.openOutputStream(uri),
                     hash
                 )
-                progressDialog.complete(context.getString(R.string.dialog_export_state_finished))
+                withContext(Dispatchers.Main) {
+                    progressDialog.complete(
+                        context.getString(R.string.dialog_export_state_finished)
+                    )
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            progressDialog.cancel()
-            ErrorDialog.show(context, e, R.string.dialog_export_error)
+            withContext(Dispatchers.Main) {
+                progressDialog.cancel()
+                ErrorDialog.show(context, e, R.string.dialog_export_error)
+            }
         }
     }
 

@@ -63,7 +63,7 @@ class HomeFragment : BackpackMainFragment(), BackpackMainView {
         registerForActivityResult(StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data?.data ?: return@registerForActivityResult
-                BackupHandler.runBackup(myContext, uri, true)
+                BackupHandler.runBackup(myContext, uri, true, lifecycleScope)
             }
         }
 

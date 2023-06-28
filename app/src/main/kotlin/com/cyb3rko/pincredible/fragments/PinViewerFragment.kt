@@ -101,7 +101,7 @@ class PinViewerFragment : Fragment() {
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data?.data ?: return@registerForActivityResult
                 val singleBackup = SingleBackupStructure(pinTable, siid, args.pin)
-                BackupHandler.runBackup(myContext, uri, false, singleBackup)
+                BackupHandler.runBackup(myContext, uri, false, lifecycleScope, singleBackup)
             }
         }
 
