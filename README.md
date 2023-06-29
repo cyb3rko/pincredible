@@ -1,5 +1,15 @@
+## ⚠️Important Note - Breaking Changes in Final Release⚠️  
+If you have never used PINcredible, you can skip this section.  
+If you have already used this app, please note that your current PINs and even PIN backups will not work anymore in the stable release 1.0.0.  
+That is because of an internal rehaul of the persisting features. I will switch from whole class serialization to custom serialization methods.
+
+Before upgrading save your PINs to be able to reenter them in release 1.0.0.  
+Thank you for your understanding!
+
+---
+
 <p align="center">
-  <img alt="PINcredible" src="https://i.imgur.com/hwfoyYb.png" width="200"/>
+  <img alt="PINcredible" src="https://i.imgur.com/hwfoyYb.png" width="150"/>
 </p>
 
 <h1 align="center">PINcredible (Beta)</h1>
