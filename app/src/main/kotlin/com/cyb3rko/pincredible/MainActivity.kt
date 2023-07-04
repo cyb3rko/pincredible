@@ -21,6 +21,8 @@ import androidx.navigation.findNavController
 import androidx.viewbinding.ViewBinding
 import com.cyb3rko.backpack.activities.BackpackMainActivity
 import com.cyb3rko.backpack.interfaces.BackpackMain
+import com.cyb3rko.backpack.modals.NoticeBottomSheet
+import com.cyb3rko.backpack.utils.Safe
 import com.cyb3rko.pincredible.databinding.ActivityMainBinding
 import com.google.android.material.appbar.MaterialToolbar
 
@@ -32,6 +34,19 @@ class MainActivity : BackpackMainActivity(), BackpackMain {
         binding = ActivityMainBinding.inflate(layoutInflater).asContentView()
         findNavController(R.id.nav_host_fragment_content_main).apply()
         bindInterface(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val noticeKey = "${KEY_BREAKING_RELEASE_REQUIRED}_${getVersionName()}"
+        if (Safe.getBoolean(noticeKey, true)) {
+            val title = getString(R.string.bottomdialog_title)
+            val notice = getString(R.string.bottomdialog_notice)
+            NoticeBottomSheet(title, notice) {
+                Safe.writeBoolean(noticeKey, false)
+            }.show(supportFragmentManager, NoticeBottomSheet.TAG)
+        }
     }
 
     override fun getBinding(): ViewBinding {
@@ -48,5 +63,9 @@ class MainActivity : BackpackMainActivity(), BackpackMain {
 
     override fun getGitHubLink(): String {
         return getString(R.string.github_link)
+    }
+
+    companion object {
+        const val KEY_BREAKING_RELEASE_REQUIRED = "breaking_notice_required"
     }
 }
