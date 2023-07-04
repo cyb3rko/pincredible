@@ -1,9 +1,11 @@
 ## ⚠️Important Note - Breaking Changes in Final Release⚠️  
 If you have never used PINcredible, you can skip this section.  
-If you have already used this app, please note that your current PINs and even PIN backups will not work anymore in the stable release 1.0.0.  
-That is because of an internal rehaul of the persisting features. I will switch from whole class serialization to custom serialization methods.
+If you have already used this app, please note that:
+- The stable release 1.0.0 will use a different app signature, so you most likely have to uninstall the currently installed version and install the new version.
+- Your current PINs and even PIN backups will not work anymore in the stable release 1.0.0.  
+  That is because of an internal rehaul of the persisting features. I will switch from whole class serialization to custom serialization methods.
 
-Before upgrading save your PINs to be able to reenter them in release 1.0.0.  
+Before upgrading save your PINs outside of PINcredible to be able to reenter them in release 1.0.0.  
 Thank you for your understanding!
 
 ---
