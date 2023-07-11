@@ -70,7 +70,8 @@
     <string name="preference_item_color_blindness">Color Blindness Accessibility</string>
     <string name="preference_item_color_blindness_summary">Use an accessible color palette</string>
     <string name="preference_item_coordinate_frame">Coordinate Frame</string>
-    <string name="preference_item_coordinate_frame_summary">Show a frame around tables</string>
+    <string name="preference_item_app_icon">App Icon</string>
+    <string name="preference_item_app_icon_summary">Change the app\'s icon and label</string>
     <string name="dialog_restart_title">Restart required</string>
     <string name="dialog_restart_message">The change will be visible on next app start.\n\nDo you want to restart now?</string>
     <string name="dialog_restart_button2">Later</string>

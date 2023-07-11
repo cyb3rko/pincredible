@@ -53,6 +53,14 @@
             app:useSimpleSummaryProvider="true"
             app:icon="@drawable/colored_ic_coordinate" />
 
+        <Preference
+            app:key="app_icon"
+            app:singleLineTitle="false"
+            app:title="@string/preference_item_app_icon"
+            app:summary="@string/preference_item_app_icon_summary"
+            app:useSimpleSummaryProvider="true"
+            app:icon="@drawable/colored_ic_app_icon" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

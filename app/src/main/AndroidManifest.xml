@@ -26,11 +26,90 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+
+        </activity>
+
+        <activity-alias
+            android:name=".MainActivityDefault"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:targetActivity=".MainActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-        </activity>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".MainActivityBackpack"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_backpack"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity-alias>
+
+        <activity-alias
+            android:name=".MainActivityNews"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_news"
+            android:label="News PC"
+            android:targetActivity=".MainActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity-alias>
+
+        <activity-alias
+            android:name=".MainActivityWeather"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_weather"
+            android:label="Weather PC"
+            android:targetActivity=".MainActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity-alias>
+
+        <activity-alias
+            android:name=".MainActivityNotes"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_notes"
+            android:label="Notes PC"
+            android:targetActivity=".MainActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity-alias>
 
         <activity
             android:name="com.cyb3rko.backpack.activities.BackpackAuthenticationActivity"
@@ -39,9 +118,9 @@
 
         <activity
             android:name="com.cyb3rko.pincredible.SettingsActivity"
-            android:parentActivityName=".MainActivity"
+            android:exported="false"
             android:fitsSystemWindows="true"
-            android:exported="false" />
+            android:parentActivityName=".MainActivity" />
 
         <activity
             android:name="com.cyb3rko.backpack.UncaughtExceptionActivity"

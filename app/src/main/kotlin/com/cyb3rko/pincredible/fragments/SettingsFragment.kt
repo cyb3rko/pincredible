@@ -16,7 +16,9 @@
 
 package com.cyb3rko.pincredible.fragments
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import androidx.core.content.res.ResourcesCompat
 import com.cyb3rko.backpack.fragments.BackpackSettingsFragment
 import com.cyb3rko.backpack.interfaces.BackpackSettingsView
 import com.cyb3rko.pincredible.R
@@ -29,5 +31,17 @@ internal class SettingsFragment : BackpackSettingsFragment(), BackpackSettingsVi
 
     override fun getPreferences(): Int {
         return R.xml.preferences
+    }
+
+    override fun getPackageMainActivity(): String {
+        return "com.cyb3rko.pincredible.MainActivity"
+    }
+
+    override fun getAppName(): String {
+        return getString(R.string.app_name)
+    }
+
+    override fun getAppIcon(): Drawable {
+        return ResourcesCompat.getDrawable(resources, R.mipmap.ic_launcher, null)!!
     }
 }
