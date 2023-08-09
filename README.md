@@ -140,7 +140,7 @@ Let's take a look at the technical details.
 At first here are the algorithms used:
 - AES/GCM/NoPadding (Advanced Encryption Standard in Galois/Counter Mode)
 - XXH128 (XXHash3-128) [[xxHash Repo](https://github.com/Cyan4973/xxHash), thanks to [Matthew Dolan](https://github.com/mattmook) for the [Kotlin implementation](https://github.com/appmattus/crypto/tree/main/cryptohash/src/commonMain/kotlin/com/appmattus/crypto/internal/core/xxh3)]
-- SHA512 (250.000 iterations; used for backup password inputs)
+- Argon2id (used for backup password inputs)
 
 For easier understanding how the app works internally I've created the following diagram.  
 Find the detailed explanation below.
