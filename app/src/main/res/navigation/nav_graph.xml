@@ -45,7 +45,9 @@
 
         <action
             android:id="@+id/pinviewer_to_home"
-            app:destination="@id/HomeFragment" />
+            app:destination="@id/HomeFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
 
     </fragment>
 
@@ -57,7 +59,9 @@
 
         <action
             android:id="@+id/pinCreator_to_home"
-            app:destination="@id/HomeFragment" />
+            app:destination="@id/HomeFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
 
     </fragment>
 
