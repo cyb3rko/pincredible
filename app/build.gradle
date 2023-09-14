@@ -8,17 +8,17 @@ plugins {
 
 android {
     namespace 'com.cyb3rko.pincredible'
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId 'com.cyb3rko.pincredible'
         minSdk 23
-        targetSdk 33
+        targetSdk 34
         versionCode 11
         versionName '0.7.0'
         resValue 'string', "app_name", "PINcredible DEV"
         signingConfig signingConfigs.debug
     }
-    applicationVariants.all { variant ->
+    applicationVariants.configureEach { variant ->
         variant.resValue 'string', 'version_name', "Beta v${variant.versionName}"
     }
     buildTypes {

@@ -245,7 +245,9 @@ class PinViewerFragment : Fragment() {
 
     private fun saveImage(bitmap: Bitmap, uri: Uri) {
         myContext.contentResolver.openOutputStream(uri).use {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 75, it)
+            if (it != null) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 75, it)
+            }
         }
     }
 
