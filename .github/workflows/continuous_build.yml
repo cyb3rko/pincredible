@@ -36,6 +36,7 @@ jobs:
         
       - name: Build APK
         run: |
+          chmod +x ./gradlew
           ./gradlew build --stacktrace
           
       - name: List build output
