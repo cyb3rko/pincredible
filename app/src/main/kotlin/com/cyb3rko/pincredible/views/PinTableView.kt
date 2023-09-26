@@ -21,11 +21,10 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.widget.TableLayout
 import android.widget.TableRow
-import android.widget.TextView
 import androidx.annotation.ColorRes
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.get
 import com.cyb3rko.backpack.crypto.CryptoManager
+import com.cyb3rko.backpack.utils.getDrawableCompat
 import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.data.Cell
 import com.cyb3rko.pincredible.data.PinTable
@@ -35,7 +34,20 @@ internal class PinTableView(
     attrs: AttributeSet
 ) : TableLayout(context, attrs) {
     init {
-        inflate(context, R.layout.table_view, this)
+        isStretchAllColumns = true
+        var row = PinTableRow(context)
+        var currentRowIndex = 0
+        var cell: PinTableCell
+        iterate { _, rowIndex, _ ->
+            if (currentRowIndex != rowIndex) {
+                this.addView(row)
+                row = PinTableRow(context)
+                currentRowIndex += 1
+            }
+            cell = PinTableCell(context)
+            row.addView(cell)
+        }
+        this.addView(row)
     }
 
     fun iterate(action: (view: PinTableView, row: Int, column: Int) -> Unit) {
@@ -46,13 +58,15 @@ internal class PinTableView(
         }
     }
 
-    fun getCell(row: Int, column: Int): TextView {
-        return ((this[0] as TableLayout)[row] as TableRow)[column] as TextView
+    fun getCell(row: Int, column: Int): PinTableCell {
+        return (this[row] as TableRow)[column] as PinTableCell
     }
 
     fun fill(pinTable: PinTable) {
+        var cell: PinTableCell
         iterate { _, row, column ->
-            getCell(row, column).text = pinTable.get(row, column)
+            cell = getCell(row, column)
+            cell.text = pinTable.get(row, column)
         }
     }
 
@@ -62,11 +76,7 @@ internal class PinTableView(
         iterate { _, row, column ->
             colorIndex = pinTable.getBackground(row, column)
             backgroundInt = colorIndexToDrawableID(colorIndex, colorBlindAlternative)
-            getCell(row, column).background = ResourcesCompat.getDrawable(
-                resources,
-                backgroundInt,
-                context.theme
-            )!!
+            getCell(row, column).background = context.getDrawableCompat(backgroundInt)
         }
     }
 
@@ -77,18 +87,14 @@ internal class PinTableView(
         iterate { _, row, column ->
             randomIndex = CryptoManager.getRandom(0, 5)
             randomBackgroundInt = colorIndexToDrawableID(randomIndex, colorBlindAlternative)
-            randomBackground = ResourcesCompat.getDrawable(
-                resources,
-                randomBackgroundInt,
-                context.theme
-            )!!
+            randomBackground = context.getDrawableCompat(randomBackgroundInt)
             getCell(row, column).background = randomBackground
             pinTable.putBackground(row, column, randomIndex)
         }
     }
 
     fun select(
-        cell: TextView,
+        cell: PinTableCell,
         @ColorRes backgroundInt: Int,
         colorBlindAlternative: Boolean
     ) {
@@ -96,20 +102,12 @@ internal class PinTableView(
             backgroundInt,
             colorBlindAlternative
         )
-        cell.background = ResourcesCompat.getDrawable(
-            resources,
-            selectedBackgroundInt,
-            context.theme
-        )!!
+        cell.background = context.getDrawableCompat(selectedBackgroundInt)
     }
 
     fun unselect(cell: Cell, colorBlindAlternative: Boolean) {
         val backgroundInt = colorIndexToDrawableID(cell.background, colorBlindAlternative)
-        cell.view.background = ResourcesCompat.getDrawable(
-            resources,
-            backgroundInt,
-            context.theme
-        )!!
+        cell.view.background = context.getDrawableCompat(backgroundInt)
     }
 
     fun clear() {

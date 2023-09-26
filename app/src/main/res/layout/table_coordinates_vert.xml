@@ -24,52 +24,52 @@
     android:orientation="vertical"
     tools:layout_height="300dp">
 
-    <include
-        layout="@layout/table_coordinate"
+    <com.cyb3rko.pincredible.views.PinTableCoordinate
         android:layout_width="@dimen/table_coordinate_size"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        tools:text="1" />
 
-    <include
-        layout="@layout/table_coordinate"
+    <com.cyb3rko.pincredible.views.PinTableCoordinate
         android:layout_width="@dimen/table_coordinate_size"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/table_vertical_space"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        tools:text="2" />
 
-    <include
-        layout="@layout/table_coordinate"
+    <com.cyb3rko.pincredible.views.PinTableCoordinate
         android:layout_width="@dimen/table_coordinate_size"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/table_vertical_space"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        tools:text="3" />
 
-    <include
-        layout="@layout/table_coordinate"
+    <com.cyb3rko.pincredible.views.PinTableCoordinate
         android:layout_width="@dimen/table_coordinate_size"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/table_vertical_space"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        tools:text="4" />
 
-    <include
-        layout="@layout/table_coordinate"
+    <com.cyb3rko.pincredible.views.PinTableCoordinate
         android:layout_width="@dimen/table_coordinate_size"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/table_vertical_space"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        tools:text="5" />
 
-    <include
-        layout="@layout/table_coordinate"
+    <com.cyb3rko.pincredible.views.PinTableCoordinate
         android:layout_width="@dimen/table_coordinate_size"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/table_vertical_space"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        tools:text="6" />
 
-    <include
-        layout="@layout/table_coordinate"
+    <com.cyb3rko.pincredible.views.PinTableCoordinate
         android:layout_width="@dimen/table_coordinate_size"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/table_vertical_space"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        tools:text="7" />
 
 </LinearLayout>
