@@ -2,13 +2,14 @@ name: Continuous Builder
 on:
   workflow_dispatch:
   push:
+    branches:
+      - '**'
     paths-ignore:
       - 'metadata/**'
       - 'legal/**'
       - '**.md'
       - 'LICENSE'
-      - '.github/workflows/release-builder.yml'
-      - '.github/workflows/fossa.yml'
+      - '.github/workflows/**'
       - '.github/FUNDING.yml'
   pull_request:
 

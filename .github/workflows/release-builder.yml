@@ -106,6 +106,7 @@ jobs:
         run: |
           export KEYSTORE_FILE=$(pwd)/keystore.jks
           echo $KEYSTORE | base64 -d > $KEYSTORE_FILE
+          chmod +x ./gradlew
           ./gradlew -Psign build --stacktrace
           cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/PINcredible-$RELEASE_VERSION.apk
         env:
