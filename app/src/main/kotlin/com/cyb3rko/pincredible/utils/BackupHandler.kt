@@ -160,7 +160,10 @@ internal object BackupHandler {
                 val pins = mutableListOf<MultiBackupPinTable>()
                 var message: String
                 context.filesDir.listFiles()?.forEach {
-                    if (it.name.startsWith("p") && it.name != PINS_FILE) {
+                    if (it.name.startsWith("p") &&
+                        it.name != PINS_FILE &&
+                        it.name != "profileInstalled"
+                    ) {
                         val bytes = CryptoManager.decrypt(it)
                         val version = bytes.last()
                         val pinTable = ObjectSerializer.deserialize(bytes.withoutLast()) as PinTable
