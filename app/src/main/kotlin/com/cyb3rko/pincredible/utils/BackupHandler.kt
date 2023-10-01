@@ -226,6 +226,7 @@ internal object BackupHandler {
     fun restoreBackup(
         context: Context,
         uri: Uri,
+        lifecycleScope: LifecycleCoroutineScope,
         showError: Boolean = false,
         onFinished: () -> Unit
     ) {
@@ -245,9 +246,9 @@ internal object BackupHandler {
             showError
         ) { input ->
             if (backupType == BackupType.SINGLE_PIN) {
-                doRestoreSingleBackup(context, uri, input, onFinished)
+                doRestoreSingleBackup(context, uri, input, lifecycleScope, onFinished)
             } else if (backupType == BackupType.MULTI_PIN) {
-                doRestoreMultiBackup(context, uri, input, onFinished)
+                doRestoreMultiBackup(context, uri, input, lifecycleScope, onFinished)
             }
         }
     }
@@ -267,6 +268,7 @@ internal object BackupHandler {
         context: Context,
         uri: Uri,
         input: String,
+        lifecycleScope: LifecycleCoroutineScope,
         onFinished: () -> Unit
     ) {
         Log.d("PINcredible", "Running single backup restore")
@@ -278,56 +280,68 @@ internal object BackupHandler {
             )
         }
 
-        try {
-            val bytes = CryptoManager.decrypt(
-                context.contentResolver.openInputStream(uri),
-                input
-            )
-            progressDialog.updateAbsolute(25)
-            progressDialog.updateText(
-                context.getString(R.string.dialog_import_state_retrieving, 25)
-            )
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val bytes = CryptoManager.decrypt(
+                    context.contentResolver.openInputStream(uri),
+                    input
+                )
+                val invalidBytes = bytes.isEmpty() ||
+                    bytes.lastN(OVERHEAD_SIZE - 1).decodeToString() != INTEGRITY_CHECK
 
-            if (bytes.isEmpty() ||
-                bytes.lastN(OVERHEAD_SIZE - 1).decodeToString() != INTEGRITY_CHECK
-            ) {
-                progressDialog.dismiss()
-                // Show password dialog again, but with error message
-                restoreBackup(context, uri, true, onFinished)
-                return
+                withContext(Dispatchers.Main) {
+                    progressDialog.updateAbsolute(25)
+                    progressDialog.updateText(
+                        context.getString(R.string.dialog_import_state_retrieving, 25)
+                    )
+                    if (invalidBytes) {
+                        progressDialog.dismiss()
+                        // Show password dialog again, but with error message
+                        restoreBackup(context, uri, lifecycleScope, true, onFinished)
+                    }
+                }
+                if (invalidBytes) return@launch
+
+                val version = bytes.nthLast(OVERHEAD_SIZE)
+                Log.d("PINcredible Backup", "Single backup version $version found")
+                val backup = ObjectSerializer.deserialize(
+                    bytes.withoutLastN(OVERHEAD_SIZE)
+                ) as SingleBackupStructure
+                withContext(Dispatchers.Main) {
+                    progressDialog.updateAbsolute(50)
+                    progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 50))
+                }
+
+                val nameFile = File(context.filesDir, PINS_FILE)
+                if (nameFile.exists()) {
+                    CryptoManager.appendStrings(nameFile, backup.name)
+                } else {
+                    nameFile.createNewFile()
+                    CryptoManager.encrypt(ObjectSerializer.serialize(backup.name), nameFile)
+                }
+                withContext(Dispatchers.Main) {
+                    progressDialog.updateAbsolute(75)
+                    progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 75))
+                }
+
+                val fileHash = CryptoManager.xxHash(backup.name)
+                val saved = savePinFile(context, "p$fileHash", backup.pinTable, backup.siid)
+                val messageRes = if (saved) {
+                    R.string.dialog_single_import_state_finished
+                } else {
+                    R.string.dialog_single_import_state_cancelled
+                }
+                withContext(Dispatchers.Main) {
+                    progressDialog.complete(context.getString(messageRes))
+                    onFinished()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    progressDialog.cancel()
+                    ErrorDialog.show(context, e, R.string.dialog_import_error)
+                }
             }
-
-            val version = bytes.nthLast(OVERHEAD_SIZE)
-            Log.d("PINcredible Backup", "Single backup version $version found")
-            val backup = ObjectSerializer.deserialize(
-                bytes.withoutLastN(OVERHEAD_SIZE)
-            ) as SingleBackupStructure
-            progressDialog.updateAbsolute(50)
-            progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 50))
-
-            val nameFile = File(context.filesDir, PINS_FILE)
-            if (nameFile.exists()) {
-                CryptoManager.appendStrings(nameFile, backup.name)
-            } else {
-                nameFile.createNewFile()
-                CryptoManager.encrypt(ObjectSerializer.serialize(backup.name), nameFile)
-            }
-            progressDialog.updateAbsolute(75)
-            progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 75))
-
-            val fileHash = CryptoManager.xxHash(backup.name)
-            val saved = savePinFile(context, "p$fileHash", backup.pinTable, backup.siid)
-            val messageRes = if (saved) {
-                R.string.dialog_single_import_state_finished
-            } else {
-                R.string.dialog_single_import_state_cancelled
-            }
-            progressDialog.complete(context.getString(messageRes))
-            onFinished()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            progressDialog.cancel()
-            ErrorDialog.show(context, e, R.string.dialog_import_error)
         }
     }
 
@@ -335,6 +349,7 @@ internal object BackupHandler {
         context: Context,
         uri: Uri,
         input: String,
+        lifecycleScope: LifecycleCoroutineScope,
         onFinished: () -> Unit
     ) {
         Log.d("PINcredible", "Running full backup restore")
@@ -346,67 +361,79 @@ internal object BackupHandler {
             )
         }
 
-        try {
-            val bytes = CryptoManager.decrypt(
-                context.contentResolver.openInputStream(uri),
-                input
-            )
-            progressDialog.updateAbsolute(25)
-            progressDialog.updateText(
-                context.getString(R.string.dialog_import_state_retrieving, 25)
-            )
-
-            if (bytes.isEmpty() ||
-                bytes.lastN(OVERHEAD_SIZE - 1).decodeToString() != INTEGRITY_CHECK
-            ) {
-                progressDialog.dismiss()
-                // Show password dialog again, but with error message
-                restoreBackup(context, uri, true, onFinished)
-                return
-            }
-
-            val version = bytes.nthLast(OVERHEAD_SIZE)
-            Log.d("PINcredible Backup", "Full backup version $version found")
-            val backup = ObjectSerializer.deserialize(
-                bytes.withoutLastN(OVERHEAD_SIZE)
-            ) as MultiBackupStructure
-            progressDialog.updateAbsolute(50)
-            progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 50))
-
-            val nameFile = File(context.filesDir, PINS_FILE)
-            if (nameFile.exists()) {
-                CryptoManager.appendStrings(nameFile, *backup.names.toTypedArray())
-            } else {
-                nameFile.createNewFile()
-                CryptoManager.encrypt(
-                    ObjectSerializer.serialize(backup.names),
-                    nameFile
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val bytes = CryptoManager.decrypt(
+                    context.contentResolver.openInputStream(uri),
+                    input
                 )
+                val invalidBytes = bytes.isEmpty() ||
+                    bytes.lastN(OVERHEAD_SIZE - 1).decodeToString() != INTEGRITY_CHECK
+
+                withContext(Dispatchers.Main) {
+                    progressDialog.updateAbsolute(25)
+                    progressDialog.updateText(
+                        context.getString(R.string.dialog_import_state_retrieving, 25)
+                    )
+                    if (invalidBytes) {
+                        progressDialog.dismiss()
+                        // Show password dialog again, but with error message
+                        restoreBackup(context, uri, lifecycleScope, true, onFinished)
+                    }
+                }
+                if (invalidBytes) return@launch
+
+                val version = bytes.nthLast(OVERHEAD_SIZE)
+                Log.d("PINcredible Backup", "Full backup version $version found")
+                val backup = ObjectSerializer.deserialize(
+                    bytes.withoutLastN(OVERHEAD_SIZE)
+                ) as MultiBackupStructure
+                withContext(Dispatchers.Main) {
+                    progressDialog.updateAbsolute(50)
+                    progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 50))
+                }
+
+                val nameFile = File(context.filesDir, PINS_FILE)
+                if (nameFile.exists()) {
+                    CryptoManager.appendStrings(nameFile, *backup.names.toTypedArray())
+                } else {
+                    nameFile.createNewFile()
+                    CryptoManager.encrypt(
+                        ObjectSerializer.serialize(backup.names),
+                        nameFile
+                    )
+                }
+                var message: String
+                val progressStep = 50 / backup.pins.size
+                var imports = 0
+                backup.pins.forEach {
+                    val imported = savePinFile(context, it.fileName, it.pinTable, it.siid)
+                    if (imported) imports += 1
+                    withContext(Dispatchers.Main) {
+                        progressDialog.updateRelative(progressStep)
+                        message = context.getString(
+                            R.string.dialog_import_state_saving,
+                            progressDialog.getProgress() + progressStep
+                        )
+                        progressDialog.updateText(message)
+                    }
+                }
+                withContext(Dispatchers.Main) {
+                    message = context.getString(
+                        R.string.dialog_multi_import_state_finished,
+                        imports,
+                        backup.pins.size
+                    )
+                    progressDialog.complete(message)
+                }
+                onFinished()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    progressDialog.cancel()
+                    ErrorDialog.show(context, e, R.string.dialog_import_error)
+                }
             }
-            var message: String
-            val progressStep = 50 / backup.pins.size
-            var imports = 0
-            backup.pins.forEach {
-                val imported = savePinFile(context, it.fileName, it.pinTable, it.siid)
-                if (imported) imports += 1
-                progressDialog.updateRelative(progressStep)
-                message = context.getString(
-                    R.string.dialog_import_state_saving,
-                    progressDialog.getProgress() + progressStep
-                )
-                progressDialog.updateText(message)
-            }
-            message = context.getString(
-                R.string.dialog_multi_import_state_finished,
-                imports,
-                backup.pins.size
-            )
-            progressDialog.complete(message)
-            onFinished()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            progressDialog.cancel()
-            ErrorDialog.show(context, e, R.string.dialog_import_error)
         }
     }
 

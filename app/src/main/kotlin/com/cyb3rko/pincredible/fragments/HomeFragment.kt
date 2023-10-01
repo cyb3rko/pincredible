@@ -71,7 +71,7 @@ class HomeFragment : BackpackMainFragment(), BackpackMainView {
         registerForActivityResult(StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data?.data ?: return@registerForActivityResult
-                BackupHandler.restoreBackup(myContext, uri) {
+                BackupHandler.restoreBackup(myContext, uri, lifecycleScope) {
                     readAndShowPins()
                 }
             }
