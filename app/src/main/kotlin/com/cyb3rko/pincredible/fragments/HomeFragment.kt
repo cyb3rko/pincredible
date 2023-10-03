@@ -45,6 +45,7 @@ import com.cyb3rko.pincredible.SettingsActivity
 import com.cyb3rko.pincredible.databinding.FragmentHomeBinding
 import com.cyb3rko.pincredible.recycler.PinAdapter
 import com.cyb3rko.pincredible.utils.BackupHandler
+import com.cyb3rko.pincredible.utils.BackupHandler.pinListFile
 import com.cyb3rko.pincredible.utils.DebugUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -159,7 +160,7 @@ class HomeFragment : BackpackMainFragment(), BackpackMainView {
 
     @Throws(EnDecryptionException::class)
     private fun retrievePins(): List<String> {
-        val pinsFile = File(myContext.filesDir, BackupHandler.PINS_FILE)
+        val pinsFile = myContext.pinListFile()
         return if (pinsFile.exists()) {
             @Suppress("UNCHECKED_CAST")
             (ObjectSerializer.deserialize(CryptoManager.decrypt(pinsFile)) as Set<String>).toList()

@@ -42,7 +42,10 @@ import com.cyb3rko.pincredible.data.PinTable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.nio.ByteBuffer
 
 internal object BackupHandler {
     const val PIN_CRYPTO_ITERATION = 0
@@ -62,6 +65,12 @@ internal object BackupHandler {
     private const val INTEGRITY_CHECK = "INTGRTY"
     private const val OVERHEAD_SIZE = INTEGRITY_CHECK.length + 1
 
+    fun Context.pinDir() = File("${this.filesDir}/p/").apply {
+        mkdir()
+    }
+
+    fun Context.pinListFile() = File("${this.filesDir}/$PINS_FILE")
+
     @SuppressLint("SimpleDateFormat")
     fun initiateSingleBackup(hash: String, launcher: ActivityResultLauncher<Intent>) {
         val timestamp = dateNow().toFormattedString()
@@ -72,14 +81,13 @@ internal object BackupHandler {
 
     @SuppressLint("SimpleDateFormat")
     fun initiateBackup(context: Context, launcher: ActivityResultLauncher<Intent>) {
-        val fileList = context.fileList()
-        if (fileList.size > 1) {
-            val numberOfPins = fileList.size - 1
-            val timestamp = dateNow().toFormattedString()
-            val fileName = "PINs[$numberOfPins]-$timestamp$MULTI_BACKUP_FILE"
-            Log.d("PINcredible", "Initiated full backup: initially $fileName")
-            StorageManager.launchFileCreator(launcher, fileName)
-        }
+        val fileList = context.pinDir().listFiles()
+        if (fileList == null || fileList.isEmpty()) return
+
+        val timestamp = dateNow().toFormattedString()
+        val fileName = "PINs[${fileList.size}]-$timestamp$MULTI_BACKUP_FILE"
+        Log.d("PINcredible", "Initiated full backup: initially $fileName")
+        StorageManager.launchFileCreator(launcher, fileName)
     }
 
     fun runBackup(
@@ -127,7 +135,7 @@ internal object BackupHandler {
     ) {
         Log.d("PINcredible", "Running single export")
         try {
-            val bytes = ObjectSerializer.serialize(singleBackup)
+            val bytes = singleBackup.toBytes()
             val version = SINGLE_BACKUP_CRYPTO_ITERATION.toByte()
             CryptoManager.encrypt(
                 bytes.plus(version).plus(INTEGRITY_CHECK.encodeToByteArray()),
@@ -154,60 +162,53 @@ internal object BackupHandler {
     ) {
         Log.d("PINcredible", "Running full export")
         try {
-            val fileList = context.fileList()
-            if (fileList.size > 1) {
-                val progressStep = 50 / (fileList.size - 1)
-                val pins = mutableListOf<MultiBackupPinTable>()
-                var message: String
-                context.filesDir.listFiles()?.forEach {
-                    if (it.name.startsWith("p") &&
-                        it.name != PINS_FILE &&
-                        it.name != "profileInstalled"
-                    ) {
-                        val bytes = CryptoManager.decrypt(it)
-                        val version = bytes.last()
-                        val pinTable = ObjectSerializer.deserialize(bytes.withoutLast()) as PinTable
-                        pins.add(MultiBackupPinTable(pinTable, version, it.name))
-                        withContext(Dispatchers.Main) {
-                            progressDialog.updateRelative(progressStep)
-                            message = context.getString(
-                                R.string.dialog_export_state_retrieving,
-                                progressDialog.getProgress()
-                            )
-                            progressDialog.updateText(message)
-                        }
-                    }
-                }
+            val fileList = context.pinDir().listFiles()
+            if (fileList == null || fileList.isEmpty()) return
+
+            val progressStep = 50 / (fileList.size)
+            val pins = mutableListOf<MultiBackupPinTable>()
+            var message: String
+            fileList.forEach {
+                if (!it.name.startsWith("p") || it.name.contains(".")) return@forEach
+
+                val bytes = CryptoManager.decrypt(it)
+                val pinTable = PinTable().loadFromBytes(bytes.withoutLast()) as PinTable
+                pins.add(MultiBackupPinTable(pinTable, it.name))
                 withContext(Dispatchers.Main) {
-                    progressDialog.updateAbsolute(50)
+                    progressDialog.updateRelative(progressStep)
                     message = context.getString(
-                        R.string.dialog_export_state_saving,
-                        50
+                        R.string.dialog_export_state_retrieving,
+                        progressDialog.getProgress()
                     )
                     progressDialog.updateText(message)
                 }
-
-                val nameFile = File(context.filesDir, PINS_FILE)
-
-                @Suppress("UNCHECKED_CAST")
-                val names = ObjectSerializer.deserialize(
-                    CryptoManager.decrypt(nameFile)
-                ) as Set<String>
-
-                val bytes = ObjectSerializer.serialize(MultiBackupStructure(pins.toSet(), names))
-                val version = MULTI_BACKUP_CRYPTO_ITERATION.toByte()
-                CryptoManager.encrypt(
-                    bytes
-                        .plus(version)
-                        .plus(INTEGRITY_CHECK.encodeToByteArray()),
-                    context.contentResolver.openOutputStream(uri),
-                    hash
+            }
+            withContext(Dispatchers.Main) {
+                progressDialog.updateAbsolute(50)
+                message = context.getString(
+                    R.string.dialog_export_state_saving,
+                    50
                 )
-                withContext(Dispatchers.Main) {
-                    progressDialog.complete(
-                        context.getString(R.string.dialog_export_state_finished)
-                    )
-                }
+                progressDialog.updateText(message)
+            }
+
+            val nameFile = context.pinListFile()
+
+            @Suppress("UNCHECKED_CAST")
+            val names = ObjectSerializer.deserialize(CryptoManager.decrypt(nameFile)) as Set<String>
+            val bytes = MultiBackupStructure(pins.toSet(), names).toBytes()
+            val version = MULTI_BACKUP_CRYPTO_ITERATION.toByte()
+            CryptoManager.encrypt(
+                bytes
+                    .plus(version)
+                    .plus(INTEGRITY_CHECK.encodeToByteArray()),
+                context.contentResolver.openOutputStream(uri),
+                hash
+            )
+            withContext(Dispatchers.Main) {
+                progressDialog.complete(
+                    context.getString(R.string.dialog_export_state_finished)
+                )
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -304,7 +305,7 @@ internal object BackupHandler {
 
                 val version = bytes.nthLast(OVERHEAD_SIZE)
                 Log.d("PINcredible Backup", "Single backup version $version found")
-                val backup = ObjectSerializer.deserialize(
+                val backup = SingleBackupStructure().loadFromBytes(
                     bytes.withoutLastN(OVERHEAD_SIZE)
                 ) as SingleBackupStructure
                 withContext(Dispatchers.Main) {
@@ -312,7 +313,7 @@ internal object BackupHandler {
                     progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 50))
                 }
 
-                val nameFile = File(context.filesDir, PINS_FILE)
+                val nameFile = context.pinListFile()
                 if (nameFile.exists()) {
                     CryptoManager.appendStrings(nameFile, backup.name)
                 } else {
@@ -325,7 +326,7 @@ internal object BackupHandler {
                 }
 
                 val fileHash = CryptoManager.xxHash(backup.name)
-                val saved = savePinFile(context, "p$fileHash", backup.pinTable, backup.siid)
+                val saved = savePinFile(context, "p$fileHash", backup.pinTable, backup.getVersion())
                 val messageRes = if (saved) {
                     R.string.dialog_single_import_state_finished
                 } else {
@@ -385,7 +386,7 @@ internal object BackupHandler {
 
                 val version = bytes.nthLast(OVERHEAD_SIZE)
                 Log.d("PINcredible Backup", "Full backup version $version found")
-                val backup = ObjectSerializer.deserialize(
+                val backup = MultiBackupStructure().loadFromBytes(
                     bytes.withoutLastN(OVERHEAD_SIZE)
                 ) as MultiBackupStructure
                 withContext(Dispatchers.Main) {
@@ -393,21 +394,23 @@ internal object BackupHandler {
                     progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 50))
                 }
 
-                val nameFile = File(context.filesDir, PINS_FILE)
+                val nameFile = context.pinListFile()
                 if (nameFile.exists()) {
                     CryptoManager.appendStrings(nameFile, *backup.names.toTypedArray())
                 } else {
                     nameFile.createNewFile()
-                    CryptoManager.encrypt(
-                        ObjectSerializer.serialize(backup.names),
-                        nameFile
-                    )
+                    CryptoManager.encrypt(ObjectSerializer.serialize(backup.names), nameFile)
                 }
                 var message: String
                 val progressStep = 50 / backup.pins.size
                 var imports = 0
                 backup.pins.forEach {
-                    val imported = savePinFile(context, it.fileName, it.pinTable, it.siid)
+                    val imported = savePinFile(
+                        context,
+                        it.fileName,
+                        it.pinTable,
+                        it.pinTable.getVersion()
+                    )
                     if (imported) imports += 1
                     withContext(Dispatchers.Main) {
                         progressDialog.updateRelative(progressStep)
@@ -438,16 +441,16 @@ internal object BackupHandler {
     }
 
     @Throws(CryptoManager.EnDecryptionException::class)
-    private fun savePinFile(
+    private suspend fun savePinFile(
         context: Context,
         fileName: String,
         pinTable: PinTable,
         version: Byte
     ): Boolean {
-        val newPinFile = File(context.filesDir, fileName)
+        val newPinFile = File(context.pinDir(), fileName)
         return if (!newPinFile.exists()) {
             newPinFile.createNewFile()
-            val bytes = ObjectSerializer.serialize(pinTable)
+            val bytes = pinTable.toBytes()
             CryptoManager.encrypt(bytes.plus(version), newPinFile)
             true
         } else {
@@ -455,38 +458,139 @@ internal object BackupHandler {
         }
     }
 
-    class SingleBackupStructure(
-        val pinTable: PinTable,
-        val siid: Byte,
-        val name: String
-    ) : Serializable() {
-        companion object {
-            private const val serialVersionUID = -2831435563176726440
-
-            fun getSerialUID() = serialVersionUID
+    class SingleBackupStructure() : Serializable() {
+        constructor(
+            pinTable: PinTable,
+            name: String
+        ) : this() {
+            this.pinTable = pinTable
+            this.name = name
         }
+
+        lateinit var pinTable: PinTable
+        lateinit var name: String
+
+        override suspend fun loadFromBytes(bytes: ByteArray): Serializable {
+            ByteArrayInputStream(bytes).use {
+                val version = it.read()
+                Log.d("PINcredible", "Found SingleBackupStructure v$version")
+                val buffer = ByteArray(PinTable.SIZE)
+                it.read(buffer)
+                pinTable = PinTable().loadFromBytes(buffer) as PinTable
+                name = it.readBytes().decodeToString()
+            }
+            return this
+        }
+
+        override suspend fun toBytes(): ByteArray {
+            val stream = ByteArrayOutputStream()
+            stream.use {
+                it.write(byteArrayOf(getVersion()))
+                val byteArray = pinTable.toBytes()
+                Log.d("PINcredible", "Size of SingleBackupStructure-pinTable: ${byteArray.size}")
+                it.write(byteArray)
+                it.write(name.encodeToByteArray())
+            }
+            return stream.toByteArray()
+        }
+
+        override suspend fun getVersion(): Byte = 0
     }
 
-    class MultiBackupPinTable(
-        val pinTable: PinTable,
-        val siid: Byte,
-        val fileName: String
-    ) : Serializable() {
-        companion object {
-            private const val serialVersionUID = 8205381827686169546
-
-            fun getSerialUID() = serialVersionUID
+    class MultiBackupPinTable() : Serializable() {
+        constructor(
+            pinTable: PinTable,
+            fileName: String
+        ) : this() {
+            this.pinTable = pinTable
+            this.fileName = fileName
         }
+
+        lateinit var pinTable: PinTable
+        lateinit var fileName: String
+
+        override suspend fun loadFromBytes(bytes: ByteArray): Serializable {
+            ByteArrayInputStream(bytes).use {
+                val version = it.read()
+                Log.d("PINcredible", "Found MultiBackupPinTable v$version")
+                val buffer = ByteArray(PinTable.SIZE)
+                it.read(buffer)
+                pinTable = PinTable().loadFromBytes(buffer) as PinTable
+                fileName = it.readBytes().decodeToString()
+            }
+            return this
+        }
+
+        override suspend fun toBytes(): ByteArray {
+            val stream = ByteArrayOutputStream()
+            stream.use {
+                it.write(byteArrayOf(getVersion()))
+                val byteArray = pinTable.toBytes()
+                Log.d("PINcredible", "Size of MultiBackupPinTable-pinTable: ${byteArray.size}")
+                it.write(byteArray)
+                it.write(fileName.encodeToByteArray())
+            }
+            return stream.toByteArray()
+        }
+
+        override suspend fun getVersion(): Byte = 0
     }
 
-    class MultiBackupStructure(
-        val pins: Set<MultiBackupPinTable>,
-        val names: Set<String>
-    ) : Serializable() {
-        companion object {
-            private const val serialVersionUID = 3259317506686259398
-
-            fun getSerialUID() = serialVersionUID
+    class MultiBackupStructure() : Serializable() {
+        constructor(
+            pins: Set<MultiBackupPinTable>,
+            names: Set<String>
+        ) : this() {
+            this.pins = pins
+            this.names = names
         }
+
+        lateinit var pins: Set<MultiBackupPinTable>
+        lateinit var names: Set<String>
+
+        @Suppress("UNCHECKED_CAST")
+        override suspend fun loadFromBytes(bytes: ByteArray): Serializable {
+            ByteArrayInputStream(bytes).use { stream ->
+                val version = stream.read()
+                Log.d("PINcredible", "Found MultiBackupStrucutre v$version")
+                val pinCount = stream.read()
+                val pinBuffer = mutableListOf<MultiBackupPinTable>()
+                val pinSizeBytes = ByteArray(2)
+                var pinSize: Short
+                repeat(pinCount) {
+                    stream.read(pinSizeBytes)
+                    pinSize = ByteBuffer.wrap(pinSizeBytes).short
+                    val buffer = ByteArray(pinSize.toInt())
+                    stream.read(buffer)
+                    pinBuffer.add(
+                        MultiBackupPinTable().loadFromBytes(buffer) as MultiBackupPinTable
+                    )
+                }
+                pins = pinBuffer.toSet()
+                names = ObjectSerializer.deserialize(stream.readBytes()) as Set<String>
+            }
+            return this
+        }
+
+        override suspend fun toBytes(): ByteArray {
+            val stream = ByteArrayOutputStream()
+            stream.use {
+                it.write(byteArrayOf(getVersion()))
+                it.write(byteArrayOf(pins.size.toByte()))
+                pins.forEach { pin ->
+                    val byteArray = pin.toBytes()
+                    Log.d(
+                        "PINcredible",
+                        "Size of MultiBackupStructure-MultiBackupPinTable: ${byteArray.size}"
+                    )
+                    it.write(ByteBuffer.allocate(2).putShort(byteArray.size.toShort()).array())
+                    it.write(byteArray)
+                }
+                it.write(ObjectSerializer.serialize(names))
+            }
+            return stream.toByteArray()
+        }
+
+        override suspend fun getVersion(): Byte = 0
     }
 }
