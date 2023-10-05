@@ -42,7 +42,6 @@ import com.cyb3rko.backpack.modals.AcceptDialog
 import com.cyb3rko.backpack.modals.ErrorDialog
 import com.cyb3rko.backpack.utils.Safe
 import com.cyb3rko.backpack.utils.Vibration
-import com.cyb3rko.backpack.utils.withoutLast
 import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.SettingsActivity
 import com.cyb3rko.pincredible.data.PinTable
@@ -197,12 +196,12 @@ class PinViewerFragment : Fragment() {
     @Throws(EnDecryptionException::class)
     private suspend fun decryptData(hash: String): PinTable {
         val file = File(myContext.pinDir(), "p$hash")
-        val bytes = CryptoManager.decrypt(file)
-        siid = bytes.last()
+        val pinTable = PinTable().loadFromBytes(CryptoManager.decrypt(file)) as PinTable
+        siid = pinTable.getVersion()
         @SuppressLint("SetTextI18n")
         binding.siidView.text = "SIID: $siid"
         Log.d("PINcredible", "PIN - Hash:$hash, version:$siid")
-        return PinTable().loadFromBytes(bytes.withoutLast()) as PinTable
+        return pinTable
     }
 
     private fun generateAndExportImage(uri: Uri) {

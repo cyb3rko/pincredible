@@ -33,7 +33,6 @@ import com.cyb3rko.backpack.modals.ProgressDialog
 import com.cyb3rko.backpack.utils.ObjectSerializer
 import com.cyb3rko.backpack.utils.dateNow
 import com.cyb3rko.backpack.utils.lastN
-import com.cyb3rko.backpack.utils.nthLast
 import com.cyb3rko.backpack.utils.toFormattedString
 import com.cyb3rko.backpack.utils.withoutLast
 import com.cyb3rko.backpack.utils.withoutLastN
@@ -48,18 +47,10 @@ import java.io.File
 import java.nio.ByteBuffer
 
 internal object BackupHandler {
-    const val PIN_CRYPTO_ITERATION = 0
-
-    // v1: Use Argon2 instead of SHA-512
-    private const val SINGLE_BACKUP_CRYPTO_ITERATION = 1
-
-    // v1: Use Argon2 instead of SHA-512
-    private const val MULTI_BACKUP_CRYPTO_ITERATION = 1
-
     private enum class BackupType {
         SINGLE_PIN, MULTI_PIN, UNKNOWN
     }
-    const val PINS_FILE = "pins"
+    private const val PINS_FILE = "pins"
     private const val SINGLE_BACKUP_FILE = ".pin"
     private const val MULTI_BACKUP_FILE = ".pinc"
     private const val INTEGRITY_CHECK = "INTGRTY"
@@ -136,9 +127,8 @@ internal object BackupHandler {
         Log.d("PINcredible", "Running single export")
         try {
             val bytes = singleBackup.toBytes()
-            val version = SINGLE_BACKUP_CRYPTO_ITERATION.toByte()
             CryptoManager.encrypt(
-                bytes.plus(version).plus(INTEGRITY_CHECK.encodeToByteArray()),
+                bytes.plus(INTEGRITY_CHECK.encodeToByteArray()),
                 context.contentResolver.openOutputStream(uri),
                 hash
             )
@@ -197,11 +187,8 @@ internal object BackupHandler {
             @Suppress("UNCHECKED_CAST")
             val names = ObjectSerializer.deserialize(CryptoManager.decrypt(nameFile)) as Set<String>
             val bytes = MultiBackupStructure(pins.toSet(), names).toBytes()
-            val version = MULTI_BACKUP_CRYPTO_ITERATION.toByte()
             CryptoManager.encrypt(
-                bytes
-                    .plus(version)
-                    .plus(INTEGRITY_CHECK.encodeToByteArray()),
+                bytes.plus(INTEGRITY_CHECK.encodeToByteArray()),
                 context.contentResolver.openOutputStream(uri),
                 hash
             )
@@ -303,11 +290,10 @@ internal object BackupHandler {
                 }
                 if (invalidBytes) return@launch
 
-                val version = bytes.nthLast(OVERHEAD_SIZE)
-                Log.d("PINcredible Backup", "Single backup version $version found")
                 val backup = SingleBackupStructure().loadFromBytes(
-                    bytes.withoutLastN(OVERHEAD_SIZE)
+                    bytes.withoutLastN(OVERHEAD_SIZE - 1)
                 ) as SingleBackupStructure
+                Log.d("PINcredible Backup", "Single backup version ${backup.getVersion()} found")
                 withContext(Dispatchers.Main) {
                     progressDialog.updateAbsolute(50)
                     progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 50))
@@ -384,11 +370,10 @@ internal object BackupHandler {
                 }
                 if (invalidBytes) return@launch
 
-                val version = bytes.nthLast(OVERHEAD_SIZE)
-                Log.d("PINcredible Backup", "Full backup version $version found")
                 val backup = MultiBackupStructure().loadFromBytes(
-                    bytes.withoutLastN(OVERHEAD_SIZE)
+                    bytes.withoutLastN(OVERHEAD_SIZE - 1)
                 ) as MultiBackupStructure
+                Log.d("PINcredible Backup", "Full backup version ${backup.getVersion()} found")
                 withContext(Dispatchers.Main) {
                     progressDialog.updateAbsolute(50)
                     progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 50))

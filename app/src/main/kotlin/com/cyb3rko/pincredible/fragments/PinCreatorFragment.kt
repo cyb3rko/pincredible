@@ -40,7 +40,6 @@ import com.cyb3rko.pincredible.SettingsActivity
 import com.cyb3rko.pincredible.data.Cell
 import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.databinding.FragmentPinCreatorBinding
-import com.cyb3rko.pincredible.utils.BackupHandler
 import com.cyb3rko.pincredible.utils.BackupHandler.pinDir
 import com.cyb3rko.pincredible.utils.BackupHandler.pinListFile
 import com.cyb3rko.pincredible.views.CoordinateViewManager
@@ -204,9 +203,8 @@ class PinCreatorFragment : Fragment() {
         return if (!newPinFile.exists()) {
             newPinFile.createNewFile()
             val bytes = pinTable.toBytes()
-            val version = BackupHandler.PIN_CRYPTO_ITERATION.toByte()
-            CryptoManager.encrypt(bytes.plus(version), newPinFile)
-            Log.d("PINcredible", "New PIN - Hash:$hash, version:$version")
+            CryptoManager.encrypt(bytes, newPinFile)
+            Log.d("PINcredible", "New PIN - Hash:$hash")
             true
         } else {
             false

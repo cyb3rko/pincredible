@@ -50,7 +50,6 @@ import com.cyb3rko.pincredible.utils.DebugUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 
 class HomeFragment : BackpackMainFragment(), BackpackMainView {
     private var _binding: FragmentHomeBinding? = null
@@ -122,9 +121,13 @@ class HomeFragment : BackpackMainFragment(), BackpackMainView {
         }
         if (BuildConfig.DEBUG) {
             binding.fab.setOnLongClickListener {
-                DebugUtils.demoData(myContext)
-                requireActivity().finish()
-                startActivity(Intent(myContext, MainActivity::class.java))
+                lifecycleScope.launch(Dispatchers.IO) {
+                    DebugUtils.demoData(myContext)
+                    withContext(Dispatchers.Main) {
+                        requireActivity().finish()
+                        startActivity(Intent(myContext, MainActivity::class.java))
+                    }
+                }
                 true
             }
         }
