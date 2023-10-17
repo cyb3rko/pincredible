@@ -24,6 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
@@ -39,8 +40,12 @@ import com.cyb3rko.pincredible.SettingsActivity
 import com.cyb3rko.pincredible.data.Cell
 import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.databinding.FragmentPinCreatorBinding
-import com.cyb3rko.pincredible.utils.BackupHandler
+import com.cyb3rko.pincredible.utils.BackupHandler.pinDir
+import com.cyb3rko.pincredible.utils.BackupHandler.pinListFile
 import com.cyb3rko.pincredible.views.CoordinateViewManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.security.SecureRandom
 
@@ -149,23 +154,31 @@ class PinCreatorFragment : Fragment() {
                 R.string.dialog_name_hint,
                 maxInputLength = 30
             ) { dialog, inputLayout, input ->
-                try {
-                    val hash = CryptoManager.xxHash(input)
-                    val saved = savePinFile(hash)
-                    if (saved) {
-                        savePinName(input)
-                        Vibration.vibrateDoubleClick(vibrator)
-                        dialog.dismiss()
-                        findNavController().navigate(
-                            PinCreatorFragmentDirections.pinCreatorToHome()
-                        )
-                    } else {
-                        inputLayout.error = getString(R.string.dialog_name_error_exist)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        val hash = CryptoManager.xxHash(input)
+                        val saved = savePinFile(hash)
+                        if (saved) {
+                            savePinName(input)
+                            Vibration.vibrateDoubleClick(vibrator)
+                            withContext(Dispatchers.Main) {
+                                dialog.dismiss()
+                                findNavController().navigate(
+                                    PinCreatorFragmentDirections.pinCreatorToHome()
+                                )
+                            }
+                        } else {
+                            withContext(Dispatchers.Main) {
+                                inputLayout.error = getString(R.string.dialog_name_error_exist)
+                            }
+                        }
+                    } catch (e: EnDecryptionException) {
+                        Log.d("CryptoManager", e.customStacktrace)
+                        withContext(Dispatchers.Main) {
+                            dialog.dismiss()
+                            ErrorDialog.show(myContext, e)
+                        }
                     }
-                } catch (e: EnDecryptionException) {
-                    Log.d("CryptoManager", e.customStacktrace)
-                    dialog.dismiss()
-                    ErrorDialog.show(myContext, e)
                 }
             }
         }
@@ -185,14 +198,13 @@ class PinCreatorFragment : Fragment() {
     }
 
     @Throws(EnDecryptionException::class)
-    private fun savePinFile(hash: String): Boolean {
-        val newPinFile = File(myContext.filesDir, "p$hash")
+    private suspend fun savePinFile(hash: String): Boolean {
+        val newPinFile = File(myContext.pinDir(), "p$hash")
         return if (!newPinFile.exists()) {
             newPinFile.createNewFile()
-            val bytes = ObjectSerializer.serialize(pinTable)
-            val version = BackupHandler.PIN_CRYPTO_ITERATION.toByte()
-            CryptoManager.encrypt(bytes.plus(version), newPinFile)
-            Log.d("PINcredible", "New PIN - Hash:$hash, version:$version")
+            val bytes = pinTable.toBytes()
+            CryptoManager.encrypt(bytes, newPinFile)
+            Log.d("PINcredible", "New PIN - Hash:$hash")
             true
         } else {
             false
@@ -201,7 +213,7 @@ class PinCreatorFragment : Fragment() {
 
     @Throws(EnDecryptionException::class)
     private fun savePinName(name: String) {
-        val pinsFile = File(myContext.filesDir, BackupHandler.PINS_FILE)
+        val pinsFile = myContext.pinListFile()
 
         if (!pinsFile.exists()) {
             Log.d("PINcredible", "Creating new PINs file")

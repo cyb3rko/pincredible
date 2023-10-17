@@ -40,16 +40,16 @@ import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.backpack.modals.AcceptDialog
 import com.cyb3rko.backpack.modals.ErrorDialog
-import com.cyb3rko.backpack.utils.ObjectSerializer
 import com.cyb3rko.backpack.utils.Safe
 import com.cyb3rko.backpack.utils.Vibration
-import com.cyb3rko.backpack.utils.withoutLast
 import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.SettingsActivity
 import com.cyb3rko.pincredible.data.PinTable
 import com.cyb3rko.pincredible.databinding.FragmentPinViewerBinding
 import com.cyb3rko.pincredible.utils.BackupHandler
 import com.cyb3rko.pincredible.utils.BackupHandler.SingleBackupStructure
+import com.cyb3rko.pincredible.utils.BackupHandler.pinDir
+import com.cyb3rko.pincredible.utils.BackupHandler.pinListFile
 import com.cyb3rko.pincredible.utils.TableScreenshotHandler
 import com.cyb3rko.pincredible.views.CoordinateViewManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -100,7 +100,7 @@ class PinViewerFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data?.data ?: return@registerForActivityResult
-                val singleBackup = SingleBackupStructure(pinTable, siid, args.pin)
+                val singleBackup = SingleBackupStructure(pinTable, args.pin)
                 BackupHandler.runBackup(myContext, uri, false, lifecycleScope, singleBackup)
             }
         }
@@ -143,13 +143,13 @@ class PinViewerFragment : Fragment() {
                 .setTitle(R.string.dialog_delete_title)
                 .setMessage(R.string.dialog_delete_message)
                 .setPositiveButton(R.string.dialog_delete_button1) { _, _ ->
-                    val file = File(myContext.filesDir, "p$hash")
+                    val file = File(myContext.pinDir(), "p$hash")
                     if (file.exists()) {
                         val deletionSuccess = file.delete()
                         if (deletionSuccess) {
                             Vibration.vibrateDoubleClick(vibrator)
                             CryptoManager.removeString(
-                                File(myContext.filesDir, BackupHandler.PINS_FILE),
+                                myContext.pinListFile(),
                                 args.pin
                             )
                             findNavController().navigate(
@@ -194,14 +194,14 @@ class PinViewerFragment : Fragment() {
     }
 
     @Throws(EnDecryptionException::class)
-    private fun decryptData(hash: String): PinTable {
-        val file = File(myContext.filesDir, "p$hash")
-        val bytes = CryptoManager.decrypt(file)
-        siid = bytes.last()
+    private suspend fun decryptData(hash: String): PinTable {
+        val file = File(myContext.pinDir(), "p$hash")
+        val pinTable = PinTable().loadFromBytes(CryptoManager.decrypt(file)) as PinTable
+        siid = pinTable.getVersion()
         @SuppressLint("SetTextI18n")
         binding.siidView.text = "SIID: $siid"
         Log.d("PINcredible", "PIN - Hash:$hash, version:$siid")
-        return ObjectSerializer.deserialize(bytes.withoutLast()) as PinTable
+        return pinTable
     }
 
     private fun generateAndExportImage(uri: Uri) {

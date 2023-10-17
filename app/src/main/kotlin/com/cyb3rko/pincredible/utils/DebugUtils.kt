@@ -20,11 +20,13 @@ import android.content.Context
 import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.backpack.utils.ObjectSerializer
 import com.cyb3rko.pincredible.data.PinTable
+import com.cyb3rko.pincredible.utils.BackupHandler.pinDir
+import com.cyb3rko.pincredible.utils.BackupHandler.pinListFile
 import java.io.File
 import kotlin.random.Random
 
 internal object DebugUtils {
-    fun demoData(context: Context) {
+    suspend fun demoData(context: Context) {
         val names = setOf(
             "American Express",
             "Backup Number Alarm System",
@@ -32,7 +34,7 @@ internal object DebugUtils {
             "SIM Card"
         )
         names.forEach {
-            val newPinFile = File(context.filesDir, "p${CryptoManager.xxHash(it)}")
+            val newPinFile = File(context.pinDir(), "p${CryptoManager.xxHash(it)}")
             if (!newPinFile.exists()) {
                 newPinFile.createNewFile()
                 val pinTable = PinTable().apply { fill() }
@@ -41,13 +43,11 @@ internal object DebugUtils {
                         pinTable.putBackground(row, column, Random.nextInt(5))
                     }
                 }
-                val bytes = ObjectSerializer.serialize(pinTable)
-                val version = BackupHandler.PIN_CRYPTO_ITERATION.toByte()
-                CryptoManager.encrypt(bytes.plus(version), newPinFile)
+                CryptoManager.encrypt(pinTable.toBytes(), newPinFile)
             }
         }
 
-        val pinsFile = File(context.filesDir, BackupHandler.PINS_FILE)
+        val pinsFile = context.pinListFile()
         if (!pinsFile.exists()) {
             pinsFile.createNewFile()
             CryptoManager.encrypt(ObjectSerializer.serialize(names), pinsFile)

@@ -16,8 +16,12 @@
 
 package com.cyb3rko.pincredible.data
 
+import android.util.Log
 import com.cyb3rko.backpack.crypto.CryptoManager
 import com.cyb3rko.backpack.data.Serializable
+import com.cyb3rko.backpack.utils.ObjectSerializer
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 
 internal class PinTable : Serializable() {
     private lateinit var data: Array<IntArray>
@@ -69,11 +73,39 @@ internal class PinTable : Serializable() {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
+    override suspend fun loadFromBytes(bytes: ByteArray): Serializable {
+        ByteArrayInputStream(bytes).use {
+            val version = it.read()
+            Log.d("PINcredible", "Found PinTable v$version")
+            val buffer = ByteArray(307)
+            it.read(buffer)
+            data = ObjectSerializer.deserialize(buffer) as Array<IntArray>
+            it.read(buffer)
+            pattern = ObjectSerializer.deserialize(buffer) as Array<IntArray>
+        }
+        return this
+    }
+
+    override suspend fun toBytes(): ByteArray {
+        val stream = ByteArrayOutputStream()
+        stream.use {
+            it.write(byteArrayOf(getVersion()))
+            var byteArray = ObjectSerializer.serialize(data)
+            Log.d("PINcredible", "Size of PinTable-data: ${byteArray.size}")
+            it.write(byteArray)
+            byteArray = ObjectSerializer.serialize(pattern)
+            Log.d("PINcredible", "Size of PinTable-pattern: ${byteArray.size}")
+            it.write(byteArray)
+        }
+        return stream.toByteArray()
+    }
+
+    override suspend fun getVersion(): Byte = 0
+
     companion object {
         const val ROW_COUNT = 7
         const val COLUMN_COUNT = 7
-        private const val serialVersionUID = 5997637778385570065
-
-        fun getSerialUID() = serialVersionUID
+        const val SIZE = 615
     }
 }
