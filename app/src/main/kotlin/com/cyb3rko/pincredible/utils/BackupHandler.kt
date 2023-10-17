@@ -94,7 +94,7 @@ internal object BackupHandler {
                 show(
                     context,
                     titleRes = R.string.dialog_export_title,
-                    initialNote = context.getString(R.string.dialog_single_export_message)
+                    initialNote = context.getString(R.string.dialog_export_message)
                 )
             }
             coroutineScope.launch(Dispatchers.IO) {
@@ -134,7 +134,7 @@ internal object BackupHandler {
                 hash
             )
             withContext(Dispatchers.Main) {
-                progressDialog.complete(context.getString(R.string.dialog_single_export_finished))
+                progressDialog.complete(context.getString(R.string.dialog_export_finished))
             }
         } catch (e: Exception) {
             e.printStackTrace()

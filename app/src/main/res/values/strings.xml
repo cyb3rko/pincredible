@@ -33,8 +33,8 @@
     <string name="dialog_name_hint">Give it a name</string>
     <string name="dialog_name_title">PIN Name</string>
     <string name="dialog_backup_title">Encryption Password</string>
-    <string name="dialog_single_export_message">Exporting single PIN…</string>
-    <string name="dialog_single_export_finished">PIN export completed…</string>
+    <string name="dialog_export_message">Exporting PIN(s)…</string>
+    <string name="dialog_export_finished">PIN export completed…</string>
     <string name="dialog_export_title">PIN Export</string>
     <string name="dialog_export_state_retrieving">%d%% - Retrieving PINs…</string>
     <string name="dialog_export_state_saving">%d%% - Saving backup file…</string>
