@@ -74,10 +74,14 @@ internal class PinTable : Serializable() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    override suspend fun loadFromBytes(bytes: ByteArray): Serializable {
+    override suspend fun loadFromBytes(bytes: ByteArray): Serializable? {
         ByteArrayInputStream(bytes).use {
             val version = it.read()
             Log.d("PINcredible", "Found PinTable v$version")
+            if (version > getVersion()) {
+                Log.d("PINcredible", "PinTable version not supported")
+                return null
+            }
             val buffer = ByteArray(307)
             it.read(buffer)
             data = ObjectSerializer.deserialize(buffer) as Array<IntArray>

@@ -30,6 +30,7 @@ import com.cyb3rko.backpack.managers.StorageManager
 import com.cyb3rko.backpack.modals.ErrorDialog
 import com.cyb3rko.backpack.modals.PasswordDialog
 import com.cyb3rko.backpack.modals.ProgressDialog
+import com.cyb3rko.backpack.modals.VersionNotSupportedDialog
 import com.cyb3rko.backpack.utils.ObjectSerializer
 import com.cyb3rko.backpack.utils.dateNow
 import com.cyb3rko.backpack.utils.lastN
@@ -292,7 +293,14 @@ internal object BackupHandler {
 
                 val backup = SingleBackupStructure().loadFromBytes(
                     bytes.withoutLastN(OVERHEAD_SIZE - 1)
-                ) as SingleBackupStructure
+                ) as SingleBackupStructure?
+                if (backup == null) {
+                    withContext(Dispatchers.Main) {
+                        progressDialog.dismiss()
+                        VersionNotSupportedDialog.show(context)
+                    }
+                    return@launch
+                }
                 Log.d("PINcredible Backup", "Single backup version ${backup.getVersion()} found")
                 withContext(Dispatchers.Main) {
                     progressDialog.updateAbsolute(50)
@@ -372,7 +380,14 @@ internal object BackupHandler {
 
                 val backup = MultiBackupStructure().loadFromBytes(
                     bytes.withoutLastN(OVERHEAD_SIZE - 1)
-                ) as MultiBackupStructure
+                ) as MultiBackupStructure?
+                if (backup == null) {
+                    withContext(Dispatchers.Main) {
+                        progressDialog.dismiss()
+                        VersionNotSupportedDialog.show(context)
+                    }
+                    return@launch
+                }
                 Log.d("PINcredible Backup", "Full backup version ${backup.getVersion()} found")
                 withContext(Dispatchers.Main) {
                     progressDialog.updateAbsolute(50)
@@ -455,10 +470,14 @@ internal object BackupHandler {
         lateinit var pinTable: PinTable
         lateinit var name: String
 
-        override suspend fun loadFromBytes(bytes: ByteArray): Serializable {
+        override suspend fun loadFromBytes(bytes: ByteArray): Serializable? {
             ByteArrayInputStream(bytes).use {
                 val version = it.read()
                 Log.d("PINcredible", "Found SingleBackupStructure v$version")
+                if (version > getVersion()) {
+                    Log.d("PINcredible", "SingleBackupStructure version not supported")
+                    return null
+                }
                 val buffer = ByteArray(PinTable.SIZE)
                 it.read(buffer)
                 pinTable = PinTable().loadFromBytes(buffer) as PinTable
@@ -494,10 +513,14 @@ internal object BackupHandler {
         lateinit var pinTable: PinTable
         lateinit var fileName: String
 
-        override suspend fun loadFromBytes(bytes: ByteArray): Serializable {
+        override suspend fun loadFromBytes(bytes: ByteArray): Serializable? {
             ByteArrayInputStream(bytes).use {
                 val version = it.read()
                 Log.d("PINcredible", "Found MultiBackupPinTable v$version")
+                if (version > getVersion()) {
+                    Log.d("PINcredible", "MultiBackupPinTable version not supported")
+                    return null
+                }
                 val buffer = ByteArray(PinTable.SIZE)
                 it.read(buffer)
                 pinTable = PinTable().loadFromBytes(buffer) as PinTable
@@ -534,10 +557,14 @@ internal object BackupHandler {
         lateinit var names: Set<String>
 
         @Suppress("UNCHECKED_CAST")
-        override suspend fun loadFromBytes(bytes: ByteArray): Serializable {
+        override suspend fun loadFromBytes(bytes: ByteArray): Serializable? {
             ByteArrayInputStream(bytes).use { stream ->
                 val version = stream.read()
                 Log.d("PINcredible", "Found MultiBackupStrucutre v$version")
+                if (version > getVersion()) {
+                    Log.d("PINcredible", "MultiBackupStrucutre version not supported")
+                    return null
+                }
                 val pinCount = stream.read()
                 val pinBuffer = mutableListOf<MultiBackupPinTable>()
                 val pinSizeBytes = ByteArray(2)
