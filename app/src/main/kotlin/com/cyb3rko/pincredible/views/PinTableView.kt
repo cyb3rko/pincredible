@@ -93,11 +93,7 @@ internal class PinTableView(
         }
     }
 
-    fun select(
-        cell: PinTableCell,
-        @ColorRes backgroundInt: Int,
-        colorBlindAlternative: Boolean
-    ) {
+    fun select(cell: PinTableCell, @ColorRes backgroundInt: Int, colorBlindAlternative: Boolean) {
         val selectedBackgroundInt = colorIndexToSelectedDrawableID(
             backgroundInt,
             colorBlindAlternative

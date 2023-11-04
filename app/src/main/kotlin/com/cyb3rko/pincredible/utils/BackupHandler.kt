@@ -39,17 +39,19 @@ import com.cyb3rko.backpack.utils.withoutLast
 import com.cyb3rko.backpack.utils.withoutLastN
 import com.cyb3rko.pincredible.R
 import com.cyb3rko.pincredible.data.PinTable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.nio.ByteBuffer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 internal object BackupHandler {
     private enum class BackupType {
-        SINGLE_PIN, MULTI_PIN, UNKNOWN
+        SINGLE_PIN,
+        MULTI_PIN,
+        UNKNOWN
     }
     private const val PINS_FILE = "pins"
     private const val SINGLE_BACKUP_FILE = ".pin"
@@ -304,7 +306,9 @@ internal object BackupHandler {
                 Log.d("PINcredible Backup", "Single backup version ${backup.getVersion()} found")
                 withContext(Dispatchers.Main) {
                     progressDialog.updateAbsolute(50)
-                    progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 50))
+                    progressDialog.updateText(
+                        context.getString(R.string.dialog_import_state_saving, 50)
+                    )
                 }
 
                 val nameFile = context.pinListFile()
@@ -316,7 +320,9 @@ internal object BackupHandler {
                 }
                 withContext(Dispatchers.Main) {
                     progressDialog.updateAbsolute(75)
-                    progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 75))
+                    progressDialog.updateText(
+                        context.getString(R.string.dialog_import_state_saving, 75)
+                    )
                 }
 
                 val fileHash = CryptoManager.xxHash(backup.name)
@@ -391,7 +397,9 @@ internal object BackupHandler {
                 Log.d("PINcredible Backup", "Full backup version ${backup.getVersion()} found")
                 withContext(Dispatchers.Main) {
                     progressDialog.updateAbsolute(50)
-                    progressDialog.updateText(context.getString(R.string.dialog_import_state_saving, 50))
+                    progressDialog.updateText(
+                        context.getString(R.string.dialog_import_state_saving, 50)
+                    )
                 }
 
                 val nameFile = context.pinListFile()

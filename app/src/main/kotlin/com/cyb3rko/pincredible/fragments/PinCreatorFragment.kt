@@ -43,11 +43,11 @@ import com.cyb3rko.pincredible.databinding.FragmentPinCreatorBinding
 import com.cyb3rko.pincredible.utils.BackupHandler.pinDir
 import com.cyb3rko.pincredible.utils.BackupHandler.pinListFile
 import com.cyb3rko.pincredible.views.CoordinateViewManager
+import java.io.File
+import java.security.SecureRandom
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.security.SecureRandom
 
 class PinCreatorFragment : Fragment() {
     private var _binding: FragmentPinCreatorBinding? = null

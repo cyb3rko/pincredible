@@ -39,10 +39,7 @@ internal object TableScreenshotHandler {
         onGenerated(bitmap)
     }
 
-    private fun showFileCreator(
-        launcher: ActivityResultLauncher<Intent>,
-        fileName: String
-    ) {
+    private fun showFileCreator(launcher: ActivityResultLauncher<Intent>, fileName: String) {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "image/jpeg"

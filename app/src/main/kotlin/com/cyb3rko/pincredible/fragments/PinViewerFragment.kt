@@ -53,11 +53,11 @@ import com.cyb3rko.pincredible.utils.BackupHandler.pinListFile
 import com.cyb3rko.pincredible.utils.TableScreenshotHandler
 import com.cyb3rko.pincredible.views.CoordinateViewManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.io.File
+import kotlin.properties.Delegates
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
-import kotlin.properties.Delegates
 
 class PinViewerFragment : Fragment() {
     private var _binding: FragmentPinViewerBinding? = null

@@ -27,7 +27,8 @@ import com.google.android.material.textview.MaterialTextView
 
 internal object CoordinateViewManager {
     private enum class Orientation {
-        HORIZONTAL, VERTICAL;
+        HORIZONTAL,
+        VERTICAL
     }
     private enum class Frame(val pattern: String) {
         INDEX("12345671234567"),
