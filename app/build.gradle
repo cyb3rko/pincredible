@@ -14,12 +14,12 @@ android {
         minSdk 23
         targetSdk 34
         versionCode 12
-        versionName '0.7.1'
+        versionName '1.0.0a'
         resValue 'string', "app_name", "PINcredible DEBUG"
         signingConfig signingConfigs.debug
     }
     applicationVariants.configureEach { variant ->
-        variant.resValue 'string', 'version_name', "Beta v${variant.versionName}"
+        variant.resValue 'string', 'version_name', "Pre-Release v${variant.versionName}"
     }
     buildTypes {
         development {
