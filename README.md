@@ -2,10 +2,10 @@
 If you have never used PINcredible, you can skip this section.  
 If you have already used this app, please note that:
 - The stable release 1.0.0 will use a different app signature, so you most likely have to uninstall the currently installed version and install the new version.
-- Your current PINs and even PIN backups will not work anymore in the stable release 1.0.0.  
+- Your data from app versions older than 1.0.0a will not work anymore beginning with version 1.0.0a.  
   That is because of an internal rehaul of the persisting features. I will switch from whole class serialization to custom serialization methods.
 
-Before upgrading save your PINs outside of PINcredible to be able to reenter them in release 1.0.0.  
+Before upgrading save your PINs outside of PINcredible to be able to reenter them in version 1.0.0a.  
 Thank you for your understanding!
 
 ---
@@ -50,9 +50,9 @@ So here we are now, this is my own implementation of a secure PIN manager.
 
 ## Beta phase - ⚠️Breaking Changes⚠️
 
-While the app is still in beta phase please expect a few breaking changes.  
-Some beta updates do not work with the previous app versions.  
-Therefore you may have to readd your saved PINs and recreate your backups in never versions.
+While the app is still in pre-release phase please expect a few breaking changes.  
+Some newer updates do not work with the previous app versions.  
+Therefore you may have to readd your saved PINs and recreate your backups in newer versions.
 
 ## Feature Overview
 | | PINcredible | Others |
