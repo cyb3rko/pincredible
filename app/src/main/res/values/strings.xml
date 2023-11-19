@@ -51,11 +51,6 @@
     <string name="dialog_image_title">PIN table image</string>
     <string name="dialog_image_message">Are you sure?\n\nYou are about to save this unencrypted PIN table to %s.</string>
 
-    <!-- BottomSheet Content -->
-
-    <string name="bottomdialog_title">⚠️ Important Note - Breaking Changes in Final Release ⚠️</string>
-    <string name="bottomdialog_notice">If you have never used PINcredible, you can skip this section.\n\nIf you have already used this app, please note that your current PINs and even PIN backups will not work anymore in the stable release 1.0.0.\n\nThat is because of an internal rehaul of the persisting features. I will switch from whole class serialization to custom serialization methods for improved stability.\n\nBefore upgrading save your PINs to be able to reenter them in release 1.0.0.\n\nThank you for your understanding!</string>
-
     <!-- Toasts -->
     <string name="toast_stacktrace">Stracktrace copied</string>
 
