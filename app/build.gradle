@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'androidx.navigation.safeargs.kotlin'
-    id 'org.jmailen.kotlinter' version '4.0.0' // lintKotlin, formatKotlin
+    id 'org.jmailen.kotlinter' version '4.3.0' // lintKotlin, formatKotlin
     id 'com.getkeepsafe.dexcount' version '4.0.0' // :app:countReleaseDexMethods
 }
 
@@ -44,6 +44,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
     bundle {
         storeArchive {
@@ -79,7 +80,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
     implementation "androidx.preference:preference-ktx:$preference_version"
     implementation project(path: ':backpack')
-    developmentImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
+    developmentImplementation 'com.squareup.leakcanary:leakcanary-android:2.13'
 
 //    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 //    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
