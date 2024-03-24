@@ -24,17 +24,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.cyb3rko.backpack.crypto.CryptoManager
-import com.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
 import com.cyb3rko.backpack.data.BuildInfo
 import com.cyb3rko.backpack.fragments.BackpackMainFragment
 import com.cyb3rko.backpack.interfaces.BackpackMainView
-import com.cyb3rko.backpack.modals.ErrorDialog
-import com.cyb3rko.backpack.utils.ObjectSerializer
 import com.cyb3rko.backpack.utils.Vibration
 import com.cyb3rko.backpack.utils.hide
 import com.cyb3rko.backpack.utils.show
@@ -45,11 +42,10 @@ import com.cyb3rko.pincredible.SettingsActivity
 import com.cyb3rko.pincredible.databinding.FragmentHomeBinding
 import com.cyb3rko.pincredible.recycler.PinAdapter
 import com.cyb3rko.pincredible.utils.BackupHandler
+import com.cyb3rko.pincredible.utils.BackupHandler.pinDir
 import com.cyb3rko.pincredible.utils.BackupHandler.pinListFile
-import com.cyb3rko.pincredible.utils.DebugUtils
-import kotlinx.coroutines.Dispatchers
+import com.cyb3rko.pincredible.viewmodels.HomeViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeFragment : BackpackMainFragment(), BackpackMainView {
     private var _binding: FragmentHomeBinding? = null
@@ -57,6 +53,7 @@ class HomeFragment : BackpackMainFragment(), BackpackMainView {
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
+    private val viewModel: HomeViewModel by viewModels()
     private lateinit var adapter: PinAdapter
 
     private val fileCreatorResultLauncher =
@@ -72,7 +69,7 @@ class HomeFragment : BackpackMainFragment(), BackpackMainView {
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data?.data ?: return@registerForActivityResult
                 BackupHandler.restoreBackup(myContext, uri, lifecycleScope) {
-                    readAndShowPins()
+                    viewModel.loadApps(myContext.pinListFile())
                 }
             }
         }
@@ -98,7 +95,12 @@ class HomeFragment : BackpackMainFragment(), BackpackMainView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        readAndShowPins()
+        lifecycleScope.launch {
+            viewModel.appsFlow.collect {
+                showSavedPins(it)
+            }
+        }
+        viewModel.loadApps(myContext.pinListFile())
 
         binding.fab.setOnClickListener {
             Vibration.vibrateDoubleClick(vibrator)
@@ -121,13 +123,7 @@ class HomeFragment : BackpackMainFragment(), BackpackMainView {
         }
         if (BuildConfig.DEBUG) {
             binding.fab.setOnLongClickListener {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    DebugUtils.demoData(myContext)
-                    withContext(Dispatchers.Main) {
-                        requireActivity().finish()
-                        startActivity(Intent(myContext, MainActivity::class.java))
-                    }
-                }
+                viewModel.loadDemoApps(myContext.pinDir(), myContext.pinListFile())
                 true
             }
         }
@@ -142,39 +138,10 @@ class HomeFragment : BackpackMainFragment(), BackpackMainView {
         (requireActivity() as MainActivity).showSubtitle(false)
     }
 
-    private fun readAndShowPins() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val pins: List<String>
-            try {
-                pins = retrievePins()
-                Log.d("PINcredible", "${pins.size} PINs found")
-                withContext(Dispatchers.Main) {
-                    showSavedPins(pins)
-                }
-            } catch (e: EnDecryptionException) {
-                Log.d("CryptoManager", e.customStacktrace)
-                withContext(Dispatchers.Main) {
-                    binding.progressBar.hide()
-                    ErrorDialog.show(myContext, e)
-                }
-            }
-        }
-    }
-
-    @Throws(EnDecryptionException::class)
-    private fun retrievePins(): List<String> {
-        val pinsFile = myContext.pinListFile()
-        return if (pinsFile.exists()) {
-            @Suppress("UNCHECKED_CAST")
-            (ObjectSerializer.deserialize(CryptoManager.decrypt(pinsFile)) as Set<String>).toList()
-        } else {
-            listOf()
-        }
-    }
-
     private fun showSavedPins(pins: List<String>) {
         binding.progressBar.hide()
         if (pins.isNotEmpty()) {
+            Log.d("PINcredible", "${pins.size} PINs found")
             binding.emptyHintContainer.hide()
             adapter.submitList(pins.sorted())
             binding.chip.run {
