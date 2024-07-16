@@ -56,12 +56,12 @@ import com.cyb3rko.pincredible.utils.BackupHandler.pinListFile
 import com.cyb3rko.pincredible.utils.TableScreenshotHandler
 import com.cyb3rko.pincredible.views.CoordinateViewManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.io.File
-import kotlin.properties.Delegates
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.lang.Float.min
+import kotlin.properties.Delegates
 
 class PinViewerFragment : Fragment() {
     private var _binding: FragmentPinViewerBinding? = null
@@ -233,8 +233,8 @@ class PinViewerFragment : Fragment() {
 
         // Calculate the new size for the bitmap with frame and watermark space
         val newBitmapWidth = bitmap.width + (frameThickness * 2)
-        val newBitmapHeight =
-            bitmap.height + (frameThickness * 2) + paint.textSize.toInt() + titlePadding + watermarkPadding
+        val newBitmapHeight = bitmap.height + (frameThickness * 2)
+            + paint.textSize.toInt() + titlePadding + watermarkPadding
 
         // Create a new bitmap with the new size
         val framedBitmap =
@@ -267,7 +267,6 @@ class PinViewerFragment : Fragment() {
             )
         }
         currentY += watermarkPadding + paint.textSize
-
 
         return framedBitmap
     }
