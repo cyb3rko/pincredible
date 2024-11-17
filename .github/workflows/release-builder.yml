@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Build Changelog
         id: github_release
-        uses: mikepenz/release-changelog-builder-action@v3
+        uses: mikepenz/release-changelog-builder-action@v5
         with:
           failOnError: true
           commitMode: true
@@ -76,53 +76,50 @@ jobs:
                 }
               ]
             }
-      
+
       - name: Echo Changelog
         env:
           CHANGELOG: ${{ steps.github_release.outputs.changelog }}
         run: echo "$CHANGELOG"
-        
+
+      - name: Set release name
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
       - name: Checkout repo including backpack submodule
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: recursive
-          
+
       - name: Setup JDK
-        uses: actions/setup-java@v3
-        with: 
+        uses: actions/setup-java@v4
+        with:
           distribution: 'zulu'
           java-version: '17'
 
       - name: Show backpack directory
-        run: |
-          cd backpack-apps
-          ls
-          cd ..
-          
-      - name: Set release name
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-        
+        run: ls backpack-apps
+
       - name: Build APK
         run: |
           export KEYSTORE_FILE=$(pwd)/keystore.jks
           echo $KEYSTORE | base64 -d > $KEYSTORE_FILE
           chmod +x ./gradlew
           ./gradlew -Psign build --stacktrace
-          cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/PINcredible-$RELEASE_VERSION.apk
+          cp app/build/outputs/apk/release/app-release.apk app/build/outputs/PINcredible-$RELEASE_VERSION.apk
         env:
           KEYSTORE: ${{ secrets.KEYSTORE }}
           KEYSTORE_PASSWD: ${{ secrets.KEYSTORE_PASSWD }}
           KEYSTORE_KEY_ALIAS: ${{ secrets.KEYSTORE_KEY_ALIAS }}
           KEYSTORE_KEY_PASSWD: ${{ secrets.KEYSTORE_KEY_PASSWD }}
-          
+
       - name: List build output
-        run: |
-          cd app/build/outputs/apk/release/
-          ls
-        
+        run: ls app/build/outputs/
+
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
+        env:
+          CHANGELOG: ${{ steps.github_release2.outputs.changelog }}
         with:
           name: "Version ${{ env.RELEASE_VERSION }}"
-          body: ${{steps.github_release.outputs.changelog}}
-          files: app/build/outputs/apk/release/PINcredible-${{env.RELEASE_VERSION}}.apk
+          body: ${{ env.CHANGELOG }}
+          files: app/build/outputs/PINcredible-${{env.RELEASE_VERSION}}.apk
