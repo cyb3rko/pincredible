@@ -188,7 +188,7 @@ Using a unified code format makes it much easier for me and for everyone else.
 
 ## License
 
-    Copyright 2023, Cyb3rKo
+    Copyright 2023-2024, Cyb3rKo
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
