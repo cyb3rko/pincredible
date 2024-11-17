@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -13,6 +15,7 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "PINcredible"
-include ':app', ':backpack'
+include(":app")
+include(":backpack")
 
-project(':backpack').projectDir = new File('backpack-apps/backpack')
+project(":backpack").projectDir = File("backpack-apps/backpack")
