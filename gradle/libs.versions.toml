@@ -1,11 +1,11 @@
 [versions]
 agp = "8.7.2"
-kotlin = "1.9.23"
-kotlinter = "4.3.0"
+kotlin = "2.0.20"
+kotlinter = "4.5.0"
 dexcount = "4.0.0"
-navigation = "2.7.7"
+navigation = "2.8.4"
 preference = "1.2.1"
-leakcanary = "2.13"
+leakcanary = "2.14"
 
 [libraries]
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
