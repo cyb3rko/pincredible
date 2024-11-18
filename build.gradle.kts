@@ -1,5 +1,7 @@
+import org.gradle.kotlin.dsl.libs
+
 plugins {
-    id("com.android.application") version "8.7.2" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.23" apply false
-    id("androidx.navigation.safeargs.kotlin") version "2.7.7" apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.androidx.navigation.safeargs) apply false
 }

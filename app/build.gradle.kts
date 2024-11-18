@@ -1,11 +1,12 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.gradle.kotlin.dsl.libs
 
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("androidx.navigation.safeargs.kotlin")
-    id("org.jmailen.kotlinter") version "4.3.0" // lintKotlin, formatKotlin
-    id("com.getkeepsafe.dexcount") version "4.0.0" // :app:countReleaseDexMethods
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlinter) // lintKotlin, formatKotlin
+    alias(libs.plugins.dexcount) // :app:countReleaseDexMethods
+    alias(libs.plugins.androidx.navigation.safeargs)
 }
 
 android {
@@ -80,11 +81,11 @@ if (project.hasProperty("sign")) {
 }
 
 dependencies {
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
-    implementation("androidx.preference:preference-ktx:1.2.1")
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
+    implementation(libs.androidx.preference)
     implementation(project(":backpack"))
-    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.13")
+    debugImplementation(libs.leakcanary)
 
 //    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 //    androidTestImplementation 'androidx.test.ext:junit:1.1.5'

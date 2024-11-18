@@ -1,0 +1,21 @@
+[versions]
+agp = "8.7.2"
+kotlin = "1.9.23"
+kotlinter = "4.3.0"
+dexcount = "4.0.0"
+navigation = "2.7.7"
+preference = "1.2.1"
+leakcanary = "2.13"
+
+[libraries]
+androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
+androidx-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation" }
+androidx-preference = { module = "androidx.preference:preference-ktx", version.ref = "preference" }
+leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
+dexcount = { id = "com.getkeepsafe.dexcount", version.ref = "dexcount" }
+androidx-navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
