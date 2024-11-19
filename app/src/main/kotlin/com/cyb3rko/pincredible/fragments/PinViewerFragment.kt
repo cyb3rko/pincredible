@@ -20,6 +20,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
@@ -53,11 +56,12 @@ import com.cyb3rko.pincredible.utils.BackupHandler.pinListFile
 import com.cyb3rko.pincredible.utils.TableScreenshotHandler
 import com.cyb3rko.pincredible.views.CoordinateViewManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.io.File
-import kotlin.properties.Delegates
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.lang.Float.min
+import kotlin.properties.Delegates
 
 class PinViewerFragment : Fragment() {
     private var _binding: FragmentPinViewerBinding? = null
@@ -91,7 +95,7 @@ class PinViewerFragment : Fragment() {
                         )
                     )
                 ) {
-                    generateAndExportImage(uri)
+                    generateAndExportImage(uri, args.pin)
                 }
             }
         }
@@ -204,7 +208,70 @@ class PinViewerFragment : Fragment() {
         return pinTable
     }
 
-    private fun generateAndExportImage(uri: Uri) {
+    /**
+     * Adds a white frame, a PINcredible watermark and a title text to the original bitmap.
+     *
+     * The text size is dynamically adjusted to fit within the frame.
+     */
+    private fun frameAndTitleBitmap(bitmap: Bitmap, title: String): Bitmap {
+        val frameThickness = 20
+        val titlePadding = bitmap.height / 20
+        val watermarkPadding = bitmap.height / 40
+        val paint = Paint()
+
+        // Draws from top to bottom
+        var currentY = 0f
+
+        // Dynamically adjust the text size to fit within the frame
+        val maxTextWidth = bitmap.width - (2 * frameThickness)
+        val textWidth = paint.measureText(title) // Measure the text width
+        paint.textSize *= (maxTextWidth / textWidth) // Adjust the text size to fit the text width
+        paint.textSize = min(
+            paint.textSize,
+            bitmap.height / 15f
+        ) // Limit the text size to 1/15 of the bitmap height
+
+        // Calculate the new size for the bitmap with frame and watermark space
+        val newBitmapWidth = bitmap.width + (frameThickness * 2)
+        val newBitmapHeight = bitmap.height + (frameThickness * 2)
+            + paint.textSize.toInt() + titlePadding + watermarkPadding
+
+        // Create a new bitmap with the new size
+        val framedBitmap =
+            Bitmap.createBitmap(newBitmapWidth, newBitmapHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(framedBitmap)
+
+        // Draw the white frame
+        paint.color = Color.WHITE
+        canvas.drawRect(0f, 0f, newBitmapWidth.toFloat(), newBitmapHeight.toFloat(), paint)
+
+        // Draw the title
+        paint.color = Color.BLACK
+        paint.textAlign = Paint.Align.CENTER
+        canvas.drawText(title, newBitmapWidth / 2f, paint.textSize + titlePadding / 2f, paint)
+        currentY += titlePadding + paint.textSize
+
+        // Draw the original bitmap onto the new bitmap with the frame
+        canvas.drawBitmap(bitmap, frameThickness.toFloat(), (currentY), paint)
+        currentY += bitmap.height
+
+        // Draw the watermark
+        paint.color = Color.DKGRAY
+        paint.textSize = bitmap.width / 40f
+        context?.let {
+            canvas.drawText(
+                it.getString(R.string.export_watermark),
+                newBitmapWidth / 2f,
+                currentY + paint.textSize + watermarkPadding / 2,
+                paint
+            )
+        }
+        currentY += watermarkPadding + paint.textSize
+
+        return framedBitmap
+    }
+
+    private fun generateAndExportImage(uri: Uri, title: String) {
         val tableView = binding.tableView
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val bitmap = Bitmap.createBitmap(
@@ -226,7 +293,7 @@ class PinViewerFragment : Fragment() {
                     bitmap,
                     { copyResult ->
                         if (copyResult == PixelCopy.SUCCESS) {
-                            saveImage(bitmap, uri)
+                            saveImage(frameAndTitleBitmap(bitmap, title), uri)
                         }
                     },
                     Handler(Looper.getMainLooper())
@@ -237,7 +304,7 @@ class PinViewerFragment : Fragment() {
         } else {
             TableScreenshotHandler.generateTableCacheCopy(tableView) {
                 if (it != null) {
-                    saveImage(it, uri)
+                    saveImage(frameAndTitleBitmap(it, title), uri)
                 }
             }
         }
