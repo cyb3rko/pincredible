@@ -1,20 +1,33 @@
 [versions]
-agp = "8.7.2"
+agp = "8.7.3"
 kotlin = "2.0.20"
+appcompat = "1.7.0"
+biometric = "1.1.0"
+constraintlayout = "2.2.0"
+core = "1.15.0"
 kotlinter = "4.5.0"
 dexcount = "4.0.0"
-navigation = "2.8.4"
+navigation = "2.8.5"
 preference = "1.2.1"
+argon2kt = "1.6.0"
+material = "1.12.0"
 leakcanary = "2.14"
 
 [libraries]
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+androidx-core = { module = "androidx.core:core-ktx", version.ref = "core" }
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation" }
 androidx-preference = { module = "androidx.preference:preference-ktx", version.ref = "preference" }
+argon2kt = { module = "com.lambdapioneer.argon2kt:argon2kt", version.ref = "argon2kt" }
+google-material = { module = "com.google.android.material:material", version.ref = "material" }
 leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
 dexcount = { id = "com.getkeepsafe.dexcount", version.ref = "dexcount" }
