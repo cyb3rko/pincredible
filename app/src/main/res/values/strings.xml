@@ -70,4 +70,5 @@
     <string name="dialog_restart_title">Restart required</string>
     <string name="dialog_restart_message">The change will be visible on next app start.\n\nDo you want to restart now?</string>
     <string name="dialog_restart_button2">Later</string>
+    <string name="export_watermark">cyb3rko / PINcredible</string>
 </resources>
