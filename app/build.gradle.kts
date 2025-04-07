@@ -1,3 +1,4 @@
+import java.util.Properties
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.gradle.kotlin.dsl.libs
 
@@ -6,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlinter) // lintKotlin, formatKotlin
     alias(libs.plugins.dexcount) // :app:countReleaseDexMethods
+    alias(libs.plugins.bundletool)
     alias(libs.plugins.androidx.navigation.safeargs)
 }
 
@@ -65,10 +67,17 @@ android {
     }
 }
 
+// Automatic pipeline build
+// build with '-Psign assembleRelease'
+// output at 'app/build/outputs/apk/release/app-release.apk'
+// build with '-Psign bundleRelease'
+// output at 'app/build/outputs/bundle/release/app-release.aab'
 if (project.hasProperty("sign")) {
     android {
         signingConfigs {
             create("release") {
+                enableV3Signing = true
+                enableV4Signing = true
                 storeFile = file(System.getenv("KEYSTORE_FILE"))
                 storePassword = System.getenv("KEYSTORE_PASSWD")
                 keyAlias = System.getenv("KEYSTORE_KEY_ALIAS")
@@ -78,6 +87,41 @@ if (project.hasProperty("sign")) {
     }
     android.buildTypes.getByName("release").signingConfig =
         android.signingConfigs.getByName("release")
+}
+
+// Automatic pipeline build for Accrescent
+// build with '-Pmanual_upload_oss buildApksRelease'
+// output at 'app/build/outputs/apkset/release/app-release.apks'
+if (project.hasProperty("manual_upload_oss")) {
+    bundletool {
+        signingConfig {
+            storeFile = file(System.getenv("KEYSTORE_FILE"))
+            storePassword = System.getenv("KEYSTORE_PASSWD")
+            keyAlias = System.getenv("KEYSTORE_KEY_ALIAS")
+            keyPassword = System.getenv("KEYSTORE_KEY_PASSWD")
+        }
+    }
+}
+
+// Manual Google Play Store build
+// build with '-Pmanual_upload bundleRelease'
+// output at 'app/build/outputs/bundle/release/app-release.aab'
+if (project.hasProperty("manual_upload")) {
+    val properties = Properties()
+    properties.load(project.rootProject.file("local.properties").inputStream())
+    android {
+        signingConfigs {
+            create("upload") {
+                enableV3Signing = true
+                enableV4Signing = true
+                storeFile = file(properties.getProperty("uploadsigning.file"))
+                storePassword = properties.getProperty("uploadsigning.password")
+                keyAlias = properties.getProperty("uploadsigning.key.alias")
+                keyPassword = properties.getProperty("uploadsigning.key.password")
+            }
+        }
+    }
+    android.buildTypes.getByName("release").signingConfig = android.signingConfigs.getByName("upload")
 }
 
 dependencies {
