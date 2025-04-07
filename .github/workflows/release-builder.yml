@@ -104,7 +104,7 @@ jobs:
           export KEYSTORE_FILE=$(pwd)/keystore.jks
           echo $KEYSTORE | base64 -d > $KEYSTORE_FILE
           chmod +x ./gradlew
-          ./gradlew -Psign build --stacktrace
+          ./gradlew -Psign assembleRelease --stacktrace
           cp app/build/outputs/apk/release/app-release.apk app/build/outputs/PINcredible-$RELEASE_VERSION.apk
         env:
           KEYSTORE: ${{ secrets.KEYSTORE }}
@@ -114,6 +114,12 @@ jobs:
 
       - name: List build output
         run: ls app/build/outputs/
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          path: app/build/outputs/*.apk
+          if-no-files-found: error
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
