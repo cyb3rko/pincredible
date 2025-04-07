@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible.views
+package de.cyb3rko.pincredible.views
 
 import android.widget.LinearLayout
 import androidx.core.view.children
-import com.cyb3rko.backpack.utils.Safe
-import com.cyb3rko.backpack.utils.show
-import com.cyb3rko.pincredible.SettingsActivity
-import com.cyb3rko.pincredible.databinding.TableCoordinatesHoriBinding
-import com.cyb3rko.pincredible.databinding.TableCoordinatesVertBinding
 import com.google.android.material.textview.MaterialTextView
+import de.cyb3rko.backpack.utils.Safe
+import de.cyb3rko.backpack.utils.show
+import de.cyb3rko.pincredible.SettingsActivity
+import de.cyb3rko.pincredible.databinding.TableCoordinatesHoriBinding
+import de.cyb3rko.pincredible.databinding.TableCoordinatesVertBinding
 
 internal object CoordinateViewManager {
     private enum class Orientation {

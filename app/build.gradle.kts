@@ -10,10 +10,10 @@ plugins {
 }
 
 android {
-    namespace = "com.cyb3rko.pincredible"
+    namespace = "de.cyb3rko.pincredible"
     compileSdk = 35
     defaultConfig {
-        applicationId = "com.cyb3rko.pincredible"
+        applicationId = "de.cyb3rko.pincredible"
         minSdk = 23
         targetSdk = 35
         versionCode = 12

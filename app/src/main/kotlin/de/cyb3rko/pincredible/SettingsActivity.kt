@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Cyb3rKo
+ * Copyright (c) 2023-2025 Cyb3rKo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible
+package de.cyb3rko.pincredible
 
 import android.os.Bundle
-import com.cyb3rko.backpack.activities.BackpackSettingsActivity
-import com.cyb3rko.backpack.fragments.BackpackSettingsFragment
-import com.cyb3rko.backpack.interfaces.BackpackSettings
-import com.cyb3rko.pincredible.fragments.SettingsFragment
+import de.cyb3rko.backpack.activities.BackpackSettingsActivity
+import de.cyb3rko.backpack.fragments.BackpackSettingsFragment
+import de.cyb3rko.backpack.interfaces.BackpackSettings
+import de.cyb3rko.pincredible.fragments.SettingsFragment
 
 internal class SettingsActivity : BackpackSettingsActivity(), BackpackSettings {
     override fun onCreate(savedInstanceState: Bundle?) {

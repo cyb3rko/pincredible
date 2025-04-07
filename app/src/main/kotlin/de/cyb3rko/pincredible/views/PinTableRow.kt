@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible.views
+package de.cyb3rko.pincredible.views
 
 import android.content.Context
 import android.widget.TableRow

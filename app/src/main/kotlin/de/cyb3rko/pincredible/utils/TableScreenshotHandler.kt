@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible.utils
+package de.cyb3rko.pincredible.utils
 
 import android.content.Context
 import android.content.Intent

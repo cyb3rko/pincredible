@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Cyb3rKo
+ * Copyright (c) 2023-2025 Cyb3rKo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible.fragments
+package de.cyb3rko.pincredible.fragments
 
 import android.app.Activity
 import android.content.Intent
@@ -29,22 +29,22 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.cyb3rko.backpack.data.BuildInfo
-import com.cyb3rko.backpack.fragments.BackpackMainFragment
-import com.cyb3rko.backpack.interfaces.BackpackMainView
-import com.cyb3rko.backpack.utils.Vibration
-import com.cyb3rko.backpack.utils.hide
-import com.cyb3rko.backpack.utils.show
-import com.cyb3rko.pincredible.BuildConfig
-import com.cyb3rko.pincredible.MainActivity
-import com.cyb3rko.pincredible.R
-import com.cyb3rko.pincredible.SettingsActivity
-import com.cyb3rko.pincredible.databinding.FragmentHomeBinding
-import com.cyb3rko.pincredible.recycler.PinAdapter
-import com.cyb3rko.pincredible.utils.BackupHandler
-import com.cyb3rko.pincredible.utils.BackupHandler.pinDir
-import com.cyb3rko.pincredible.utils.BackupHandler.pinListFile
-import com.cyb3rko.pincredible.viewmodels.HomeViewModel
+import de.cyb3rko.backpack.data.BuildInfo
+import de.cyb3rko.backpack.fragments.BackpackMainFragment
+import de.cyb3rko.backpack.interfaces.BackpackMainView
+import de.cyb3rko.backpack.utils.Vibration
+import de.cyb3rko.backpack.utils.hide
+import de.cyb3rko.backpack.utils.show
+import de.cyb3rko.pincredible.BuildConfig
+import de.cyb3rko.pincredible.MainActivity
+import de.cyb3rko.pincredible.R
+import de.cyb3rko.pincredible.SettingsActivity
+import de.cyb3rko.pincredible.databinding.FragmentHomeBinding
+import de.cyb3rko.pincredible.recycler.PinAdapter
+import de.cyb3rko.pincredible.utils.BackupHandler
+import de.cyb3rko.pincredible.utils.BackupHandler.pinDir
+import de.cyb3rko.pincredible.utils.BackupHandler.pinListFile
+import de.cyb3rko.pincredible.viewmodels.HomeViewModel
 import kotlinx.coroutines.launch
 
 class HomeFragment : BackpackMainFragment(), BackpackMainView {

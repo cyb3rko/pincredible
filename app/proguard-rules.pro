@@ -5,13 +5,13 @@
 -repackageclasses
 
 # Keep all PINcredible class names
--keep class com.cyb3rko.pincredible.**
+-keep class de.cyb3rko.pincredible.**
 
 # Explicitely keep Serializable class names
--keepnames class * implements com.cyb3rko.backpack.data.Serializable
+-keepnames class * implements de.cyb3rko.backpack.data.Serializable
 
 # Explicitely keep Serializable class members
--keepclassmembers class * implements com.cyb3rko.backpack.data.Serializable {
+-keepclassmembers class * implements de.cyb3rko.backpack.data.Serializable {
     static final long serialVersionUID;
     private static final java.io.ObjectStreamField[] serialPersistentFields;
     !static !transient <fields>;

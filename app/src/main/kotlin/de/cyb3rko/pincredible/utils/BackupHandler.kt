@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible.utils
+package de.cyb3rko.pincredible.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -23,22 +23,22 @@ import android.net.Uri
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.LifecycleCoroutineScope
-import com.cyb3rko.backpack.crypto.CryptoManager
-import com.cyb3rko.backpack.crypto.CryptoManager.Hash
-import com.cyb3rko.backpack.data.Serializable
-import com.cyb3rko.backpack.managers.StorageManager
-import com.cyb3rko.backpack.modals.ErrorDialog
-import com.cyb3rko.backpack.modals.PasswordDialog
-import com.cyb3rko.backpack.modals.ProgressDialog
-import com.cyb3rko.backpack.modals.VersionNotSupportedDialog
-import com.cyb3rko.backpack.utils.ObjectSerializer
-import com.cyb3rko.backpack.utils.dateNow
-import com.cyb3rko.backpack.utils.lastN
-import com.cyb3rko.backpack.utils.toFormattedString
-import com.cyb3rko.backpack.utils.withoutLast
-import com.cyb3rko.backpack.utils.withoutLastN
-import com.cyb3rko.pincredible.R
-import com.cyb3rko.pincredible.data.PinTable
+import de.cyb3rko.backpack.crypto.CryptoManager
+import de.cyb3rko.backpack.crypto.CryptoManager.Hash
+import de.cyb3rko.backpack.data.Serializable
+import de.cyb3rko.backpack.managers.StorageManager
+import de.cyb3rko.backpack.modals.ErrorDialog
+import de.cyb3rko.backpack.modals.PasswordDialog
+import de.cyb3rko.backpack.modals.ProgressDialog
+import de.cyb3rko.backpack.modals.VersionNotSupportedDialog
+import de.cyb3rko.backpack.utils.ObjectSerializer
+import de.cyb3rko.backpack.utils.dateNow
+import de.cyb3rko.backpack.utils.lastN
+import de.cyb3rko.backpack.utils.toFormattedString
+import de.cyb3rko.backpack.utils.withoutLast
+import de.cyb3rko.backpack.utils.withoutLastN
+import de.cyb3rko.pincredible.R
+import de.cyb3rko.pincredible.data.PinTable
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File

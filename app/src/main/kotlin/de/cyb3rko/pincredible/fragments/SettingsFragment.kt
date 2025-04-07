@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Cyb3rKo
+ * Copyright (c) 2023-2025 Cyb3rKo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible.fragments
+package de.cyb3rko.pincredible.fragments
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.core.content.res.ResourcesCompat
-import com.cyb3rko.backpack.fragments.BackpackSettingsFragment
-import com.cyb3rko.backpack.interfaces.BackpackSettingsView
-import com.cyb3rko.pincredible.R
+import de.cyb3rko.backpack.fragments.BackpackSettingsFragment
+import de.cyb3rko.backpack.interfaces.BackpackSettingsView
+import de.cyb3rko.pincredible.R
 
 internal class SettingsFragment : BackpackSettingsFragment(), BackpackSettingsView {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

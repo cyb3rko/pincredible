@@ -9,7 +9,7 @@
     <fragment
         android:id="@+id/HomeFragment"
         android:label="@string/fragment_label_home"
-        android:name="com.cyb3rko.pincredible.fragments.HomeFragment"
+        android:name="de.cyb3rko.pincredible.fragments.HomeFragment"
         tools:layout="@layout/fragment_home">
 
         <action
@@ -35,7 +35,7 @@
     <fragment
         android:id="@+id/PinViewerFragment"
         android:label="@string/fragment_label_pin_viewer"
-        android:name="com.cyb3rko.pincredible.fragments.PinViewerFragment"
+        android:name="de.cyb3rko.pincredible.fragments.PinViewerFragment"
         tools:layout="@layout/fragment_pin_viewer">
 
         <argument
@@ -54,7 +54,7 @@
     <fragment
         android:id="@+id/PinCreatorFragment"
         android:label="@string/fragment_label_pin_creator"
-        android:name="com.cyb3rko.pincredible.fragments.PinCreatorFragment"
+        android:name="de.cyb3rko.pincredible.fragments.PinCreatorFragment"
         tools:layout="@layout/fragment_pin_creator">
 
         <action
@@ -68,7 +68,7 @@
     <fragment
         android:id="@+id/AnalysisFragment"
         android:label="@string/menu_home_analysis"
-        android:name="com.cyb3rko.pincredible.fragments.AnalysisFragment"
+        android:name="de.cyb3rko.pincredible.fragments.AnalysisFragment"
         tools:layout="@layout/fragment_analysis">
 
         <action

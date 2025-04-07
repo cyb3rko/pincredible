@@ -59,7 +59,7 @@
                 app:layout_constraintTop_toBottomOf="@id/coordinates_row1"
                 tools:visibility="visible" />
 
-            <com.cyb3rko.pincredible.views.PinTableView
+            <de.cyb3rko.pincredible.views.PinTableView
                 android:id="@+id/table_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

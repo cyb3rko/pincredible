@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Cyb3rKo
+ * Copyright (c) 2023-2025 Cyb3rKo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible.data
+package de.cyb3rko.pincredible.data
 
 import android.widget.TextView
 

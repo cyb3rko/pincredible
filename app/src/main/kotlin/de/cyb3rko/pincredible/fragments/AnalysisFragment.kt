@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Cyb3rKo
+ * Copyright (c) 2023-2025 Cyb3rKo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible.fragments
+package de.cyb3rko.pincredible.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.cyb3rko.backpack.data.Serializable
-import com.cyb3rko.backpack.fragments.BackpackAnalysisFragment
-import com.cyb3rko.backpack.interfaces.BackpackAnalysis
-import com.cyb3rko.pincredible.data.PinTable
+import de.cyb3rko.backpack.data.Serializable
+import de.cyb3rko.backpack.fragments.BackpackAnalysisFragment
+import de.cyb3rko.backpack.interfaces.BackpackAnalysis
+import de.cyb3rko.pincredible.data.PinTable
 import kotlin.random.Random
 
 class AnalysisFragment : BackpackAnalysisFragment(), BackpackAnalysis {

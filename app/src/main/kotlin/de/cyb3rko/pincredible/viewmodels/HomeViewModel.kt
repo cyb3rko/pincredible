@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible.viewmodels
+package de.cyb3rko.pincredible.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cyb3rko.backpack.crypto.CryptoManager
-import com.cyb3rko.backpack.utils.ObjectSerializer
-import com.cyb3rko.pincredible.utils.DebugUtils
+import de.cyb3rko.backpack.crypto.CryptoManager
+import de.cyb3rko.backpack.utils.ObjectSerializer
+import de.cyb3rko.pincredible.utils.DebugUtils
 import java.io.File
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

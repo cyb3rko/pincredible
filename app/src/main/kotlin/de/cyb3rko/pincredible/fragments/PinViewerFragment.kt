@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible.fragments
+package de.cyb3rko.pincredible.fragments
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -36,23 +36,23 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.cyb3rko.backpack.crypto.CryptoManager
-import com.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
-import com.cyb3rko.backpack.modals.AcceptDialog
-import com.cyb3rko.backpack.modals.ErrorDialog
-import com.cyb3rko.backpack.utils.Safe
-import com.cyb3rko.backpack.utils.Vibration
-import com.cyb3rko.pincredible.R
-import com.cyb3rko.pincredible.SettingsActivity
-import com.cyb3rko.pincredible.data.PinTable
-import com.cyb3rko.pincredible.databinding.FragmentPinViewerBinding
-import com.cyb3rko.pincredible.utils.BackupHandler
-import com.cyb3rko.pincredible.utils.BackupHandler.SingleBackupStructure
-import com.cyb3rko.pincredible.utils.BackupHandler.pinDir
-import com.cyb3rko.pincredible.utils.BackupHandler.pinListFile
-import com.cyb3rko.pincredible.utils.TableScreenshotHandler
-import com.cyb3rko.pincredible.views.CoordinateViewManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import de.cyb3rko.backpack.crypto.CryptoManager
+import de.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
+import de.cyb3rko.backpack.modals.AcceptDialog
+import de.cyb3rko.backpack.modals.ErrorDialog
+import de.cyb3rko.backpack.utils.Safe
+import de.cyb3rko.backpack.utils.Vibration
+import de.cyb3rko.pincredible.R
+import de.cyb3rko.pincredible.SettingsActivity
+import de.cyb3rko.pincredible.data.PinTable
+import de.cyb3rko.pincredible.databinding.FragmentPinViewerBinding
+import de.cyb3rko.pincredible.utils.BackupHandler
+import de.cyb3rko.pincredible.utils.BackupHandler.SingleBackupStructure
+import de.cyb3rko.pincredible.utils.BackupHandler.pinDir
+import de.cyb3rko.pincredible.utils.BackupHandler.pinListFile
+import de.cyb3rko.pincredible.utils.TableScreenshotHandler
+import de.cyb3rko.pincredible.views.CoordinateViewManager
 import java.io.File
 import kotlin.properties.Delegates
 import kotlinx.coroutines.Dispatchers

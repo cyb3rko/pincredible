@@ -25,48 +25,48 @@
     tools:layout_height="@dimen/table_coordinate_size"
     tools:layout_width="match_parent">
 
-    <com.cyb3rko.pincredible.views.PinTableCoordinate
+    <de.cyb3rko.pincredible.views.PinTableCoordinate
         android:layout_width="0dp"
         android:layout_height="@dimen/table_coordinate_size"
         android:layout_weight="1"
         tools:text="1" />
 
-    <com.cyb3rko.pincredible.views.PinTableCoordinate
+    <de.cyb3rko.pincredible.views.PinTableCoordinate
         android:layout_width="0dp"
         android:layout_height="@dimen/table_coordinate_size"
         android:layout_marginStart="@dimen/table_horizontal_space"
         android:layout_weight="1"
         tools:text="2" />
 
-    <com.cyb3rko.pincredible.views.PinTableCoordinate
+    <de.cyb3rko.pincredible.views.PinTableCoordinate
         android:layout_width="0dp"
         android:layout_height="@dimen/table_coordinate_size"
         android:layout_marginStart="@dimen/table_horizontal_space"
         android:layout_weight="1"
         tools:text="3" />
 
-    <com.cyb3rko.pincredible.views.PinTableCoordinate
+    <de.cyb3rko.pincredible.views.PinTableCoordinate
         android:layout_width="0dp"
         android:layout_height="@dimen/table_coordinate_size"
         android:layout_marginStart="@dimen/table_horizontal_space"
         android:layout_weight="1"
         tools:text="4" />
 
-    <com.cyb3rko.pincredible.views.PinTableCoordinate
+    <de.cyb3rko.pincredible.views.PinTableCoordinate
         android:layout_width="0dp"
         android:layout_height="@dimen/table_coordinate_size"
         android:layout_marginStart="@dimen/table_horizontal_space"
         android:layout_weight="1"
         tools:text="5" />
 
-    <com.cyb3rko.pincredible.views.PinTableCoordinate
+    <de.cyb3rko.pincredible.views.PinTableCoordinate
         android:layout_width="0dp"
         android:layout_height="@dimen/table_coordinate_size"
         android:layout_marginStart="@dimen/table_horizontal_space"
         android:layout_weight="1"
         tools:text="6" />
 
-    <com.cyb3rko.pincredible.views.PinTableCoordinate
+    <de.cyb3rko.pincredible.views.PinTableCoordinate
         android:layout_width="0dp"
         android:layout_height="@dimen/table_coordinate_size"
         android:layout_marginStart="@dimen/table_horizontal_space"

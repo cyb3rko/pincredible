@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Cyb3rKo
+ * Copyright (c) 2023-2025 Cyb3rKo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible.views
+package de.cyb3rko.pincredible.views
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -23,11 +23,11 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import androidx.annotation.ColorRes
 import androidx.core.view.get
-import com.cyb3rko.backpack.crypto.CryptoManager
-import com.cyb3rko.backpack.utils.getDrawableCompat
-import com.cyb3rko.pincredible.R
-import com.cyb3rko.pincredible.data.Cell
-import com.cyb3rko.pincredible.data.PinTable
+import de.cyb3rko.backpack.crypto.CryptoManager
+import de.cyb3rko.backpack.utils.getDrawableCompat
+import de.cyb3rko.pincredible.R
+import de.cyb3rko.pincredible.data.Cell
+import de.cyb3rko.pincredible.data.PinTable
 
 internal class PinTableView(
     private val context: Context,

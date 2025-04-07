@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible.utils
+package de.cyb3rko.pincredible.utils
 
-import com.cyb3rko.backpack.crypto.CryptoManager
-import com.cyb3rko.backpack.utils.ObjectSerializer
-import com.cyb3rko.pincredible.data.PinTable
+import de.cyb3rko.backpack.crypto.CryptoManager
+import de.cyb3rko.backpack.utils.ObjectSerializer
+import de.cyb3rko.pincredible.data.PinTable
 import java.io.File
 import kotlin.random.Random
 

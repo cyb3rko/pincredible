@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Cyb3rKo
+ * Copyright (c) 2023-2025 Cyb3rKo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible
+package de.cyb3rko.pincredible
 
 import android.os.Bundle
 import androidx.navigation.findNavController
 import androidx.viewbinding.ViewBinding
-import com.cyb3rko.backpack.activities.BackpackMainActivity
-import com.cyb3rko.backpack.interfaces.BackpackMain
-import com.cyb3rko.pincredible.databinding.ActivityMainBinding
 import com.google.android.material.appbar.MaterialToolbar
+import de.cyb3rko.backpack.activities.BackpackMainActivity
+import de.cyb3rko.backpack.interfaces.BackpackMain
+import de.cyb3rko.pincredible.databinding.ActivityMainBinding
 
 class MainActivity : BackpackMainActivity(), BackpackMain {
     private lateinit var binding: ActivityMainBinding

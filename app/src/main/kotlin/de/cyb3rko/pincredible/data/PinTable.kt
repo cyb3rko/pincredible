@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Cyb3rKo
+ * Copyright (c) 2023-2025 Cyb3rKo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible.data
+package de.cyb3rko.pincredible.data
 
 import android.util.Log
-import com.cyb3rko.backpack.crypto.CryptoManager
-import com.cyb3rko.backpack.data.Serializable
-import com.cyb3rko.backpack.utils.ObjectSerializer
+import de.cyb3rko.backpack.crypto.CryptoManager
+import de.cyb3rko.backpack.data.Serializable
+import de.cyb3rko.backpack.utils.ObjectSerializer
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 

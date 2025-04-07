@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cyb3rko.pincredible.fragments
+package de.cyb3rko.pincredible.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -26,23 +26,23 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.cyb3rko.backpack.crypto.CryptoManager
-import com.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
-import com.cyb3rko.backpack.modals.ErrorDialog
-import com.cyb3rko.backpack.modals.InputDialog
-import com.cyb3rko.backpack.utils.ObjectSerializer
-import com.cyb3rko.backpack.utils.Safe
-import com.cyb3rko.backpack.utils.Vibration
-import com.cyb3rko.backpack.utils.hide
-import com.cyb3rko.backpack.utils.show
-import com.cyb3rko.pincredible.R
-import com.cyb3rko.pincredible.SettingsActivity
-import com.cyb3rko.pincredible.data.Cell
-import com.cyb3rko.pincredible.data.PinTable
-import com.cyb3rko.pincredible.databinding.FragmentPinCreatorBinding
-import com.cyb3rko.pincredible.utils.BackupHandler.pinDir
-import com.cyb3rko.pincredible.utils.BackupHandler.pinListFile
-import com.cyb3rko.pincredible.views.CoordinateViewManager
+import de.cyb3rko.backpack.crypto.CryptoManager
+import de.cyb3rko.backpack.crypto.CryptoManager.EnDecryptionException
+import de.cyb3rko.backpack.modals.ErrorDialog
+import de.cyb3rko.backpack.modals.InputDialog
+import de.cyb3rko.backpack.utils.ObjectSerializer
+import de.cyb3rko.backpack.utils.Safe
+import de.cyb3rko.backpack.utils.Vibration
+import de.cyb3rko.backpack.utils.hide
+import de.cyb3rko.backpack.utils.show
+import de.cyb3rko.pincredible.R
+import de.cyb3rko.pincredible.SettingsActivity
+import de.cyb3rko.pincredible.data.Cell
+import de.cyb3rko.pincredible.data.PinTable
+import de.cyb3rko.pincredible.databinding.FragmentPinCreatorBinding
+import de.cyb3rko.pincredible.utils.BackupHandler.pinDir
+import de.cyb3rko.pincredible.utils.BackupHandler.pinListFile
+import de.cyb3rko.pincredible.views.CoordinateViewManager
 import java.io.File
 import java.security.SecureRandom
 import kotlinx.coroutines.Dispatchers

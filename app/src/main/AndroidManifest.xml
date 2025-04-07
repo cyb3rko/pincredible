@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name="com.cyb3rko.backpack.BackpackApplication"
+        android:name="de.cyb3rko.backpack.BackpackApplication"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
@@ -112,18 +112,18 @@
         </activity-alias>
 
         <activity
-            android:name="com.cyb3rko.backpack.activities.BackpackAuthenticationActivity"
-            android:exported="false"
-            android:fitsSystemWindows="true" />
-
-        <activity
-            android:name="com.cyb3rko.pincredible.SettingsActivity"
+            android:name=".SettingsActivity"
             android:exported="false"
             android:fitsSystemWindows="true"
             android:parentActivityName=".MainActivity" />
 
         <activity
-            android:name="com.cyb3rko.backpack.UncaughtExceptionActivity"
+            android:name="de.cyb3rko.backpack.activities.BackpackAuthenticationActivity"
+            android:exported="false"
+            android:fitsSystemWindows="true" />
+
+        <activity
+            android:name="de.cyb3rko.backpack.UncaughtExceptionActivity"
             android:exported="false"
             android:fitsSystemWindows="true" />
 

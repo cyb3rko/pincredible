@@ -95,7 +95,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.cyb3rko.backpack.views.BackupFab
+    <de.cyb3rko.backpack.views.BackupFab
         android:id="@+id/backup_fab"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
