@@ -106,7 +106,7 @@ jobs:
           chmod +x ./gradlew
           ./gradlew -Psign assembleRelease --stacktrace
           cp app/build/outputs/apk/release/app-release.apk app/build/outputs/PINcredible-$RELEASE_VERSION.apk
-          ./gradlew -Pmanual_upload_oss buildApksLibre --stacktrace
+          ./gradlew -Pmanual_upload_oss buildApksRelease --stacktrace
           cp app/build/outputs/apkset/release/app-release.apks app/build/outputs/PINcredible-$RELEASE_VERSION.apks
         env:
           KEYSTORE: ${{ secrets.KEYSTORE }}
