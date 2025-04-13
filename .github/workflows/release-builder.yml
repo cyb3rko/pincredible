@@ -106,6 +106,8 @@ jobs:
           chmod +x ./gradlew
           ./gradlew -Psign assembleRelease --stacktrace
           cp app/build/outputs/apk/release/app-release.apk app/build/outputs/PINcredible-$RELEASE_VERSION.apk
+          ./gradlew -Pmanual_upload_oss buildApksLibre --stacktrace
+          cp app/build/outputs/apkset/release/app-release.apks app/build/outputs/PINcredible-$RELEASE_VERSION.apks
         env:
           KEYSTORE: ${{ secrets.KEYSTORE }}
           KEYSTORE_PASSWD: ${{ secrets.KEYSTORE_PASSWD }}
@@ -128,4 +130,6 @@ jobs:
         with:
           name: "Version ${{ env.RELEASE_VERSION }}"
           body: ${{ env.CHANGELOG }}
-          files: app/build/outputs/PINcredible-${{env.RELEASE_VERSION}}.apk
+          files: |
+            app/build/outputs/PINcredible-${{env.RELEASE_VERSION}}.apk
+            app/build/outputs/PINcredible-${{env.RELEASE_VERSION}}.apks
