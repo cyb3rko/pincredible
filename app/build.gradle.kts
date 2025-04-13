@@ -18,8 +18,8 @@ android {
         applicationId = "de.cyb3rko.pincredible"
         minSdk = 23
         targetSdk = 35
-        versionCode = 12
-        versionName = "1.0.0b"
+        versionCode = 13
+        versionName = "1.0.0"
         resValue("string", "app_name", "PINcredible Dev")
         resValue("string", "version_name", "Pre-Release v${versionName}")
         signingConfig = signingConfigs.getByName("debug")
