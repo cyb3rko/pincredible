@@ -1,35 +1,35 @@
-## ⚠️Important Note - Breaking Changes in Final Release⚠️  
+## ⚠️ Breaking Changes ⚠️  
 If you have never used PINcredible, you can skip this section.  
 If you have already used this app, please note that:
-- The stable release 1.0.0 will use a different app signature, so you most likely have to uninstall the currently installed version and install the new version.
+- The stable release 1.0.0 uses a different package name and app signature, so you most have to uninstall the currently installed version and install the new version.
 - Your data from app versions older than 1.0.0a will not work anymore beginning with version 1.0.0a.  
-  That is because of an internal rehaul of the persisting features. I will switch from whole class serialization to custom serialization methods.
+  That is because of an internal rehaul of the persisting features.
 
-Before upgrading save your PINs outside of PINcredible to be able to reenter them in version 1.0.0a.  
+Before upgrading save your PINs outside of PINcredible to be able to reenter them in version 1.0.0a and later.  
 Thank you for your understanding!
 
----
+<h1 align="center">PINcredible - Secure PIN vault</h1>
 
 <p align="center">
-  <img alt="PINcredible" src="https://i.imgur.com/hwfoyYb.png" width="150"/>
+  <a href="https://apilevels.com"><img alt="API level" src="https://proxy.cyb3rko.de/shields/badge/API-23%2B-coral?logo=android&logoColor=white"></a>
+  <a href="https://f-droid.org/packages/de.cyb3rko.flashdim"><img alt="F-Droid release" src="https://proxy.cyb3rko.de/shields/f-droid/v/de.cyb3rko.pincredible.svg?logo=fdroid&color=blue"></a>
+  <a href="https://github.com/cyb3rko/pincredible/releases/latest"><img alt="GitHub release" src="https://proxy.cyb3rko.de/shields/github/v/release/cyb3rko/pincredible.svg?logo=github"></a>
+  <a href="https://github.com/cyb3rko/pincredible/commits/main"><img alt="Last commit" src="https://proxy.cyb3rko.de/shields/github/last-commit/cyb3rko/pincredible?color=F34C9F&logo=git&logoColor=white"></a>
+  <a href="https://conventionalcommits.org"><img alt="Conventional Commits" src="https://proxy.cyb3rko.de/shields/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white">
+  <a href="https://www.apache.org/licenses/LICENSE-2.0"><img alt="License" src="https://proxy.cyb3rko.de/shields/github/license/cyb3rko/pincredible?color=1BCC1B&logo=apache"></a>
 </p>
 
-<h1 align="center">PINcredible (Beta)</h1>
+<p align="center">
+  <img alt="PINcredible logo" src="https://i.imgur.com/hwfoyYb.png" width="120"/>
+</p>
 
 <p align="center">
     <font size="+1">Part of </font><a href="https://github.com/cyb3rko/backpack-apps"><font size="+1">BackPack</font></a>
 </p>
 
-[![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat)](https://apilevels.com)
-[![release](https://img.shields.io/github/release/cyb3rko/pincredible.svg)](https://github.com/cyb3rko/pincredible/releases/latest)
-[![fdroid](https://img.shields.io/f-droid/v/com.cyb3rko.pincredible.svg)](https://f-droid.org/packages/com.cyb3rko.pincredible)
-[![license](https://img.shields.io/github/license/cyb3rko/pincredible)](https://www.apache.org/licenses/LICENSE-2.0)
-[![last commit](https://img.shields.io/github/last-commit/cyb3rko/pincredible?color=F34C9F)](https://github.com/cyb3rko/pincredible/commits/main)
-
-[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B35689%2Fgithub.com%2Fcyb3rko%2Fpincredible.svg?type=small)](https://fossa.com/)
+---
 
 - [About this project](#about-this-project)  
-- [Beta Phase - Breaking Changes](#beta-phase---%EF%B8%8Fbreaking-changes%EF%B8%8F)  
 - [Feature Overview](#feature-overview)  
   - [Accessible color palette](#accessible-color-palette)  
 - [Legal Liability](#legal-liability)  
@@ -47,12 +47,6 @@ Thank you for your understanding!
 ## About this project
 Over time I've used several apps to store my PINs, unfortunately none of them really convinced me.  
 So here we are now, this is my own implementation of a secure PIN manager.
-
-## Beta phase - ⚠️Breaking Changes⚠️
-
-While the app is still in pre-release phase please expect a few breaking changes.  
-Some newer updates do not work with the previous app versions.  
-Therefore you may have to readd your saved PINs and recreate your backups in newer versions.
 
 ## Feature Overview
 | | PINcredible | Others |
@@ -92,12 +86,10 @@ If you don't agree please don't use this app.
 
 ## Download
 
-Google Play download link available after beta phase
+[<img height="80" alt="Get it on F-Droid" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"/>](https://f-droid.org/app/de.cyb3rko.pincredible)
+[<img height="80" alt="Get it on GitHub" src="https://raw.githubusercontent.com/NeoApplications/Neo-Backup/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png"/>](https://github.com/cyb3rko/pincredible/releases/latest)
 
-[<img height="80" alt="Get it on F-Droid"
-src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-/>](https://f-droid.org/packages/com.cyb3rko.pincredible/)
-[<img height="80" src="https://raw.githubusercontent.com/gotify/android/master/download-badge.png"/>](https://github.com/cyb3rko/pincredible/releases/latest)
+Google Play release planned
 
 ### Verification
 
@@ -113,16 +105,17 @@ The output should look like:
 Verifies
 Verified using v1 scheme (JAR signing): true
 Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): true
 ```
 
 The certificate content and digests should look like this:
 
 ```
-DN: C=DE, CN=Niko Diamadis
+DN: OU=PINcredible, O=Cyb3rKo OpenSource, L=GitHub / F-Droid, C=DE
 Certificate Digests:
-  SHA-256: 7b:d9:79:cd:5f:f9:29:e0:72:90:e8:8d:67:b2:d8:1f:22:8e:a2:64:e4:33:f7:84:e4:c6:63:73:e3:16:bc:ad
-  SHA-1:   c7:52:14:9f:4d:c3:e4:02:26:92:0b:68:20:94:6e:da:99:01:69:29
-  MD5:     8d:15:71:36:6e:30:7c:23:c9:2c:e8:9d:f2:38:5f:e1
+  SHA-256: 77:15:66:40:38:23:38:2c:74:27:4e:fb:33:d1:f2:72:5b:9e:4e:67:8b:6b:2f:af:3b:ce:a9:fe:e8:f2:a9:5e
+  SHA-1:   30:12:e7:60:37:27:fa:83:c5:db:b4:6b:7d:22:d8:79:0b:4d:a7:d1
+  MD5:     67:bb:02:ca:3c:ba:20:63:f7:a8:1c:0f:88:dd:59:38
 ```
 
 ## Supported Devices
@@ -188,7 +181,7 @@ Using a unified code format makes it much easier for me and for everyone else.
 
 ## License
 
-    Copyright 2023-2024, Cyb3rKo
+    Copyright 2023-2025, Cyb3rKo
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
