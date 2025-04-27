@@ -62,8 +62,14 @@ android {
     packaging {
         resources {
             excludes.add("META-INF/*.version")
-            excludes.add("/META-INF/{AL2.0,LGPL2.1}")
+            excludes.add("META-INF/**/LICENSE.txt")
         }
+    }
+    dependenciesInfo {
+        // Disable including dependency metadata when building APKs
+        includeInApk = false
+        // Disable including dependency metadata when building Android App Bundles
+        includeInBundle = false
     }
 }
 
@@ -119,6 +125,10 @@ if (project.hasProperty("manual_upload")) {
                 keyAlias = properties.getProperty("uploadsigning.key.alias")
                 keyPassword = properties.getProperty("uploadsigning.key.password")
             }
+        }
+        dependenciesInfo {
+            includeInApk = true
+            includeInBundle = true
         }
     }
     android.buildTypes.getByName("release").signingConfig = android.signingConfigs.getByName("upload")
