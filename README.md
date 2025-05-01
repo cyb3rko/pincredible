@@ -12,7 +12,7 @@ Thank you for your understanding!
 
 <p align="center">
   <a href="https://apilevels.com"><img alt="API level" src="https://proxy.cyb3rko.de/shields/badge/API-23%2B-coral?logo=android&logoColor=white"></a>
-  <a href="https://f-droid.org/packages/de.cyb3rko.flashdim"><img alt="F-Droid release" src="https://proxy.cyb3rko.de/shields/f-droid/v/de.cyb3rko.pincredible.svg?logo=fdroid&color=blue"></a>
+  <a href="https://f-droid.org/packages/de.cyb3rko.pincredible"><img alt="F-Droid release" src="https://proxy.cyb3rko.de/shields/f-droid/v/de.cyb3rko.pincredible.svg?logo=fdroid&color=blue"></a>
   <a href="https://github.com/cyb3rko/pincredible/releases/latest"><img alt="GitHub release" src="https://proxy.cyb3rko.de/shields/github/v/release/cyb3rko/pincredible.svg?logo=github"></a>
   <a href="https://github.com/cyb3rko/pincredible/commits/main"><img alt="Last commit" src="https://proxy.cyb3rko.de/shields/github/last-commit/cyb3rko/pincredible?color=F34C9F&logo=git&logoColor=white"></a>
   <a href="https://conventionalcommits.org"><img alt="Conventional Commits" src="https://proxy.cyb3rko.de/shields/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white">
@@ -178,6 +178,14 @@ Using a unified code format makes it much easier for me and for everyone else.
 | <a href="https://www.flaticon.com/free-icons/color-blindness-test" title="color-blindness-test icons">Color-blindness-test icons created by Freepik - Flaticon</a> |
 | <a href="https://www.flaticon.com/free-icons/grid" title="grid icons">Grid icons created by prettycons - Flaticon</a> |
 | <a href="https://www.flaticon.com/free-icons/random" title="random icons">Random icons created by Uniconlabs - Flaticon</a> |
+
+## Star History
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=cyb3rko/pincredible&type=Date&theme=dark" />
+  <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=cyb3rko/pincredible&type=Date" />
+  <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=cyb3rko/pincredible&type=Date" />
+</picture>
 
 ## License
 
