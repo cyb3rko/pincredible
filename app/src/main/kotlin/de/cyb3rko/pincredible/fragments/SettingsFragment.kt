@@ -34,7 +34,7 @@ internal class SettingsFragment : BackpackSettingsFragment(), BackpackSettingsVi
     }
 
     override fun getPackageMainActivity(): String {
-        return "com.cyb3rko.pincredible.MainActivity"
+        return "de.cyb3rko.pincredible.MainActivity"
     }
 
     override fun getAppName(): String {
