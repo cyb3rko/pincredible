@@ -13,11 +13,11 @@ plugins {
 
 android {
     namespace = "de.cyb3rko.pincredible"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "de.cyb3rko.pincredible"
-        minSdk = 23
-        targetSdk = 35
+        minSdk = 26
+        targetSdk = 36
         versionCode = 14
         versionName = "1.0.1"
         resValue("string", "app_name", "PINcredible Dev")
