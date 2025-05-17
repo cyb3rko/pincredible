@@ -26,6 +26,7 @@ import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import de.cyb3rko.backpack.utils.Safe
 import de.cyb3rko.backpack.utils.openUrl
+import de.cyb3rko.pincredible.MainActivity.Companion.KEY_INTRO
 import de.cyb3rko.pincredible.R
 import de.cyb3rko.pincredible.databinding.BottomsheetIntroBinding
 
@@ -48,7 +49,7 @@ class IntroBottomSheet : BottomSheetDialogFragment() {
                 ClipData.newPlainText(LINK_LABEL, getString(R.string.intro_link))
             )
         }
-        Safe.writeBoolean(Safe.KEY_INTRO, false)
+        Safe.writeBoolean(KEY_INTRO, false)
         return binding.root
     }
 

@@ -35,7 +35,7 @@ class MainActivity : BackpackMainActivity(), BackpackMain {
         findNavController(R.id.nav_host_fragment_content_main).apply()
         bindInterface(this)
 
-        if (Safe.getBoolean(Safe.KEY_INTRO, true)) {
+        if (Safe.getBoolean(KEY_INTRO, true)) {
             IntroBottomSheet().show(supportFragmentManager, IntroBottomSheet.TAG)
         }
     }
@@ -54,5 +54,9 @@ class MainActivity : BackpackMainActivity(), BackpackMain {
 
     override fun getGitHubLink(): String {
         return getString(R.string.github_link)
+    }
+
+    companion object {
+        const val KEY_INTRO = "intro-shown"
     }
 }
