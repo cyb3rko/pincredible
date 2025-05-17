@@ -22,7 +22,9 @@ import androidx.viewbinding.ViewBinding
 import com.google.android.material.appbar.MaterialToolbar
 import de.cyb3rko.backpack.activities.BackpackMainActivity
 import de.cyb3rko.backpack.interfaces.BackpackMain
+import de.cyb3rko.backpack.utils.Safe
 import de.cyb3rko.pincredible.databinding.ActivityMainBinding
+import de.cyb3rko.pincredible.modals.IntroBottomSheet
 
 class MainActivity : BackpackMainActivity(), BackpackMain {
     private lateinit var binding: ActivityMainBinding
@@ -32,6 +34,10 @@ class MainActivity : BackpackMainActivity(), BackpackMain {
         binding = ActivityMainBinding.inflate(layoutInflater).asContentView()
         findNavController(R.id.nav_host_fragment_content_main).apply()
         bindInterface(this)
+
+        if (Safe.getBoolean(Safe.KEY_INTRO, true)) {
+            IntroBottomSheet().show(supportFragmentManager, IntroBottomSheet.TAG)
+        }
     }
 
     override fun getBinding(): ViewBinding {

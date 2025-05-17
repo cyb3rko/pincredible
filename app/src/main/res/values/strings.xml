@@ -1,5 +1,6 @@
 <resources>
     <string name="github_link" translatable="false">https://github.com/cyb3rko/pincredible</string>
+    <string name="intro_link" translatable="false">https://youtube.com/shorts/0NE_BrUyQ5g</string>
     <string name="settings">Settings</string>
 
     <!-- Fragment Labels -->
@@ -50,6 +51,12 @@
     <string name="dialog_import_error_file_format_message">The selected backup file has an invalid file type.\nUse .pin (single PIN) or .pinc (PIN collection).</string>
     <string name="dialog_image_title">PIN table image</string>
     <string name="dialog_image_message">Are you sure?\n\nYou are about to save this unencrypted PIN table to %s.</string>
+
+    <!-- Bottomsheet content -->
+    <string name="bottomsheet_intro_title">👋 Welcome to PINcredible 🔒</string>
+    <string name="bottomsheet_intro_notice">If you use this app for the first time and want to know how to manage PINs with this app, you can watch the introduction video:</string>
+    <string name="bottomsheet_intro_open_button">Open video</string>
+    <string name="bottomsheet_intro_copy_button">Copy URL</string>
 
     <!-- Toasts -->
     <string name="toast_stacktrace">Stracktrace copied</string>
