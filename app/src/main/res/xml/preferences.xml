@@ -2,6 +2,12 @@
 <PreferenceScreen
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <Preference
+        app:key="about"
+        app:title="@string/app_name"
+        app:summary="@string/preference_about"
+        app:icon="@drawable/avatar" />
+
     <PreferenceCategory
         app:title="@string/preference_category_security">
 
@@ -9,6 +15,7 @@
             app:key="app_lock"
             app:defaultValue="false"
             app:singleLineTitle="false"
+            app:enabled="false"
             app:title="@string/preference_item_app_lock"
             app:summary="@string/preference_item_app_lock_summary"
             app:icon="@drawable/colored_ic_biometry" />
@@ -60,6 +67,18 @@
             app:summary="@string/preference_item_app_icon_summary"
             app:useSimpleSummaryProvider="true"
             app:icon="@drawable/colored_ic_app_icon" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/preference_category_other">
+
+        <Preference
+            app:key="analysis"
+            app:singleLineTitle="false"
+            app:title="@string/preference_item_analysis"
+            app:summary="@string/preference_item_analysis_summary"
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 

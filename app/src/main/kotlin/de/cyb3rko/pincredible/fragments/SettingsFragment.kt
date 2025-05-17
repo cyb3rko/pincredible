@@ -19,6 +19,7 @@ package de.cyb3rko.pincredible.fragments
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.core.content.res.ResourcesCompat
+import de.cyb3rko.backpack.fragments.BackpackAnalysisFragment
 import de.cyb3rko.backpack.fragments.BackpackSettingsFragment
 import de.cyb3rko.backpack.interfaces.BackpackSettingsView
 import de.cyb3rko.pincredible.R
@@ -43,5 +44,9 @@ internal class SettingsFragment : BackpackSettingsFragment(), BackpackSettingsVi
 
     override fun getAppIcon(): Drawable {
         return ResourcesCompat.getDrawable(resources, R.mipmap.ic_launcher, null)!!
+    }
+
+    override fun getAnalysisFragment(): BackpackAnalysisFragment {
+        return AnalysisFragment()
     }
 }

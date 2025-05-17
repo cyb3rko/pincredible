@@ -24,12 +24,6 @@
             app:enterAnim="@anim/shrink_in"
             app:popExitAnim="@anim/shrink_out" />
 
-        <action
-            android:id="@+id/home_to_analysis"
-            app:destination="@id/AnalysisFragment"
-            app:enterAnim="@anim/shrink_in"
-            app:popExitAnim="@anim/shrink_out" />
-
     </fragment>
 
     <fragment
@@ -62,18 +56,6 @@
             app:destination="@id/HomeFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/AnalysisFragment"
-        android:label="@string/menu_home_analysis"
-        android:name="de.cyb3rko.pincredible.fragments.AnalysisFragment"
-        tools:layout="@layout/fragment_analysis">
-
-        <action
-            android:id="@+id/analysis_to_home"
-            app:destination="@id/HomeFragment" />
 
     </fragment>
 

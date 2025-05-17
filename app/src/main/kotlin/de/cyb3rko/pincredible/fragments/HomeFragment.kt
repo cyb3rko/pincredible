@@ -26,7 +26,6 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import de.cyb3rko.backpack.data.BuildInfo
@@ -160,10 +159,6 @@ class HomeFragment : BackpackMainFragment(), BackpackMainView {
 
     override fun getSettingsIntent(): Intent {
         return Intent(myContext, SettingsActivity::class.java)
-    }
-
-    override fun getAnalysisNavigation(): NavDirections {
-        return HomeFragmentDirections.homeToAnalysis()
     }
 
     override fun getGithubLink(): Int {

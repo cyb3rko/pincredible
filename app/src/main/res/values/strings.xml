@@ -62,6 +62,7 @@
     <string name="toast_stacktrace">Stracktrace copied</string>
 
     <!-- Preferences -->
+    <string name="preference_about">by Cyb3rKo</string>
     <string name="preference_category_security">Security</string>
     <string name="preference_item_button_randomizer">Digit Button Randomizer</string>
     <string name="preference_item_button_randomizer_summary">Shuffle digit buttons for protection against touch location logging</string>
@@ -74,6 +75,9 @@
     <string name="preference_item_coordinate_frame">Coordinate Frame</string>
     <string name="preference_item_app_icon">App Icon</string>
     <string name="preference_item_app_icon_summary">Change the app\'s icon and label</string>
+    <string name="preference_category_other">Other</string>
+    <string name="preference_item_analysis">App analysis</string>
+    <string name="preference_item_analysis_summary">Access different checks related to security features</string>
     <string name="dialog_restart_title">Restart required</string>
     <string name="dialog_restart_message">The change will be visible on next app start.\n\nDo you want to restart now?</string>
     <string name="dialog_restart_button2">Later</string>
