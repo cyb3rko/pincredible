@@ -2,18 +2,21 @@
 Over time I've used several apps to store my PINs, unfortunately none of them really convinced me.
 So here we are now, this is my own implementation of a secure PIN manager.
 
-<b>Features</b>
-<ul><li>🔢 PIN obfuscation</li><li>🔐 Local Encryption</li><li>🎨 Modern Design</li><li>🌐 No Internet Connection required</li><li>🎞️ No Ads</li><li>🗿 No Suspicious Permissions</li></ul>
+If you think it's worth to support this project, feel free to give a small donation ❤️ (<a href="https://github.com/cyb3rko/pincredible#donate">Donate</a>).
 
-The app obfuscates the PIN in a table layout surrounded by secure random numbers.  
+Join the Community Matrix room to talk with the community about the app or to ask me (the dev) anything:
+https://matrix.to/#/#cyb3rko-community:matrix.org
+
+<b>Features</b>
+<ul><li>🔢 PIN obfuscation</li><li>🔐 Local encryption</li><li>🎨 Modern design</li><li>🌐 No internet connection</li><li>🎞️ No ads</li><li>🗿 No suspicious permissions</li></ul>
+
+The app obfuscates the PIN in a table layout surrounded by secure random numbers.
 This brings two security benefits:
 1. ❔ The app can not know where in the pattern the user given PIN is located at. Attackers can not extract the plaintext PIN.
 2. 🕵️ This offers protection against <a href="https://en.wikipedia.org/wiki/Shoulder_surfing_(computer_security)" title="shoulder surfing">Shoulder Surfing</a>, for example while accessing your PIN in a super market or a bank.
 
 <b>Security Aspects</b>
-For technical details about the implemented security take a look at the <a href="https://github.com/cyb3rko/pincredible" title="pincredible github">GitHub repo readme</a>.
+For technical details about the implemented security take a look at the <a href="https://github.com/cyb3rko/pincredible#security-aspects" title="PINcredible GitHub repo">GitHub README</a>.
 
 <b>Used Icons</b>
-<a href="https://www.flaticon.com/free-icons/color-blindness-test" title="color-blindness-test icons">Color-blindness-test icons created by Freepik - Flaticon</a>
-<a href="https://www.flaticon.com/free-icons/grid" title="grid icons">Grid icons created by prettycons - Flaticon</a>
-<a href="https://www.flaticon.com/free-icons/random" title="random icons">Random icons created by Uniconlabs - Flaticon</a>
+<ul><li><a href="https://www.flaticon.com/free-icons/color-blindness-test" title="color-blindness-test icons">Color-blindness-test icons created by Freepik - Flaticon</a></li><li><a href="https://www.flaticon.com/free-icons/grid" title="grid icons">Grid icons created by prettycons - Flaticon</a></li><li><a href="https://www.flaticon.com/free-icons/random" title="random icons">Random icons created by Uniconlabs - Flaticon</a></li></ul>

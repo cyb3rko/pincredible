@@ -1,17 +1,8 @@
-## ⚠️ Breaking Changes ⚠️  
-If you have never used PINcredible, you can skip this section.  
-If you have already used this app, please note that:
-- The stable release 1.0.0 uses a different package name and app signature, so you most have to uninstall the currently installed version and install the new version.
-- Your data from app versions older than 1.0.0a will not work anymore beginning with version 1.0.0a.  
-  That is because of an internal rehaul of the persisting features.
-
-Before upgrading save your PINs outside of PINcredible to be able to reenter them in version 1.0.0a and later.  
-Thank you for your understanding!
-
-<h1 align="center">PINcredible - Secure PIN vault</h1>
+<h1 align="center">PINcredible - Secure PIN vault 🔐</h1>
 
 <p align="center">
-  <a href="https://apilevels.com"><img alt="API level" src="https://proxy.cyb3rko.de/shields/badge/API-23%2B-coral?logo=android&logoColor=white"></a>
+  <a href="https://matrix.to/#/#cyb3rko-community:matrix.org"><img alt="Matrix room" src="https://proxy.cyb3rko.de/shields/matrix/cyb3rko-community%3Amatrix.org?logo=matrix&label=Matrix%20Chat&color=black"/></a>
+  <a href="https://apilevels.com"><img alt="API level" src="https://proxy.cyb3rko.de/shields/badge/API-26%2B-coral?logo=android&logoColor=white"></a>
   <a href="https://f-droid.org/packages/de.cyb3rko.pincredible"><img alt="F-Droid release" src="https://proxy.cyb3rko.de/shields/f-droid/v/de.cyb3rko.pincredible.svg?logo=fdroid&color=blue"></a>
   <a href="https://github.com/cyb3rko/pincredible/releases/latest"><img alt="GitHub release" src="https://proxy.cyb3rko.de/shields/github/v/release/cyb3rko/pincredible.svg?logo=github"></a>
   <a href="https://github.com/cyb3rko/pincredible/commits/main"><img alt="Last commit" src="https://proxy.cyb3rko.de/shields/github/last-commit/cyb3rko/pincredible?color=F34C9F&logo=git&logoColor=white"></a>
@@ -20,11 +11,9 @@ Thank you for your understanding!
 </p>
 
 <p align="center">
-  <img alt="PINcredible logo" src="https://i.imgur.com/hwfoyYb.png" width="120"/>
-</p>
-
-<p align="center">
-    <font size="+1">Part of </font><a href="https://github.com/cyb3rko/backpack-apps"><font size="+1">BackPack</font></a>
+  <img alt="PINcredible logo" src="https://i.imgur.com/hwfoyYb.png" width="120"/><br>
+  <font size="+1">Part of </font><a href="https://github.com/cyb3rko/backpack-apps"><font size="+1">BackPack</font></a><br><br>
+  <a href="https://github.com/cyb3rko/pincredible/releases"><img alt="Direct downloads count" src="https://proxy.cyb3rko.de/shields/github/downloads/cyb3rko/pincredible/total?logo=github&label=direct%20downloads&color=blue"/></a>
 </p>
 
 ---
@@ -35,18 +24,25 @@ Thank you for your understanding!
 - [Legal Liability](#legal-liability)  
 - [Download](#download)  
   - [Verification](#verification)  
-- [Supported devices](#supported-devices)  
 - [Screenshots](#screenshots)  
+- [Supported devices](#supported-devices)  
 - [Security Aspects](#security-aspects)  
 - [Contribute](#contribute)  
+- [Donate](#donate)
 - [Used Icons](#used-icons)  
 - [License](#license)
 
 ---
 
 ## About this project
+
 Over time I've used several apps to store my PINs, unfortunately none of them really convinced me.  
 So here we are now, this is my own implementation of a secure PIN manager.
+
+If you think it's worth to support this project, feel free to give a small donation ❤️ ([Donate](#donate)).
+
+Join the Community Matrix room to talk with the community about the app or to ask me (the dev) anything:  
+https://matrix.to/#/#cyb3rko-community:matrix.org
 
 ## Feature Overview
 | | PINcredible | Others |
@@ -80,7 +76,7 @@ In addition to the default color palette PINcredible offers an accessible color 
 ## Legal Liability
 
 In no way do I accept liability for lost PINs and the resulting consequences or other consequences of using the app.  
-Especially in the beta phase, but also afterwards, I do not guarantee that the app will always work properly and PINs will never be lost.
+I do not guarantee that the app will always work properly and PINs will never be lost.
 
 If you don't agree please don't use this app.
 
@@ -118,14 +114,14 @@ Certificate Digests:
   MD5:     67:bb:02:ca:3c:ba:20:63:f7:a8:1c:0f:88:dd:59:38
 ```
 
-## Supported Devices
-The minimum supported Android version is API level 23, Android 6 (Marshmallow).  
-Additionally this app takes advantage of the Android KeyStore system. At the moment I'm assuming every Android device with Android 6 upwards has this built-in.  
-If you have any problems, maybe even because your device seems to be incompatible, please leave a message [here](https://github.com/cyb3rko/pincredible/issues).
-
 ## Screenshots
 |<img src="https://i.imgur.com/APgDeAl.png" width="270">|<img src="https://i.imgur.com/WHCXpG3.png" width="270">|<img src="https://i.imgur.com/zPESUDi.png" width="270">|
 |:---:|:---:|:---:|
+
+## Supported Devices
+The minimum supported Android version is API level 26, Android 8.0 (Oreo "O").  
+Additionally this app takes advantage of the Android KeyStore system. At the moment I'm assuming every Android device with Android 8.0 upwards has this built-in.  
+If you have any problems, maybe even because your device seems to be incompatible, please leave a message [here](https://github.com/cyb3rko/pincredible/issues).
 
 ## Security Aspects
 Let's take a look at the technical details.
@@ -162,7 +158,7 @@ Find the detailed explanation below.
 - retrieval of symmetric AES key
 - encrypt and save PIN pattern to file, append chosen PIN name to PIN name file (for the home screen)
 
-That's the whole magic behind PINcredible, if you have questions or if you are a Security Expert and you have recommendations for improving the overall security, please tell me [via the issues](https://github.com/cyb3rko/pincredible/issues) or via e-mail:  niko @ cyb3rko.de.
+That's the whole magic behind PINcredible, if you have questions or if you are a Security Expert and you have recommendations for improving the overall security, please tell me [via the issues](https://github.com/cyb3rko/pincredible/issues) or via e-mail: cyb3rko @ pm.me
 
 ## Contribute
 Of course I'm happy about any kind of contribution.
@@ -171,20 +167,27 @@ For creating [issues](https://github.com/cyb3rko/pincredible/issues) there's no 
 If you create [pull requests](https://github.com/cyb3rko/pincredible/pulls) please try to use the syntax I use.
 Using a unified code format makes it much easier for me and for everyone else.
 
+## Donate
+
+If you think it's worth to support this project, feel free to give a small donation :heart:.  
+Find the links here or in the section 'Sponsor this project' of this repo:
+
+- [ko-fi.com/cyb3rko](https://ko-fi.com/cyb3rko) 🫶
+- [buymeacoffee.com/cyb3rko](https://buymeacoffee.com/cyb3rko) ☕
+- [paypal.me/cyb3rko](https://paypal.me/cyb3rko) 💳
+
 ## Used Icons
 
-| 💛 |
-| --- |  
-| <a href="https://www.flaticon.com/free-icons/color-blindness-test" title="color-blindness-test icons">Color-blindness-test icons created by Freepik - Flaticon</a> |
-| <a href="https://www.flaticon.com/free-icons/grid" title="grid icons">Grid icons created by prettycons - Flaticon</a> |
-| <a href="https://www.flaticon.com/free-icons/random" title="random icons">Random icons created by Uniconlabs - Flaticon</a> |
+- [Color-blindness-test icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/color-blindness-test)
+- [Grid icons created by prettycons - Flaticon](https://www.flaticon.com/free-icons/grid)
+- [Random icons created by Uniconlabs - Flaticon](https://www.flaticon.com/free-icons/random)
 
 ## Star History
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=cyb3rko/pincredible&type=Date&theme=dark" />
-  <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=cyb3rko/pincredible&type=Date" />
-  <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=cyb3rko/pincredible&type=Date" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://proxy.cyb3rko.de/stars/svg?repos=cyb3rko/pincredible&type=Date&theme=dark" />
+  <source media="(prefers-color-scheme: light)" srcset="https://proxy.cyb3rko.de/stars/svg?repos=cyb3rko/pincredible&type=Date&theme=light" />
+  <img alt="Star History Chart" src="https://proxy.cyb3rko.de/stars/svg?repos=cyb3rko/pincredible&type=Date&theme=light" />
 </picture>
 
 ## License
