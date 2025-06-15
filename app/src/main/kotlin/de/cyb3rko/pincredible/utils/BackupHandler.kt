@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Cyb3rKo
+ * Copyright (c) 2023-2025 Cyb3rKo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.LifecycleCoroutineScope
 import de.cyb3rko.backpack.crypto.CryptoManager
@@ -34,8 +33,8 @@ import de.cyb3rko.backpack.modals.VersionNotSupportedDialog
 import de.cyb3rko.backpack.utils.ObjectSerializer
 import de.cyb3rko.backpack.utils.dateNow
 import de.cyb3rko.backpack.utils.lastN
+import de.cyb3rko.backpack.utils.logD
 import de.cyb3rko.backpack.utils.toFormattedString
-import de.cyb3rko.backpack.utils.withoutLast
 import de.cyb3rko.backpack.utils.withoutLastN
 import de.cyb3rko.pincredible.R
 import de.cyb3rko.pincredible.data.PinTable
@@ -53,6 +52,9 @@ internal object BackupHandler {
         MULTI_PIN,
         UNKNOWN
     }
+
+    private const val TAG = "PINcredible-Backup"
+
     private const val PINS_FILE = "pins"
     private const val SINGLE_BACKUP_FILE = ".pin"
     private const val MULTI_BACKUP_FILE = ".pinc"
@@ -69,7 +71,7 @@ internal object BackupHandler {
     fun initiateSingleBackup(hash: String, launcher: ActivityResultLauncher<Intent>) {
         val timestamp = dateNow().toFormattedString()
         val fileName = "PIN-${hash.take(8)}-$timestamp$SINGLE_BACKUP_FILE"
-        Log.d("PINcredible", "Initiated single backup: initially $fileName")
+        logD(TAG, "Initiated single backup: initially $fileName")
         StorageManager.launchFileCreator(launcher, fileName)
     }
 
@@ -80,7 +82,7 @@ internal object BackupHandler {
 
         val timestamp = dateNow().toFormattedString()
         val fileName = "PINs[${fileList.size}]-$timestamp$MULTI_BACKUP_FILE"
-        Log.d("PINcredible", "Initiated full backup: initially $fileName")
+        logD(TAG, "Initiated full backup: initially $fileName")
         StorageManager.launchFileCreator(launcher, fileName)
     }
 
@@ -127,7 +129,7 @@ internal object BackupHandler {
         singleBackup: SingleBackupStructure,
         progressDialog: ProgressDialog
     ) {
-        Log.d("PINcredible", "Running single export")
+        logD(TAG, "Running single export")
         try {
             val bytes = singleBackup.toBytes()
             CryptoManager.encrypt(
@@ -153,7 +155,7 @@ internal object BackupHandler {
         hash: Hash,
         progressDialog: ProgressDialog
     ) {
-        Log.d("PINcredible", "Running full export")
+        logD(TAG, "Running full export")
         try {
             val fileList = context.pinDir().listFiles()
             if (fileList == null || fileList.isEmpty()) return
@@ -165,7 +167,7 @@ internal object BackupHandler {
                 if (!it.name.startsWith("p") || it.name.contains(".")) return@forEach
 
                 val bytes = CryptoManager.decrypt(it)
-                val pinTable = PinTable().loadFromBytes(bytes.withoutLast()) as PinTable
+                val pinTable = PinTable().loadFromBytes(bytes) as PinTable
                 pins.add(MultiBackupPinTable(pinTable, it.name))
                 withContext(Dispatchers.Main) {
                     progressDialog.updateRelative(progressStep)
@@ -210,7 +212,7 @@ internal object BackupHandler {
     }
 
     fun initiateRestoreBackup(launcher: ActivityResultLauncher<Intent>) {
-        Log.d("PINcredible", "Initiated backup restore")
+        logD(TAG, "Initiated backup restore")
         StorageManager.launchFileSelector(launcher)
     }
 
@@ -262,7 +264,7 @@ internal object BackupHandler {
         lifecycleScope: LifecycleCoroutineScope,
         onFinished: () -> Unit
     ) {
-        Log.d("PINcredible", "Running single backup restore")
+        logD(TAG, "Running single backup restore")
         val progressDialog = ProgressDialog(false).apply {
             show(
                 context,
@@ -303,7 +305,7 @@ internal object BackupHandler {
                     }
                     return@launch
                 }
-                Log.d("PINcredible Backup", "Single backup version ${backup.getVersion()} found")
+                logD(TAG, "Single backup version ${backup.getVersion()} found")
                 withContext(Dispatchers.Main) {
                     progressDialog.updateAbsolute(50)
                     progressDialog.updateText(
@@ -326,7 +328,7 @@ internal object BackupHandler {
                 }
 
                 val fileHash = CryptoManager.xxHash(backup.name)
-                val saved = savePinFile(context, "p$fileHash", backup.pinTable, backup.getVersion())
+                val saved = savePinFile(context, "p$fileHash", backup.pinTable)
                 val messageRes = if (saved) {
                     R.string.dialog_single_import_state_finished
                 } else {
@@ -353,7 +355,7 @@ internal object BackupHandler {
         lifecycleScope: LifecycleCoroutineScope,
         onFinished: () -> Unit
     ) {
-        Log.d("PINcredible", "Running full backup restore")
+        logD(TAG, "Running full backup restore")
         val progressDialog = ProgressDialog(false).apply {
             show(
                 context,
@@ -394,7 +396,7 @@ internal object BackupHandler {
                     }
                     return@launch
                 }
-                Log.d("PINcredible Backup", "Full backup version ${backup.getVersion()} found")
+                logD(TAG, "Full backup version ${backup.getVersion()} found")
                 withContext(Dispatchers.Main) {
                     progressDialog.updateAbsolute(50)
                     progressDialog.updateText(
@@ -416,8 +418,7 @@ internal object BackupHandler {
                     val imported = savePinFile(
                         context,
                         it.fileName,
-                        it.pinTable,
-                        it.pinTable.getVersion()
+                        it.pinTable
                     )
                     if (imported) imports += 1
                     withContext(Dispatchers.Main) {
@@ -452,14 +453,13 @@ internal object BackupHandler {
     private suspend fun savePinFile(
         context: Context,
         fileName: String,
-        pinTable: PinTable,
-        version: Byte
+        pinTable: PinTable
     ): Boolean {
         val newPinFile = File(context.pinDir(), fileName)
         return if (!newPinFile.exists()) {
             newPinFile.createNewFile()
             val bytes = pinTable.toBytes()
-            CryptoManager.encrypt(bytes.plus(version), newPinFile)
+            CryptoManager.encrypt(bytes, newPinFile)
             true
         } else {
             false
@@ -479,17 +479,22 @@ internal object BackupHandler {
         lateinit var name: String
 
         override suspend fun loadFromBytes(bytes: ByteArray): Serializable? {
+            logD(TAG, "Found ${bytes.size} bytes for $CLASS_NAME(616+n)")
             ByteArrayInputStream(bytes).use {
                 val version = it.read()
-                Log.d("PINcredible", "Found SingleBackupStructure v$version")
+                logD(TAG, "Found $CLASS_NAME v$version")
                 if (version > getVersion()) {
-                    Log.d("PINcredible", "SingleBackupStructure version not supported")
+                    logD(TAG, "$CLASS_NAME version not supported")
                     return null
                 }
+                logD(TAG, "Size of $CLASS_NAME-version: ${Byte.SIZE_BYTES} bytes")
                 val buffer = ByteArray(PinTable.SIZE)
                 it.read(buffer)
+                logD(TAG, "Size of $CLASS_NAME-pinTable: ${buffer.size} bytes")
                 pinTable = PinTable().loadFromBytes(buffer) as PinTable
-                name = it.readBytes().decodeToString()
+                val tempName = it.readBytes()
+                logD(TAG, "Size of $CLASS_NAME-name: ${tempName.size} bytes")
+                name = tempName.decodeToString()
             }
             return this
         }
@@ -497,16 +502,27 @@ internal object BackupHandler {
         override suspend fun toBytes(): ByteArray {
             val stream = ByteArrayOutputStream()
             stream.use {
-                it.write(byteArrayOf(getVersion()))
+                val version = byteArrayOf(getVersion())
+                logD(TAG, "Size of $CLASS_NAME-version: ${version.size} bytes")
+                it.write(version)
                 val byteArray = pinTable.toBytes()
-                Log.d("PINcredible", "Size of SingleBackupStructure-pinTable: ${byteArray.size}")
+                logD(TAG, "Size of $CLASS_NAME-pinTable: ${byteArray.size} bytes")
                 it.write(byteArray)
-                it.write(name.encodeToByteArray())
+                val name = name.encodeToByteArray()
+                logD(TAG, "Size of $CLASS_NAME-name: ${name.size} bytes")
+                it.write(name)
             }
-            return stream.toByteArray()
+            val output = stream.toByteArray()
+            logD(TAG, "Size of $CLASS_NAME(616+n): ${output.size} bytes")
+            return output
         }
 
         override suspend fun getVersion(): Byte = 0
+
+        companion object {
+            private const val CLASS_NAME = "SingleBackupStructure"
+            private const val TAG = "PINcredible-SBS"
+        }
     }
 
     class MultiBackupPinTable() : Serializable() {
@@ -522,17 +538,22 @@ internal object BackupHandler {
         lateinit var fileName: String
 
         override suspend fun loadFromBytes(bytes: ByteArray): Serializable? {
+            logD(TAG, "Found ${bytes.size} bytes for $CLASS_NAME(???)")
             ByteArrayInputStream(bytes).use {
                 val version = it.read()
-                Log.d("PINcredible", "Found MultiBackupPinTable v$version")
+                logD(TAG, "Found $CLASS_NAME v$version")
                 if (version > getVersion()) {
-                    Log.d("PINcredible", "MultiBackupPinTable version not supported")
+                    logD(TAG, "$CLASS_NAME version not supported")
                     return null
                 }
+                logD(TAG, "Size of $CLASS_NAME-version: ${Byte.SIZE_BYTES} bytes")
                 val buffer = ByteArray(PinTable.SIZE)
                 it.read(buffer)
+                logD(TAG, "Size of $CLASS_NAME-pinTable: ${buffer.size} bytes")
                 pinTable = PinTable().loadFromBytes(buffer) as PinTable
-                fileName = it.readBytes().decodeToString()
+                var tempFileName = it.readBytes()
+                logD(TAG, "Size of $CLASS_NAME-fileName: ${tempFileName.size} bytes")
+                fileName = tempFileName.decodeToString()
             }
             return this
         }
@@ -540,16 +561,27 @@ internal object BackupHandler {
         override suspend fun toBytes(): ByteArray {
             val stream = ByteArrayOutputStream()
             stream.use {
-                it.write(byteArrayOf(getVersion()))
+                val version = byteArrayOf(getVersion())
+                logD(TAG, "Size of $CLASS_NAME-version: ${version.size} bytes")
+                it.write(version)
                 val byteArray = pinTable.toBytes()
-                Log.d("PINcredible", "Size of MultiBackupPinTable-pinTable: ${byteArray.size}")
+                logD(TAG, "Size of $CLASS_NAME-pinTable: ${byteArray.size} bytes")
                 it.write(byteArray)
-                it.write(fileName.encodeToByteArray())
+                val fileName = fileName.encodeToByteArray()
+                logD(TAG, "Size of $CLASS_NAME-fileName: ${fileName.size} bytes")
+                it.write(fileName)
             }
-            return stream.toByteArray()
+            val output = stream.toByteArray()
+            logD(TAG, "Size of $CLASS_NAME(???): ${output.size} bytes")
+            return output
         }
 
         override suspend fun getVersion(): Byte = 0
+
+        companion object {
+            private const val CLASS_NAME = "MultiBackupPinTable"
+            private const val TAG = "PINcredible-MBPT"
+        }
     }
 
     class MultiBackupStructure() : Serializable() {
@@ -566,28 +598,34 @@ internal object BackupHandler {
 
         @Suppress("UNCHECKED_CAST")
         override suspend fun loadFromBytes(bytes: ByteArray): Serializable? {
-            ByteArrayInputStream(bytes).use { stream ->
-                val version = stream.read()
-                Log.d("PINcredible", "Found MultiBackupStrucutre v$version")
+            logD(TAG, "Found ${bytes.size} bytes for $CLASS_NAME(???)")
+            ByteArrayInputStream(bytes).use {
+                val version = it.read()
+                logD(TAG, "Found $CLASS_NAME v$version")
                 if (version > getVersion()) {
-                    Log.d("PINcredible", "MultiBackupStrucutre version not supported")
+                    logD(TAG, "$CLASS_NAME version not supported")
                     return null
                 }
-                val pinCount = stream.read()
+                logD(TAG, "Size of $CLASS_NAME-version: ${Byte.SIZE_BYTES} bytes")
+                val pinCount = it.read()
+                logD(TAG, "Parsing $pinCount PINs")
                 val pinBuffer = mutableListOf<MultiBackupPinTable>()
                 val pinSizeBytes = ByteArray(2)
                 var pinSize: Short
-                repeat(pinCount) {
-                    stream.read(pinSizeBytes)
+                repeat(pinCount) { i ->
+                    it.read(pinSizeBytes)
                     pinSize = ByteBuffer.wrap(pinSizeBytes).short
                     val buffer = ByteArray(pinSize.toInt())
-                    stream.read(buffer)
+                    it.read(buffer)
+                    logD(TAG, "Size of $CLASS_NAME-pins[$i]: ${buffer.size} bytes")
                     pinBuffer.add(
                         MultiBackupPinTable().loadFromBytes(buffer) as MultiBackupPinTable
                     )
                 }
                 pins = pinBuffer.toSet()
-                names = ObjectSerializer.deserialize(stream.readBytes()) as Set<String>
+                val tempNames = it.readBytes()
+                logD(TAG, "Size of $CLASS_NAME-names: ${tempNames.size} bytes")
+                names = ObjectSerializer.deserialize(tempNames) as Set<String>
             }
             return this
         }
@@ -595,22 +633,32 @@ internal object BackupHandler {
         override suspend fun toBytes(): ByteArray {
             val stream = ByteArrayOutputStream()
             stream.use {
-                it.write(byteArrayOf(getVersion()))
-                it.write(byteArrayOf(pins.size.toByte()))
-                pins.forEach { pin ->
+                val version = byteArrayOf(getVersion())
+                logD(TAG, "Size of $CLASS_NAME-version: ${version.size} bytes")
+                it.write(version)
+                val pinCount = pins.size.toByte()
+                logD(TAG, "Parsing $pinCount PINs")
+                it.write(byteArrayOf(pinCount))
+                pins.forEachIndexed { i, pin ->
                     val byteArray = pin.toBytes()
-                    Log.d(
-                        "PINcredible",
-                        "Size of MultiBackupStructure-MultiBackupPinTable: ${byteArray.size}"
-                    )
+                    logD(TAG, "Size of $CLASS_NAME-pins[$i]: ${byteArray.size} bytes")
                     it.write(ByteBuffer.allocate(2).putShort(byteArray.size.toShort()).array())
                     it.write(byteArray)
                 }
-                it.write(ObjectSerializer.serialize(names))
+                val names = ObjectSerializer.serialize(names)
+                logD(TAG, "Size of $CLASS_NAME-names: ${names.size} bytes")
+                it.write(names)
             }
-            return stream.toByteArray()
+            val output = stream.toByteArray()
+            logD(TAG, "Size of $CLASS_NAME(???): ${output.size} bytes")
+            return output
         }
 
         override suspend fun getVersion(): Byte = 0
+
+        companion object {
+            private const val CLASS_NAME = "MultiBackupStructure"
+            private const val TAG = "PINcredible-MBS"
+        }
     }
 }
