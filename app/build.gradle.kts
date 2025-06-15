@@ -21,7 +21,7 @@ android {
         versionCode = 14
         versionName = "1.0.1"
         resValue("string", "app_name", "PINcredible Dev")
-        resValue("string", "version_name", "Pre-Release v${versionName}")
+        resValue("string", "version_name", "v${versionName}")
         signingConfig = signingConfigs.getByName("debug")
     }
     buildTypes {
